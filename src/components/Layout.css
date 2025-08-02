@@ -1,0 +1,112 @@
+/* components/Layout.css */
+
+.layout {
+    min-height: 100vh;
+    background: #f8fafc;
+    display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: 100%;
+  }
+  
+  .page-content {
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+  }
+  
+  .page-wrapper {
+    padding: 24px;
+    max-width: 100%;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  /* Desktop Layout */
+  @media (min-width: 1024px) {
+    .main-content {
+      margin-left: 320px;
+      width: calc(100% - 320px);
+    }
+    
+    .page-wrapper {
+      padding: 32px 40px;
+      max-width: none;
+    }
+  }
+  
+  /* Tablet Layout */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .page-wrapper {
+      padding: 24px 32px;
+    }
+  }
+  
+  /* Mobile Layout */
+  @media (max-width: 767px) {
+    .page-wrapper {
+      padding: 20px 16px;
+    }
+  }
+  
+  /* Loading State */
+  .loading-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    color: #64748b;
+    gap: 16px;
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(59, 130, 246, 0.2);
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loading-container p {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  /* Responsive adjustments for content */
+  .page-content {
+    background: #f8fafc;
+  }
+  
+  /* Ensure content doesn't go under fixed elements */
+  .page-wrapper > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Smooth scrolling */
+  .page-content {
+    scroll-behavior: smooth;
+  }
+  
+  /* Focus styles for accessibility */
+  .layout :focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
