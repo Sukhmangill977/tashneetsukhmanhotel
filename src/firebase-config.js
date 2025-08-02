@@ -5,14 +5,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAaY39hkYO254wOXqrSaHq4Ls5av3jO4dc",
-  authDomain: "property-management-c6223.firebaseapp.com",
-  projectId: "property-management-c6223",
-  storageBucket: "property-management-c6223.firebasestorage.app",
-  messagingSenderId: "592510097676",
-  appId: "1:592510097676:web:4e66b518c54196a1585129"
+  apiKey: "AIzaSyAtu_mPlFBb7cA6yabga8rjT7T2dqbr4TA",
+  authDomain: "hotel-management-131b5.firebaseapp.com",
+  projectId: "hotel-management-131b5",
+  storageBucket: "hotel-management-131b5.firebasestorage.app",
+  messagingSenderId: "144273767863",
+  appId: "1:144273767863:web:3b363a63d56a234a5a7c32"
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

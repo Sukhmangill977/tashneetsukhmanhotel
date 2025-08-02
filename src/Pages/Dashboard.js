@@ -9,6 +9,8 @@ import MessageComposer from '../components/MessageComposer';
 import PackageForm from '../components/PackageForm';
 import './Dashboard.css';
 import { FaRegClipboard, FaEnvelope, FaBox } from 'react-icons/fa';
+import { FaPhoneAlt, FaExclamationTriangle } from 'react-icons/fa';
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [userCompany, setUserCompany] = useState(null);
@@ -346,50 +348,50 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="stat-card bookings" onClick={() => navigate('/calendar')}>
-            <div className="stat-icon">🗒</div>
-            <div className="stat-content">
-              <h3>{stats.todaysBookings}</h3>
-              <p>Today's Bookings</p>
-              <span className="stat-change">Scheduled events</span>
-            </div>
-          </div>
+         <div className="stat-card bookings" onClick={() => navigate('/calendar')}>
+  <div className="stat-icon"><FaRegClipboard /></div>
+  <div className="stat-content">
+    <h3>{stats.todaysBookings}</h3>
+    <p>Today's Bookings</p>
+    <span className="stat-change">Scheduled events</span>
+  </div>
+</div>
 
-          <div className="stat-card packages" onClick={() => navigate('/packages')}>
-            <div className="stat-icon">📦</div>
-            <div className="stat-content">
-              <h3>{stats.pendingPackages}</h3>
-              <p>Pending Packages</p>
-              <span className="stat-change">Awaiting pickup</span>
-            </div>
-          </div>
+<div className="stat-card packages" onClick={() => navigate('/packages')}>
+  <div className="stat-icon"><FaBox /></div>
+  <div className="stat-content">
+    <h3>{stats.pendingPackages}</h3>
+    <p>Pending Packages</p>
+    <span className="stat-change">Awaiting pickup</span>
+  </div>
+</div>
 
-          <div className="stat-card messages" onClick={() => navigate('/messages')}>
-            <div className="stat-icon"></div>
-            <div className="stat-content">
-              <h3>{stats.unreadMessages}</h3>
-              <p>Unread Messages</p>
-              <span className="stat-change">Need response</span>
-            </div>
-          </div>
+<div className="stat-card messages" onClick={() => navigate('/messages')}>
+  <div className="stat-icon"><FaEnvelope /></div>
+  <div className="stat-content">
+    <h3>{stats.unreadMessages}</h3>
+    <p>Unread Messages</p>
+    <span className="stat-change">Need response</span>
+  </div>
+</div>
 
-          <div className="stat-card calls" onClick={() => navigate('/messages')}>
-            <div className="stat-icon">📞</div>
-            <div className="stat-content">
-              <h3>{stats.missedCalls}</h3>
-              <p>Missed Calls</p>
-              <span className="stat-change">Follow up needed</span>
-            </div>
-          </div>
+<div className="stat-card calls" onClick={() => navigate('/messages')}>
+  <div className="stat-icon"><FaPhoneAlt /></div>
+  <div className="stat-content">
+    <h3>{stats.missedCalls}</h3>
+    <p>Missed Calls</p>
+    <span className="stat-change">Follow up needed</span>
+  </div>
+</div>
 
-          <div className="stat-card issues" onClick={() => navigate('/complaints')}>
-            <div className="stat-icon">⚠️</div>
-            <div className="stat-content">
-              <h3>{stats.openIssues}</h3>
-              <p>Open Issues</p>
-              <span className="stat-change">Require attention</span>
-            </div>
-          </div>
+<div className="stat-card issues" onClick={() => navigate('/complaints')}>
+  <div className="stat-icon"><FaExclamationTriangle /></div>
+  <div className="stat-content">
+    <h3>{stats.openIssues}</h3>
+    <p>Open Issues</p>
+    <span className="stat-change">Require attention</span>
+  </div>
+</div>
 
           <div className="stat-card visitors" onClick={() => navigate('/visitors')}>
             <div className="stat-icon">🚪</div>

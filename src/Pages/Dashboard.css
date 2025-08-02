@@ -603,3 +603,7 @@
       top: 20px;
     }
   }
+  .stat-icon svg {
+  font-size: 24px;
+  color: #333;
+}
