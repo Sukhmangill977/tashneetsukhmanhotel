@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase-config';
-import { dbService } from './database-service';
 import LoginPage from './components/LoginPage';
-import Layout from './components/Layout';
 
 // Pages
 import Dashboard from './Pages/Dashboard';
@@ -21,30 +19,12 @@ import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [userCompany, setUserCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      
-      if (currentUser) {
-        try {
-          // Load user's company data
-          const company = await dbService.getCompanyByEmail(currentUser.email);
-          setUserCompany(company);
-          
-          if (!company) {
-            console.warn('No company found for user email:', currentUser.email);
-          }
-        } catch (error) {
-          console.error('Error loading user company:', error);
-        }
-      } else {
-        setUserCompany(null);
-      }
-      
       setLoading(false);
       setAuthChecked(true);
     });
@@ -67,33 +47,10 @@ function App() {
       return <Navigate to="/login" replace />;
     }
 
-    if (!userCompany) {
-      return (
-        <div className="error-container">
-          <div className="error-content">
-            <svg viewBox="0 0 24 24" fill="none" className="error-icon">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-              <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" strokeWidth="2"/>
-              <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" strokeWidth="2"/>
-            </svg>
-            <h2>Access Denied</h2>
-            <p>Your email address is not associated with any property management company.</p>
-            <p>Please contact your administrator to set up your account.</p>
-            <button 
-              onClick={() => auth.signOut()}
-              className="logout-btn"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
-      );
-    }
-
     return children;
   };
 
-  // Public Route component (for login page)
+  // Public Route component
   const PublicRoute = ({ children }) => {
     if (!authChecked) {
       return (
@@ -104,7 +61,7 @@ function App() {
       );
     }
 
-    if (user && userCompany) {
+    if (user) {
       return <Navigate to="/dashboard" replace />;
     }
 
@@ -125,13 +82,13 @@ function App() {
       <div className="App">
         <Routes>
           {/* Public Routes */}
-          <Route 
-            path="/login" 
+          <Route
+            path="/login"
             element={
               <PublicRoute>
                 <LoginPage />
               </PublicRoute>
-            } 
+            }
           />
 
           {/* Protected Routes */}
@@ -143,7 +100,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/calendar"
             element={
@@ -152,7 +109,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/residents"
             element={
@@ -161,7 +118,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/packages"
             element={
@@ -170,7 +127,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/visitors"
             element={
@@ -179,7 +136,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/messages"
             element={
@@ -188,7 +145,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/complaints"
             element={
@@ -197,7 +154,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/settings"
             element={
@@ -208,18 +165,16 @@ function App() {
           />
 
           {/* Default redirects */}
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
-              user && userCompany ? 
-                <Navigate to="/dashboard" replace /> : 
-                <Navigate to="/login" replace />
-            } 
+              user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
+            }
           />
-          
+
           {/* 404 Route */}
-          <Route 
-            path="*" 
+          <Route
+            path="*"
             element={
               <ProtectedRoute>
                 <div className="not-found-container">
@@ -227,8 +182,8 @@ function App() {
                     <h1>404</h1>
                     <h2>Page Not Found</h2>
                     <p>The page you're looking for doesn't exist.</p>
-                    <button 
-                      onClick={() => window.location.href = '/dashboard'}
+                    <button
+                      onClick={() => (window.location.href = '/dashboard')}
                       className="back-home-btn"
                     >
                       Back to Dashboard
@@ -236,7 +191,7 @@ function App() {
                   </div>
                 </div>
               </ProtectedRoute>
-            } 
+            }
           />
         </Routes>
       </div>
