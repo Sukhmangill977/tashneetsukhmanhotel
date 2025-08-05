@@ -15,7 +15,7 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
   const [unreadCounts, setUnreadCounts] = useState({});
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
-  const [residents, setResidents] = useState([]);
+  const [guests, setguests] = useState([]);
   const [amenities, setAmenities] = useState([]);
 
   useEffect(() => {
@@ -43,8 +43,8 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
     if (!userCompany) return;
     
     try {
-      const residentsData = await dbService.getResidentsByCompany(userCompany.id);
-      setResidents(residentsData);
+      const guestsData = await dbService.getguestsByCompany(userCompany.id);
+      setguests(guestsData);
       setAmenities(userCompany.amenities || []);
     } catch (error) {
       console.error('Error loading component data:', error);
@@ -84,12 +84,12 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
     if (!userCompany) return;
     
     try {
-      const issues = await dbService.getIssuesByCompany(userCompany.id);
-      const openIssues = issues.filter(issue => issue.status === 'open');
+      const maintenanceRequests = await dbService.getmaintenanceRequestsByCompany(userCompany.id);
+      const openmaintenanceRequests = maintenanceRequests.filter(issue => issue.status === 'open');
       
       setUnreadCounts({
         messages: 3, // This would come from your messaging service
-        complaints: openIssues.length,
+        complaints: openmaintenanceRequests.length,
         notifications: 5 // This would come from your notification service
       });
     } catch (error) {
@@ -112,8 +112,8 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
       description: 'Overview & Analytics'
     },
     {
-      title: 'Resident Management',
-      path: '/residents',
+      title: 'guest Management',
+      path: '/guests',
       icon: (
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -121,7 +121,7 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
           <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      description: 'Manage residents & units'
+      description: 'Manage guests & units'
     },
     {
       title: 'Amenity Booking',
@@ -213,7 +213,7 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
               </div>
               <div className="brand-text">
                 <h1 className="brand-title">Claro AI</h1>
-                <p className="brand-subtitle">Property Management</p>
+                <p className="brand-subtitle">HotelManagement</p>
               </div>
             </div>
             
@@ -236,7 +236,7 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
               </p>
               <p className="user-email">{user?.email}</p>
               <p className="user-company">
-                {userCompany?.name || 'Property Management'}
+                {userCompany?.name || 'Hotel Management'}
               </p>
             </div>
           </div>
@@ -349,7 +349,7 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
         {showBookingModal && (
         <div className="modal-backdrop">
             <BookingForm
-            residents={residents}
+            guests={guests}
             amenities={amenities}
             onSubmit={handleBookingSubmit}
             onClose={() => setShowBookingModal(false)}
@@ -362,7 +362,7 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
             isOpen={showMessageModal}
             onClose={() => setShowMessageModal(false)}
             onSend={handleMessageSubmit}
-            residents={residents}
+            guests={guests}
             type="individual"
         />
         )}

@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import './ParkingRequestForm.css';
 
-const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
+const ParkingRequestForm = ({ request, guests, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     requesterName: '',
     requesterPhone: '',
     requesterEmail: '',
     visiting: {
-      residentId: '',
-      residentName: '',
-      unitNumber: ''
+      guestId: '',
+      guestName: '',
+      roomNumber: ''
     },
     vehicleInfo: {
       make: '',
@@ -38,9 +38,9 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
         requesterPhone: request.requesterPhone || '',
         requesterEmail: request.requesterEmail || '',
         visiting: {
-          residentId: request.visiting?.residentId || '',
-          residentName: request.visiting?.residentName || '',
-          unitNumber: request.visiting?.unitNumber || ''
+          guestId: request.visiting?.guestId || '',
+          guestName: request.visiting?.guestName || '',
+          roomNumber: request.visiting?.roomNumber || ''
         },
         vehicleInfo: request.vehicleInfo || {
           make: '',
@@ -97,26 +97,26 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
     }
   };
 
-  const handleResidentChange = (e) => {
-    const residentId = e.target.value;
-    const selectedResident = residents.find(r => r.id === residentId);
+  const handleguestChange = (e) => {
+    const guestId = e.target.value;
+    const selectedguest = guests.find(r => r.id === guestId);
     
-    if (selectedResident) {
+    if (selectedguest) {
       setFormData(prev => ({
         ...prev,
         visiting: {
-          residentId,
-          residentName: selectedResident.name,
-          unitNumber: selectedResident.unitNumber
+          guestId,
+          guestName: selectedguest.name,
+          roomNumber: selectedguest.roomNumber
         }
       }));
     } else {
       setFormData(prev => ({
         ...prev,
         visiting: {
-          residentId: '',
-          residentName: '',
-          unitNumber: ''
+          guestId: '',
+          guestName: '',
+          roomNumber: ''
         }
       }));
     }
@@ -133,12 +133,12 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
       newErrors.requesterPhone = 'Phone number is required';
     }
 
-    if (!formData.visiting.residentName.trim()) {
-      newErrors['visiting.residentName'] = 'Resident name is required';
+    if (!formData.visiting.guestName.trim()) {
+      newErrors['visiting.guestName'] = 'guest name is required';
     }
 
-    if (!formData.visiting.unitNumber.trim()) {
-      newErrors['visiting.unitNumber'] = 'Unit number is required';
+    if (!formData.visiting.roomNumber.trim()) {
+      newErrors['visiting.roomNumber'] = 'Unit number is required';
     }
 
     if (!formData.vehicleInfo.make.trim()) {
@@ -214,9 +214,9 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
         requesterPhone: formData.requesterPhone.trim(),
         requesterEmail: formData.requesterEmail.trim() || null,
         visiting: {
-          residentId: formData.visiting.residentId || null,
-          residentName: formData.visiting.residentName.trim(),
-          unitNumber: formData.visiting.unitNumber.trim()
+          guestId: formData.visiting.guestId || null,
+          guestName: formData.visiting.guestName.trim(),
+          roomNumber: formData.visiting.roomNumber.trim()
         },
         vehicleInfo: {
           make: formData.vehicleInfo.make.trim(),
@@ -257,7 +257,7 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
       <div className="parking-request-form-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">
-            {request ? 'Edit Parking Request' : 'New Parking Request'}
+            {request ? 'Edit parking Request' : 'New parking Request'}
           </h2>
           <button className="close-button" onClick={onClose}>
             <svg viewBox="0 0 24 24" fill="none">
@@ -345,20 +345,20 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
             <h3 className="section-title">Visiting Information</h3>
             
             <div className="form-group">
-              <label htmlFor="residentId" className="form-label">
-                Select Resident
+              <label htmlFor="guestId" className="form-label">
+                Select guest
               </label>
               <select
-                id="residentId"
-                name="residentId"
-                value={formData.visiting.residentId}
-                onChange={handleResidentChange}
+                id="guestId"
+                name="guestId"
+                value={formData.visiting.guestId}
+                onChange={handleguestChange}
                 className="form-select"
               >
-                <option value="">Select resident or enter manually</option>
-                {residents.map(resident => (
-                  <option key={resident.id} value={resident.id}>
-                    {resident.name} - Unit {resident.unitNumber}
+                <option value="">Select guest or enter manually</option>
+                {guests.map(guest => (
+                  <option key={guest.id} value={guest.id}>
+                    {guest.name} - Unit {guest.roomNumber}
                   </option>
                 ))}
               </select>
@@ -366,40 +366,40 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
 
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="residentName" className="form-label">
-                  Resident Name *
+                <label htmlFor="guestName" className="form-label">
+                  guest Name *
                 </label>
                 <input
                   type="text"
-                  id="residentName"
-                  name="visiting.residentName"
-                  value={formData.visiting.residentName}
+                  id="guestName"
+                  name="visiting.guestName"
+                  value={formData.visiting.guestName}
                   onChange={handleInputChange}
-                  className={`form-input ${errors['visiting.residentName'] ? 'error' : ''}`}
-                  placeholder="Resident being visited"
+                  className={`form-input ${errors['visiting.guestName'] ? 'error' : ''}`}
+                  placeholder="guest being visited"
                   required
                 />
-                {errors['visiting.residentName'] && (
-                  <span className="error-message">{errors['visiting.residentName']}</span>
+                {errors['visiting.guestName'] && (
+                  <span className="error-message">{errors['visiting.guestName']}</span>
                 )}
               </div>
 
               <div className="form-group">
-                <label htmlFor="unitNumber" className="form-label">
+                <label htmlFor="roomNumber" className="form-label">
                   Unit Number *
                 </label>
                 <input
                   type="text"
-                  id="unitNumber"
-                  name="visiting.unitNumber"
-                  value={formData.visiting.unitNumber}
+                  id="roomNumber"
+                  name="visiting.roomNumber"
+                  value={formData.visiting.roomNumber}
                   onChange={handleInputChange}
-                  className={`form-input ${errors['visiting.unitNumber'] ? 'error' : ''}`}
+                  className={`form-input ${errors['visiting.roomNumber'] ? 'error' : ''}`}
                   placeholder="e.g., 101, 2A"
                   required
                 />
-                {errors['visiting.unitNumber'] && (
-                  <span className="error-message">{errors['visiting.unitNumber']}</span>
+                {errors['visiting.roomNumber'] && (
+                  <span className="error-message">{errors['visiting.roomNumber']}</span>
                 )}
               </div>
             </div>
@@ -495,7 +495,7 @@ const ParkingRequestForm = ({ request, residents, onSubmit, onClose }) => {
           </div>
 
           <div className="form-section">
-            <h3 className="section-title">Parking Request Details</h3>
+            <h3 className="section-title">parking Request Details</h3>
             
             <div className="form-grid">
               <div className="form-group">

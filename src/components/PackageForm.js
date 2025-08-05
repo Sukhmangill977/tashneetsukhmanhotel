@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import './PackageForm.css';
 
-const PackageForm = ({ package: pkg, residents, onSubmit, onClose }) => {
+const PackageForm = ({ package: pkg, guests, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
-    residentId: '',
-    residentName: '',
-    unitNumber: '',
+    guestId: '',
+    guestName: '',
+    roomNumber: '',
     recipientEmail: '',
     recipientPhone: '',
     courier: '',
@@ -30,9 +30,9 @@ const PackageForm = ({ package: pkg, residents, onSubmit, onClose }) => {
       const timeStr = deliveredDate.toTimeString().slice(0, 5);
       
       setFormData({
-        residentId: pkg.residentId || '',
-        residentName: pkg.residentName || '',
-        unitNumber: pkg.unitNumber || '',
+        guestId: pkg.guestId || '',
+        guestName: pkg.guestName || '',
+        roomNumber: pkg.roomNumber || '',
         recipientEmail: pkg.recipientEmail || '',
         recipientPhone: pkg.recipientPhone || '',
         courier: pkg.courier || '',
@@ -75,25 +75,25 @@ const PackageForm = ({ package: pkg, residents, onSubmit, onClose }) => {
     }
   };
 
-  const handleResidentChange = (e) => {
-    const residentId = e.target.value;
-    const selectedResident = residents.find(r => r.id === residentId);
+  const handleguestChange = (e) => {
+    const guestId = e.target.value;
+    const selectedguest = guests.find(r => r.id === guestId);
     
-    if (selectedResident) {
+    if (selectedguest) {
       setFormData(prev => ({
         ...prev,
-        residentId,
-        residentName: selectedResident.name,
-        unitNumber: selectedResident.unitNumber,
-        recipientEmail: selectedResident.email,
-        recipientPhone: selectedResident.phone
+        guestId,
+        guestName: selectedguest.name,
+        roomNumber: selectedguest.roomNumber,
+        recipientEmail: selectedguest.email,
+        recipientPhone: selectedguest.phone
       }));
     } else {
       setFormData(prev => ({
         ...prev,
-        residentId: '',
-        residentName: '',
-        unitNumber: '',
+        guestId: '',
+        guestName: '',
+        roomNumber: '',
         recipientEmail: '',
         recipientPhone: ''
       }));
@@ -103,12 +103,12 @@ const PackageForm = ({ package: pkg, residents, onSubmit, onClose }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.residentName.trim()) {
-      newErrors.residentName = 'Recipient name is required';
+    if (!formData.guestName.trim()) {
+      newErrors.guestName = 'Recipient name is required';
     }
 
-    if (!formData.unitNumber.trim()) {
-      newErrors.unitNumber = 'Unit number is required';
+    if (!formData.roomNumber.trim()) {
+      newErrors.roomNumber = 'Unit number is required';
     }
 
     if (!formData.recipientEmail.trim()) {
@@ -162,9 +162,9 @@ const PackageForm = ({ package: pkg, residents, onSubmit, onClose }) => {
       const deliveryDateTime = new Date(`${formData.deliveredAt}T${formData.deliveredTime}`);
 
       const packageData = {
-        residentId: formData.residentId || null,
-        residentName: formData.residentName.trim(),
-        unitNumber: formData.unitNumber.trim(),
+        guestId: formData.guestId || null,
+        guestName: formData.guestName.trim(),
+        roomNumber: formData.roomNumber.trim(),
         recipientEmail: formData.recipientEmail.trim().toLowerCase(),
         recipientPhone: formData.recipientPhone.trim(),
         courier: formData.courier.trim(),
@@ -230,20 +230,20 @@ const PackageForm = ({ package: pkg, residents, onSubmit, onClose }) => {
             <h3 className="section-title">Recipient Information</h3>
             
             <div className="form-group">
-              <label htmlFor="residentId" className="form-label">
-                Select Resident (Optional)
+              <label htmlFor="guestId" className="form-label">
+                Select guest (Optional)
               </label>
               <select
-                id="residentId"
-                name="residentId"
-                value={formData.residentId}
-                onChange={handleResidentChange}
+                id="guestId"
+                name="guestId"
+                value={formData.guestId}
+                onChange={handleguestChange}
                 className="form-select"
               >
-                <option value="">Select resident or enter manually</option>
-                {residents.map(resident => (
-                  <option key={resident.id} value={resident.id}>
-                    {resident.name} - Unit {resident.unitNumber}
+                <option value="">Select guest or enter manually</option>
+                {guests.map(guest => (
+                  <option key={guest.id} value={guest.id}>
+                    {guest.name} - Unit {guest.roomNumber}
                   </option>
                 ))}
               </select>
@@ -251,40 +251,40 @@ const PackageForm = ({ package: pkg, residents, onSubmit, onClose }) => {
 
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="residentName" className="form-label">
+                <label htmlFor="guestName" className="form-label">
                   Recipient Name *
                 </label>
                 <input
                   type="text"
-                  id="residentName"
-                  name="residentName"
-                  value={formData.residentName}
+                  id="guestName"
+                  name="guestName"
+                  value={formData.guestName}
                   onChange={handleInputChange}
-                  className={`form-input ${errors.residentName ? 'error' : ''}`}
+                  className={`form-input ${errors.guestName ? 'error' : ''}`}
                   placeholder="Full name"
                   required
                 />
-                {errors.residentName && (
-                  <span className="error-message">{errors.residentName}</span>
+                {errors.guestName && (
+                  <span className="error-message">{errors.guestName}</span>
                 )}
               </div>
 
               <div className="form-group">
-                <label htmlFor="unitNumber" className="form-label">
+                <label htmlFor="roomNumber" className="form-label">
                   Unit Number *
                 </label>
                 <input
                   type="text"
-                  id="unitNumber"
-                  name="unitNumber"
-                  value={formData.unitNumber}
+                  id="roomNumber"
+                  name="roomNumber"
+                  value={formData.roomNumber}
                   onChange={handleInputChange}
-                  className={`form-input ${errors.unitNumber ? 'error' : ''}`}
+                  className={`form-input ${errors.roomNumber ? 'error' : ''}`}
                   placeholder="e.g., 101, 2A"
                   required
                 />
-                {errors.unitNumber && (
-                  <span className="error-message">{errors.unitNumber}</span>
+                {errors.roomNumber && (
+                  <span className="error-message">{errors.roomNumber}</span>
                 )}
               </div>
             </div>

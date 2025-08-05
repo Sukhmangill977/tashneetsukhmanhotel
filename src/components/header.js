@@ -16,7 +16,7 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
-  const [residents, setResidents] = useState([]);
+  const [guests, setguests] = useState([]);
   const [amenities, setAmenities] = useState([]);
   
   // Quick Actions Modals
@@ -53,7 +53,7 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
 
   useEffect(() => {
     loadNotifications();
-    loadResidents();
+    loadguests();
     loadAmenities();
   }, [userCompany]);
 
@@ -78,8 +78,8 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
     if (!userCompany) return;
     
     try {
-      // Load recent issues and bookings for notifications
-      const issues = await dbService.getIssuesByCompany(userCompany.id);
+      // Load recent maintenanceRequests and bookings for notifications
+      const maintenanceRequests = await dbService.getmaintenanceRequestsByCompany(userCompany.id);
       const today = new Date();
       const todayBookings = await dbService.getBookingsByCompany(
         userCompany.id, 
@@ -89,14 +89,14 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
 
       const notificationList = [];
       
-      // Add unresolved issues
-      const openIssues = issues.filter(issue => issue.status === 'open');
-      openIssues.slice(0, 3).forEach(issue => {
+      // Add unresolved maintenanceRequests
+      const openmaintenanceRequests = maintenanceRequests.filter(issue => issue.status === 'open');
+      openmaintenanceRequests.slice(0, 3).forEach(issue => {
         notificationList.push({
           id: issue.id,
           type: 'issue',
           title: issue.title,
-          message: `New complaint from Unit ${issue.unitNumber}`,
+          message: `New complaint from Unit ${issue.roomNumber}`,
           time: issue.createdAt,
           urgent: issue.priority === 'urgent'
         });
@@ -120,13 +120,13 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
     }
   };
 
-  const loadResidents = async () => {
+  const loadguests = async () => {
     if (!userCompany) return;
     try {
-      const residentsData = await dbService.getResidentsByCompany(userCompany.id);
-      setResidents(residentsData);
+      const guestsData = await dbService.getguestsByCompany(userCompany.id);
+      setguests(guestsData);
     } catch (error) {
-      console.error('Error loading residents:', error);
+      console.error('Error loading guests:', error);
     }
   };
 
@@ -485,7 +485,7 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
       {showBookingModal && (
         <div className="modal-backdrop">
           <BookingForm
-            residents={residents}
+            guests={guests}
             amenities={amenities}
             onSubmit={handleBookingSubmit}
             onClose={() => setShowBookingModal(false)}
@@ -498,7 +498,7 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
           isOpen={showMessageModal}
           onClose={() => setShowMessageModal(false)}
           onSend={handleMessageSubmit}
-          residents={residents}
+          guests={guests}
           type="individual"
         />
       )}

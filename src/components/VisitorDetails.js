@@ -115,11 +115,11 @@ const VisitorDetails = ({ visitor, onEdit, onClose }) => {
               <div className="info-list">
                 <div className="info-item">
                   <span className="info-label">Visiting:</span>
-                  <span className="info-value">{visitor.visiting.residentName}</span>
+                  <span className="info-value">{visitor.visiting.guestName}</span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Unit:</span>
-                  <span className="info-value">Unit {visitor.visiting.unitNumber}</span>
+                  <span className="info-value">Unit {visitor.visiting.roomNumber}</span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Purpose:</span>
@@ -189,7 +189,7 @@ const VisitorDetails = ({ visitor, onEdit, onClose }) => {
             {/* Vehicle Information */}
             {(visitor.vehicleInfo || visitor.parkingSpot) && (
               <div className="info-card">
-                <h3 className="card-title">Vehicle & Parking</h3>
+                <h3 className="card-title">Vehicle & parking</h3>
                 <div className="info-list">
                   {visitor.vehicleInfo && (
                     <>
@@ -208,7 +208,7 @@ const VisitorDetails = ({ visitor, onEdit, onClose }) => {
                   )}
                   {visitor.parkingSpot && (
                     <div className="info-item">
-                      <span className="info-label">Parking Spot:</span>
+                      <span className="info-label">parking Spot:</span>
                       <span className="info-value">{visitor.parkingSpot}</span>
                     </div>
                   )}
@@ -264,8 +264,8 @@ const VisitorDetails = ({ visitor, onEdit, onClose }) => {
                 <div className="timeline-item completed">
                   <div className="timeline-marker"></div>
                   <div className="timeline-content">
-                    <h4>Resident Notified</h4>
-                    <p>Notification sent to resident</p>
+                    <h4>guest Notified</h4>
+                    <p>Notification sent to guest</p>
                   </div>
                 </div>
               )}

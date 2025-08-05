@@ -46,23 +46,23 @@
 
 
 
-//   async function handleParkingStatus(residentInfo, propertyCompany) {
+//   async function handleparkingStatus(guestInfo, hotel) {
 //     try {
-//       console.log(`Checking parking status for resident: ${residentInfo.id}`);
+//       console.log(`Checking parking status for guest: ${guestInfo.id}`);
       
 //       //get user's active parking passes
 //       const now = new Date();
 //       const parkingSnapshot = await db.collection('parking')
-//         .where('phoneNumber', '==', residentInfo.phone)
-//         .where('companyId', '==', propertyCompany.id)
+//         .where('phoneNumber', '==', guestInfo.phone)
+//         .where('companyId', '==', hotel.id)
 //         .where('status', '==', 'active')
 //         .orderBy('createdAt', 'desc')
 //         .get();
       
-//       console.log(`Found ${parkingSnapshot.docs.length} parking passes for resident`);
+//       console.log(`Found ${parkingSnapshot.docs.length} parking passes for guest`);
       
 //       if (parkingSnapshot.empty) {
-//         return `Hi ${residentInfo.name}! You don't have any active parking passes right now. Would you like to create a new parking pass?`;
+//         return `Hi ${guestInfo.name}! You don't have any active parking passes right now. Would you like to create a new parking pass?`;
 //       }
       
 //       //filter passes to only show current/future ones
@@ -76,7 +76,7 @@
 //         });
       
 //       if (activePasses.length === 0) {
-//         return `Hi ${residentInfo.name}! You don't have any current or upcoming parking passes. Your previous passes may have expired. Would you like to create a new parking pass?`;
+//         return `Hi ${guestInfo.name}! You don't have any current or upcoming parking passes. Your previous passes may have expired. Would you like to create a new parking pass?`;
 //       }
       
 //       //format the active passes
@@ -109,36 +109,36 @@
       
 //       const pluralPasses = activePasses.length === 1 ? 'parking pass' : 'parking passes';
       
-//       return `Hi ${residentInfo.name}! Here are your ${pluralPasses}:\n\n${passesList}\n\nTo edit a pass, say "edit parking pass" or to create a new one, say "new parking pass".`;
+//       return `Hi ${guestInfo.name}! Here are your ${pluralPasses}:\n\n${passesList}\n\nTo edit a pass, say "edit parking pass" or to create a new one, say "new parking pass".`;
       
 //     } catch (error) {
 //       console.error('Error checking parking status:', error);
-//       return `Sorry ${residentInfo.name}, I'm having trouble checking your parking passes right now. Please try again or contact the front desk.`;
+//       return `Sorry ${guestInfo.name}, I'm having trouble checking your parking passes right now. Please try again or contact the front desk.`;
 //     }
 //   }
 
-//   async function handleParkingEdit(userMessage, residentInfo, propertyCompany) {
+//   async function handleparkingEdit(userMessage, guestInfo, hotel) {
 //   try {
-//     console.log(`Handling parking edit for resident: ${residentInfo.id}`);
+//     console.log(`Handling parking edit for guest: ${guestInfo.id}`);
 //     console.log(`Edit message: "${userMessage}"`);
     
 //     // Get conversation state to see if we're already in edit flow
-//     const conversationState = await getConversationState(residentInfo.phone, propertyCompany.id);
+//     const conversationState = await getConversationState(guestInfo.phone, hotel.id);
     
 //     // If this is the initial "edit parking pass" request
 //     if (userMessage.toLowerCase().includes('edit') && !conversationState.temporaryData?.editMode) {
 //       // Get user's current parking passes
 //       const now = new Date();
 //       const parkingSnapshot = await db.collection('parking')
-//         .where('phoneNumber', '==', residentInfo.phone)
-//         .where('companyId', '==', propertyCompany.id)
+//         .where('phoneNumber', '==', guestInfo.phone)
+//         .where('companyId', '==', hotel.id)
 //         .where('status', '==', 'active')
 //         .orderBy('createdAt', 'desc')
 //         .get();
 
 //       if (parkingSnapshot.empty) {
 //         await resetConversationState(conversationState.id);
-//         return `Hi ${residentInfo.name}! I don't see any recent parking passes to edit. Would you like to create a new parking pass?`;
+//         return `Hi ${guestInfo.name}! I don't see any recent parking passes to edit. Would you like to create a new parking pass?`;
 //       }
 
 //       // Filter passes to only show current/future ones
@@ -153,7 +153,7 @@
 
 //       if (activePasses.length === 0) {
 //         await resetConversationState(conversationState.id);
-//         return `Hi ${residentInfo.name}! You don't have any current or upcoming parking passes to edit. Would you like to create a new parking pass?`;
+//         return `Hi ${guestInfo.name}! You don't have any current or upcoming parking passes to edit. Would you like to create a new parking pass?`;
 //       }
 
 //       // If only one pass, proceed with editing it
@@ -179,7 +179,7 @@
 //           }
 //         });
 
-//         return `Hi ${residentInfo.name}! I can help you edit your parking pass for ${dateStr}. Current details:
+//         return `Hi ${guestInfo.name}! I can help you edit your parking pass for ${dateStr}. Current details:
 // 🏷️ License Plate: ${pass.licensePlate}
 // 🚗 Vehicle: ${pass.carMake}
 
@@ -210,7 +210,7 @@
 //         }
 //       });
 
-//       return `Hi ${residentInfo.name}! You have multiple parking passes. Which one would you like to edit?
+//       return `Hi ${guestInfo.name}! You have multiple parking passes. Which one would you like to edit?
 
 // ${passesList}
 
@@ -321,7 +321,7 @@
 //       }
 
 //       // Update the parking pass
-//       await updateParkingPass(passToEditId, updateData);
+//       await updateparkingPass(passToEditId, updateData);
 
 //       // Reset conversation state
 //       await resetConversationState(conversationState.id);
@@ -338,7 +338,7 @@
 //         changeDescription = `vehicle to ${finalCar}`;
 //       }
 
-//       return `Perfect ${residentInfo.name}! I've updated your parking pass ${changeDescription}. 
+//       return `Perfect ${guestInfo.name}! I've updated your parking pass ${changeDescription}. 
 
 // Updated details:
 // 🏷️ License Plate: ${finalPlate}
@@ -349,16 +349,16 @@
 
 //     // Fallback - shouldn't reach here
 //     await resetConversationState(conversationState.id);
-//     return `Hi ${residentInfo.name}! I can help you edit your parking pass. Please say "edit parking pass" to get started.`;
+//     return `Hi ${guestInfo.name}! I can help you edit your parking pass. Please say "edit parking pass" to get started.`;
 
 //   } catch (error) {
 //     console.error('Error handling parking edit:', error);
-//     return `Sorry ${residentInfo.name}, I'm having trouble updating your parking pass. Please contact the front desk for assistance.`;
+//     return `Sorry ${guestInfo.name}, I'm having trouble updating your parking pass. Please contact the front desk for assistance.`;
 //   }
 // }
   
 //   // Function to update parking pass
-//   async function updateParkingPass(passId, updateData) {
+//   async function updateparkingPass(passId, updateData) {
 //     try {
 //       console.log('Updating parking pass:', passId, updateData);
       
@@ -368,7 +368,7 @@
 //       };
       
 //       await db.collection('parking').doc(passId).update(updatePayload);
-//       console.log('Parking pass updated successfully');
+//       console.log('parking pass updated successfully');
       
 //       return true;
 //     } catch (error) {
@@ -442,9 +442,9 @@
 //     }
 //   }
   
-//   async function handleParkingRequest(userMessage, residentInfo, propertyCompany) {
+//   async function handleparkingRequest(userMessage, guestInfo, hotel) {
 //     try {
-//       console.log(`Handling parking request for: ${residentInfo.isResident ? residentInfo.name : 'non-resident'}`);
+//       console.log(`Handling parking request for: ${guestInfo.isguest ? guestInfo.name : 'non-guest'}`);
       
 //       const lowerMessage = userMessage.toLowerCase();
       
@@ -453,7 +453,7 @@
 //       const isTermRequest = termKeywords.some(keyword => lowerMessage.includes(keyword));
       
 //       if (isTermRequest) {
-//         const greeting = residentInfo.isResident ? `Hi ${residentInfo.name}!` : "Hi there!";
+//         const greeting = guestInfo.isguest ? `Hi ${guestInfo.name}!` : "Hi there!";
 //         return `${greeting} For term-based or long-term parking arrangements, please visit the front desk in person to complete the setup. They'll help you with weekly, monthly, or extended parking passes that require additional documentation and payment processing.`;
 //       }
       
@@ -463,14 +463,14 @@
       
 //       // Check if they provided everything (date, plate, car)
 //       if (dateInfo.date && carInfo.licensePlate && carInfo.carMake) {
-//         return await createParkingPass(carInfo, dateInfo, residentInfo, propertyCompany);
+//         return await createparkingPass(carInfo, dateInfo, guestInfo, hotel);
 //       }
       
 //       // Check what we're missing and ask accordingly
-//       const greeting = residentInfo.isResident ? `Hi ${residentInfo.name}!` : "Hi there!";
+//       const greeting = guestInfo.isguest ? `Hi ${guestInfo.name}!` : "Hi there!";
       
 //       if (!dateInfo.date) {
-//         return `${greeting} I'd be happy to help you get a visitor parking pass! Parking passes are issued for single days only. I'll need:\n\n1. What date do you need parking? (e.g., "today", "tomorrow", "July 30")\n2. License plate number\n3. Car make and model\n\nYou can send them together or one at a time.`;
+//         return `${greeting} I'd be happy to help you get a visitor parking pass! parking passes are issued for single days only. I'll need:\n\n1. What date do you need parking? (e.g., "today", "tomorrow", "July 30")\n2. License plate number\n3. Car make and model\n\nYou can send them together or one at a time.`;
 //       } else if (!carInfo.licensePlate && !carInfo.carMake) {
 //         const dateStr = dateInfo.date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 //         return `Great! I have the date: ${dateStr}. Now I need:\n\n1. Your license plate number\n2. Car make and model (e.g., "Honda Civic")\n\nYou can send them together or separately.`;
@@ -482,20 +482,20 @@
 //         return `Great! I have:\n• Date: ${dateStr}\n• Car: ${carInfo.carMake}\n\nWhat's your license plate number?`;
 //       }
       
-//       return `${greeting} I'd be happy to help you get a visitor parking pass! Parking passes are issued for single days only. Please provide:\n\n1. Date needed (today, tomorrow, or specific date)\n2. License plate number\n3. Car make and model`;
+//       return `${greeting} I'd be happy to help you get a visitor parking pass! parking passes are issued for single days only. Please provide:\n\n1. Date needed (today, tomorrow, or specific date)\n2. License plate number\n3. Car make and model`;
       
 //     } catch (error) {
 //       console.error('Error handling parking request:', error);
-//       const greeting = residentInfo.isResident ? residentInfo.name : "there";
+//       const greeting = guestInfo.isguest ? guestInfo.name : "there";
 //       return `Sorry ${greeting}, I'm having trouble processing your parking request. Please contact the front desk for assistance.`;
 //     }
 //   }
   
 //   // Function to handle parking follow-up messages
-//   async function handleParkingFollowUp(userMessage, conversationHistory, residentInfo, propertyCompany) {
+//   async function handleparkingFollowUp(userMessage, conversationHistory, guestInfo, hotel) {
 //   // Get conversation state for this call
-//   const conversationState = await getConversationState(residentInfo.phone || residentInfo.phoneNumber, propertyCompany.id);
-//   return await handleParkingFollowUpImproved(userMessage, conversationHistory, residentInfo, propertyCompany, conversationState);
+//   const conversationState = await getConversationState(guestInfo.phone || guestInfo.phoneNumber, hotel.id);
+//   return await handleparkingFollowUpImproved(userMessage, conversationHistory, guestInfo, hotel, conversationState);
 // }
   
 //   // Function to extract date information from message
@@ -691,7 +691,7 @@
 //   }
   
 //   // Function to create parking pass
-//   async function createParkingPass(carInfo, dateInfo, residentInfo, propertyCompany) {
+//   async function createparkingPass(carInfo, dateInfo, guestInfo, hotel) {
 //     try {
 //       console.log('Creating parking pass:', { carInfo, dateInfo });
       
@@ -701,7 +701,7 @@
 //       startOfToday.setHours(0, 0, 0, 0);
       
 //       if (dateInfo.date < startOfToday) {
-//         const greeting = residentInfo.isResident ? residentInfo.name : 'there';
+//         const greeting = guestInfo.isguest ? guestInfo.name : 'there';
 //         return `Sorry ${greeting}, I can't create a parking pass for a past date. Please choose today or a future date.`;
 //       }
       
@@ -712,8 +712,8 @@
 //       const parkingData = {
 //         licensePlate: carInfo.licensePlate,
 //         carMake: carInfo.carMake,
-//         phoneNumber: residentInfo.isResident ? residentInfo.phone : residentInfo.phoneNumber,
-//         companyId: propertyCompany.id,
+//         phoneNumber: guestInfo.isguest ? guestInfo.phone : guestInfo.phoneNumber,
+//         companyId: hotel.id,
 //         parkingDate: admin.firestore.Timestamp.fromDate(dateInfo.date),
 //         status: 'active',
 //         passType: 'daily',
@@ -722,25 +722,25 @@
 //         expiresAt: admin.firestore.Timestamp.fromDate(expirationDate),
 //       };
       
-//       // Add resident info if available
-//       if (residentInfo.isResident) {
-//         parkingData.residentInfo = {
-//           id: residentInfo.id,
-//           name: residentInfo.name,
-//           unitNumber: residentInfo.unitNumber,
-//           email: residentInfo.email
+//       // Add guest info if available
+//       if (guestInfo.isguest) {
+//         parkingData.guestInfo = {
+//           id: guestInfo.id,
+//           name: guestInfo.name,
+//           roomNumber: guestInfo.roomNumber,
+//           email: guestInfo.email
 //         };
-//         parkingData.requestedBy = 'resident';
+//         parkingData.requestedBy = 'guest';
 //       } else {
 //         parkingData.requestedBy = 'visitor';
 //       }
       
-//       console.log('Parking data to be saved:', parkingData);
+//       console.log('parking data to be saved:', parkingData);
       
 //       const parkingRef = await db.collection('parking').add(parkingData);
-//       console.log('Parking pass created successfully with ID:', parkingRef.id);
+//       console.log('parking pass created successfully with ID:', parkingRef.id);
       
-//       const greeting = residentInfo.isResident ? residentInfo.name : 'there';
+//       const greeting = guestInfo.isguest ? guestInfo.name : 'there';
 //       const passId = parkingRef.id.substring(0, 8);
       
 //       const dateStr = dateInfo.date.toLocaleDateString('en-US', {
@@ -761,13 +761,13 @@
 //         dateDisplay = `Tomorrow (${dateStr})`;
 //       }
       
-//       return `Perfect ${greeting}! I've created a daily visitor parking pass for:\n\n📅 Date: ${dateDisplay}\n🚗 Vehicle: ${carInfo.carMake}\n🏷️ Plate: ${carInfo.licensePlate}\n⏰ Valid until 11:59 PM\n🆔 Pass ID: ${passId}\n\nWe've notified the concierge. Please go to the front desk to pick up your pass!\n\n*Note: Parking passes are for single days only. For extended parking, visit the front desk.*`;
+//       return `Perfect ${greeting}! I've created a daily visitor parking pass for:\n\n📅 Date: ${dateDisplay}\n🚗 Vehicle: ${carInfo.carMake}\n🏷️ Plate: ${carInfo.licensePlate}\n⏰ Valid until 11:59 PM\n🆔 Pass ID: ${passId}\n\nWe've notified the concierge. Please go to the front desk to pick up your pass!\n\n*Note: parking passes are for single days only. For extended parking, visit the front desk.*`;
       
 //     } catch (error) {
 //       console.error('Error creating parking pass:', error);
 //       console.error('Error details:', error.stack);
       
-//       const greeting = residentInfo.isResident ? residentInfo.name : 'there';
+//       const greeting = guestInfo.isguest ? guestInfo.name : 'there';
 //       return `Sorry ${greeting}, I encountered an error while creating your parking pass. Please contact the front desk for assistance. Error: ${error.message}`;
 //     }
 //   }
@@ -950,23 +950,23 @@
 //     return null;
 //   }
 
-//   async function handleBookingStatus(userMessage, residentInfo, propertyCompany) {
+//   async function handleBookingStatus(userMessage, guestInfo, hotel) {
 //     try {
-//       console.log(`Checking booking status for resident: ${residentInfo.id}`);
+//       console.log(`Checking booking status for guest: ${guestInfo.id}`);
       
 //       // Get user's current bookings from database
 //       const now = new Date();
 //       const bookingsSnapshot = await db.collection('bookings')
-//         .where('residentId', '==', residentInfo.id)
-//         .where('companyId', '==', propertyCompany.id)
+//         .where('guestId', '==', guestInfo.id)
+//         .where('companyId', '==', hotel.id)
 //         .where('status', 'in', ['pending', 'confirmed'])
 //         .orderBy('startDate', 'asc')
 //         .get();
       
-//       console.log(`Found ${bookingsSnapshot.docs.length} bookings for resident`);
+//       console.log(`Found ${bookingsSnapshot.docs.length} bookings for guest`);
       
 //       if (bookingsSnapshot.empty) {
-//         return `Hi ${residentInfo.name}! You don't have any current bookings. Would you like to make a new booking?`;
+//         return `Hi ${guestInfo.name}! You don't have any current bookings. Would you like to make a new booking?`;
 //       }
       
 //       const userBookings = bookingsSnapshot.docs.map(doc => ({
@@ -981,7 +981,7 @@
 //       });
       
 //       if (activeFutureBookings.length === 0) {
-//         return `Hi ${residentInfo.name}! You don't have any current or upcoming bookings. Your previous bookings may have ended. Would you like to make a new booking?`;
+//         return `Hi ${guestInfo.name}! You don't have any current or upcoming bookings. Your previous bookings may have ended. Would you like to make a new booking?`;
 //       }
       
 //       // Format the bookings
@@ -1025,17 +1025,17 @@
       
 //       const pluralBookings = activeFutureBookings.length === 1 ? 'booking' : 'bookings';
       
-//       return `Hi ${residentInfo.name}! Here are your current and upcoming ${pluralBookings}:\n\n${bookingsList}\n\nTo make a new booking, say "book [amenity name]" or to edit/cancel a booking, say "edit booking".`;
+//       return `Hi ${guestInfo.name}! Here are your current and upcoming ${pluralBookings}:\n\n${bookingsList}\n\nTo make a new booking, say "book [amenity name]" or to edit/cancel a booking, say "edit booking".`;
       
 //     } catch (error) {
 //       console.error('Error checking booking status:', error);
 //       console.error('Error details:', error.stack);
-//       return `Sorry ${residentInfo.name}, I'm having trouble checking your bookings right now. Please try again or contact the front desk. Error: ${error.message}`;
+//       return `Sorry ${guestInfo.name}, I'm having trouble checking your bookings right now. Please try again or contact the front desk. Error: ${error.message}`;
 //     }
 //   }
   
 //   // Helper function to format bookings list
-//   function formatBookingsList(bookings, propertyCompany) {
+//   function formatBookingsList(bookings, hotel) {
 //     return bookings.map((booking, index) => {
 //       const startDate = booking.startDate.toDate();
 //       const endDate = booking.endDate.toDate();
@@ -1078,7 +1078,7 @@
 //       });
       
 //       // Find amenity details
-//       const amenity = propertyCompany.amenities.find(a => a.id === booking.amenityId);
+//       const amenity = hotel.amenities.find(a => a.id === booking.amenityId);
 //       const amenityName = amenity ? amenity.name : booking.amenityId;
       
 //       // Get emoji for amenity type
@@ -1117,33 +1117,33 @@
 //         console.log(`Incoming message from ${cleanPhoneNumber} to ${cleanTwilioNumber}: ${messageBody}`);
         
 //         // Find which property company this Twilio number belongs to
-//         const propertyCompany = await getPropertyCompanyByPhone(twilioNumber);
+//         const hotel = await gethotelByPhone(twilioNumber);
         
-//         if (!propertyCompany) {
+//         if (!hotel) {
 //           console.error(`No property company found for Twilio number: ${twilioNumber}`);
-//           res.status(404).send('Property not found');
+//           res.status(404).send('Hotel not found');
 //           return;
 //         }
         
 //         // Store incoming message in database
-//         await storeMessage(cleanPhoneNumber, messageBody, 'incoming', MessageSid, propertyCompany.id);
+//         await storeMessage(cleanPhoneNumber, messageBody, 'incoming', MessageSid, hotel.id);
         
-//         // Check if sender is a resident of this property
-//         const residentInfo = await checkResident(cleanPhoneNumber, propertyCompany.id);
+//         // Check if sender is a guest of this property
+//         const guestInfo = await checkguest(cleanPhoneNumber, hotel.id);
         
 //         // Get conversation history
-//         const conversationHistory = await getConversationHistory(cleanPhoneNumber, propertyCompany.id);
+//         const conversationHistory = await getConversationHistory(cleanPhoneNumber, hotel.id);
         
 //         // Generate AI response with improved state management
 //         const aiResponse = await generateAIResponseWithImprovedState(
 //           messageBody,
 //           conversationHistory,
-//           residentInfo,
-//           propertyCompany
+//           guestInfo,
+//           hotel
 //         );
         
 //         // Store outgoing message in database
-//         await storeMessage(cleanPhoneNumber, aiResponse, 'outgoing', null, propertyCompany.id);
+//         await storeMessage(cleanPhoneNumber, aiResponse, 'outgoing', null, hotel.id);
         
 //         // Send response via Twilio
 //         await sendTwilioResponse(phoneNumber, aiResponse, twilioNumber);
@@ -1159,7 +1159,7 @@
 //   );
   
 //   // Function to find property company by phone number
-//   async function getPropertyCompanyByPhone(phoneNumber) {
+//   async function gethotelByPhone(phoneNumber) {
 //     try {
 //       const companiesSnapshot = await db.collection('propertyCompanies')
 //         .where('companyPhone', '==', phoneNumber)
@@ -1181,10 +1181,10 @@
 //     }
 //   }
   
-//   // Function to check if phone number belongs to a resident
-//   async function checkResident(phoneNumber, companyId) {
+//   // Function to check if phone number belongs to a guest
+//   async function checkguest(phoneNumber, companyId) {
 //     try {
-//       console.log(`Checking resident for phone: ${phoneNumber}, company: ${companyId}`);
+//       console.log(`Checking guest for phone: ${phoneNumber}, company: ${companyId}`);
       
 //       // Try multiple phone number formats
 //       const phoneFormats = [
@@ -1200,34 +1200,34 @@
 //       for (const format of phoneFormats) {
 //         console.log(`Searching for phone format: ${format}`);
         
-//         const residentsSnapshot = await db.collection('residents')
+//         const guestsSnapshot = await db.collection('guests')
 //           .where('phone', '==', format)
 //           .where('companyId', '==', companyId)
 //           .limit(1)
 //           .get();
         
-//         if (!residentsSnapshot.empty) {
-//           const residentDoc = residentsSnapshot.docs[0];
-//           const residentData = {
-//             isResident: true,
-//             id: residentDoc.id,
-//             ...residentDoc.data()
+//         if (!guestsSnapshot.empty) {
+//           const guestDoc = guestsSnapshot.docs[0];
+//           const guestData = {
+//             isguest: true,
+//             id: guestDoc.id,
+//             ...guestDoc.data()
 //           };
-//           console.log(`Found resident with format ${format}:`, residentData);
-//           return residentData;
+//           console.log(`Found guest with format ${format}:`, guestData);
+//           return guestData;
 //         }
 //       }
       
-//       console.log('No resident found for any phone number format');
-//       return { isResident: false };
+//       console.log('No guest found for any phone number format');
+//       return { isguest: false };
 //     } catch (error) {
-//       console.error('Error checking resident status:', error);
-//       return { isResident: false };
+//       console.error('Error checking guest status:', error);
+//       return { isguest: false };
 //     }
 //   }
 
 //   // Enhanced conversation analysis with better context understanding
-//   async function analyzeMessageWithImprovedContext(message, residentInfo, propertyCompany, conversationHistory = [], conversationState) {
+//   async function analyzeMessageWithImprovedContext(message, guestInfo, hotel, conversationHistory = [], conversationState) {
 //     try {
 //       const lowerMessage = message.toLowerCase().trim();
       
@@ -1251,13 +1251,13 @@
 //             const numberMatch = message.match(/^\d+$/);
 //             if (numberMatch) {
 //               const amenityIndex = parseInt(numberMatch[0]) - 1;
-//               if (amenityIndex >= 0 && amenityIndex < propertyCompany.amenities.length) {
+//               if (amenityIndex >= 0 && amenityIndex < hotel.amenities.length) {
 //                 return { isBookingRequest: true, flowContinuation: true };
 //               }
 //             }
             
 //             // Check for amenity name
-//             const amenity = propertyCompany.amenities.find(a => 
+//             const amenity = hotel.amenities.find(a => 
 //               lowerMessage.includes(a.name.toLowerCase()) || 
 //               lowerMessage.includes(a.type.toLowerCase())
 //             );
@@ -1288,11 +1288,11 @@
 //           }
 //         }
         
-//         // Parking flow continuation
+//         // parking flow continuation
 //         if (conversationState.context === 'parking') {
 //           // Check if in edit flow
 //           if (conversationState.flowStep?.includes('edit')) {
-//             return { isParkingEdit: true, flowContinuation: true };
+//             return { isparkingEdit: true, flowContinuation: true };
 //           }
           
 //           // Check if providing parking information
@@ -1304,7 +1304,7 @@
 //             const carInfo = extractCarInfo(message);
             
 //             if (dateInfo.date || carInfo.licensePlate || carInfo.carMake) {
-//               return { isParkingFollowUp: true, flowContinuation: true };
+//               return { isparkingFollowUp: true, flowContinuation: true };
 //             }
 //           }
 //         }
@@ -1320,7 +1320,7 @@
 //         await resetConversationState(conversationState.id);
 //         return { 
 //           isNegativeResponse: true,
-//           message: `No problem ${residentInfo.name}! Let me know if you need anything else.`
+//           message: `No problem ${guestInfo.name}! Let me know if you need anything else.`
 //         };
 //       }
       
@@ -1336,7 +1336,7 @@
 //         await resetConversationState(conversationState.id);
 //         return { 
 //           isConversationEnd: true,
-//           message: `You're welcome ${residentInfo.name}! Feel free to reach out anytime if you need anything else. Have a great day! 😊`
+//           message: `You're welcome ${guestInfo.name}! Feel free to reach out anytime if you need anything else. Have a great day! 😊`
 //         };
 //       }
       
@@ -1348,19 +1348,19 @@
 //         'what passes', 'my passes', 'active passes', 'parking status'
 //       ];
       
-//       const isParkingStatusRequest = parkingStatusKeywords.some(keyword => 
+//       const isparkingStatusRequest = parkingStatusKeywords.some(keyword => 
 //         lowerMessage.includes(keyword)) || 
 //         (lowerMessage.includes('what') && lowerMessage.includes('parking')) ||
 //         (lowerMessage.includes('parking') && (lowerMessage.includes('do i') || lowerMessage.includes('any') || lowerMessage.includes('my')));
       
-//       if (isParkingStatusRequest) {
+//       if (isparkingStatusRequest) {
 //         console.log('Detected parking status request - starting fresh');
 //         await updateConversationState(conversationState.id, { 
 //           context: 'parking', 
 //           flowStep: 'status_check',
 //           temporaryData: {}
 //         });
-//         return { isParkingStatus: true };
+//         return { isparkingStatus: true };
 //       }
       
 //       // Booking status requests - should ALWAYS work
@@ -1390,17 +1390,17 @@
 //       // Edit requests - should ALWAYS work and override active flows
 //       const editKeywords = ['edit', 'change', 'update', 'modify', 'fix', 'correct'];
       
-//       const isParkingEditRequest = editKeywords.some(keyword => lowerMessage.includes(keyword)) && 
+//       const isparkingEditRequest = editKeywords.some(keyword => lowerMessage.includes(keyword)) && 
 //                                   (lowerMessage.includes('parking') || lowerMessage.includes('pass'));
       
-//       if (isParkingEditRequest) {
+//       if (isparkingEditRequest) {
 //         console.log('Detected parking edit request - starting fresh edit flow');
 //         await updateConversationState(conversationState.id, { 
 //           context: 'parking', 
 //           flowStep: 'edit_request',
 //           temporaryData: {}
 //         });
-//         return { isParkingEdit: true };
+//         return { isparkingEdit: true };
 //       }
       
 //       const isBookingEditRequest = editKeywords.some(keyword => lowerMessage.includes(keyword)) && 
@@ -1418,20 +1418,20 @@
       
 //       // New parking requests
 //       const parkingKeywords = ['parking', 'park', 'visitor parking', 'parking pass', 'guest parking'];
-//       const newParkingIndicators = ['need', 'want', 'get', 'create', 'new', 'book', 'request'];
+//       const newparkingIndicators = ['need', 'want', 'get', 'create', 'new', 'book', 'request'];
       
-//       const isNewParkingRequest = parkingKeywords.some(keyword => lowerMessage.includes(keyword)) &&
-//                                  (newParkingIndicators.some(indicator => lowerMessage.includes(indicator)) ||
+//       const isNewparkingRequest = parkingKeywords.some(keyword => lowerMessage.includes(keyword)) &&
+//                                  (newparkingIndicators.some(indicator => lowerMessage.includes(indicator)) ||
 //                                   !lowerMessage.includes('do i') && !lowerMessage.includes('my') && !lowerMessage.includes('show'));
       
-//       if (isNewParkingRequest) {
+//       if (isNewparkingRequest) {
 //         console.log('Detected NEW parking request - starting fresh parking conversation');
 //         await updateConversationState(conversationState.id, { 
 //           context: 'parking', 
 //           flowStep: 'new_request',
 //           temporaryData: {}
 //         });
-//         return { isParkingRequest: true };
+//         return { isparkingRequest: true };
 //       }
       
 //       // New booking requests
@@ -1495,7 +1495,7 @@
 //     }
 //   }
 
-//   async function handleGeneralMessage(userMessage, conversationHistory, residentInfo, propertyCompany, conversationState) {
+//   async function handleGeneralMessage(userMessage, conversationHistory, guestInfo, hotel, conversationState) {
 //     try {
 //       // Build conversation context for OpenAI
 //       const recentHistory = conversationHistory.slice(-6);
@@ -1503,7 +1503,7 @@
 //         `${msg.direction === 'incoming' ? 'User' : 'Assistant'}: "${msg.content}"`
 //       ).join('\n');
       
-//       const systemPrompt = buildSystemPromptWithContext(residentInfo, propertyCompany, conversationContext);
+//       const systemPrompt = buildSystemPromptWithContext(guestInfo, hotel, conversationContext);
       
 //       const messages = [
 //         { role: 'system', content: systemPrompt },
@@ -1523,14 +1523,14 @@
       
 //     } catch (error) {
 //       console.error('Error handling general message:', error);
-//       const greeting = residentInfo.isResident ? residentInfo.name : 'there';
+//       const greeting = guestInfo.isguest ? guestInfo.name : 'there';
       
 //       // Fallback response
-//       return `Hi ${greeting}! I'm Claro, your virtual concierge. I can help you with:\n\n• Maintenance issues\n• Visitor parking passes\n• Amenity bookings${residentInfo.isResident ? '\n• Check your current bookings/passes' : ''}\n\nFor other questions, please contact the front desk. What can I help you with?`;
+//       return `Hi ${greeting}! I'm Claro, your virtual concierge. I can help you with:\n\n• Maintenance maintenanceRequests\n• Visitor parking passes\n• Amenity bookings${guestInfo.isguest ? '\n• Check your current bookings/passes' : ''}\n\nFor other questions, please contact the front desk. What can I help you with?`;
 //     }
 //   }
   
-//   async function handleBookingContextMessage(message, conversationState, residentInfo) {
+//   async function handleBookingContextMessage(message, conversationState, guestInfo) {
 //     const lowerMessage = message.toLowerCase().trim();
     
 //     console.log(`Handling booking context message: "${message}", step: ${conversationState.flowStep}`);
@@ -1559,7 +1559,7 @@
 //   }
   
 //   // Enhanced parking context handler
-//   async function handleParkingContextMessage(message, conversationState, residentInfo) {
+//   async function handleparkingContextMessage(message, conversationState, guestInfo) {
 //     const lowerMessage = message.toLowerCase().trim();
     
 //     console.log(`Handling parking context message: "${message}", step: ${conversationState.flowStep}`);
@@ -1568,7 +1568,7 @@
 //     if (conversationState.flowStep === 'edit_request') {
 //       const carInfo = extractCarInfo(message);
 //       if (carInfo.licensePlate || carInfo.carMake) {
-//         return { isParkingEdit: true };
+//         return { isparkingEdit: true };
 //       }
 //     }
     
@@ -1583,7 +1583,7 @@
 //       const carInfo = extractCarInfo(message);
       
 //       if (dateInfo.date || carInfo.licensePlate || carInfo.carMake) {
-//         return { isParkingFollowUp: true };
+//         return { isparkingFollowUp: true };
 //       }
 //     }
     
@@ -1699,18 +1699,18 @@
 //     }
 //   }
 
-//   async function generateAIResponseWithImprovedState(userMessage, conversationHistory, residentInfo, propertyCompany) {
+//   async function generateAIResponseWithImprovedState(userMessage, conversationHistory, guestInfo, hotel) {
 //     try {
 //       console.log(`\n=== PROCESSING MESSAGE ===`);
 //       console.log(`Message: "${userMessage}"`);
-//       console.log(`Resident: ${residentInfo.isResident ? residentInfo.name : 'non-resident'}`);
+//       console.log(`guest: ${guestInfo.isguest ? guestInfo.name : 'non-guest'}`);
       
 //       // Get fresh conversation state
-//       const conversationState = await getConversationState(residentInfo.phone || residentInfo.phoneNumber, propertyCompany.id);
+//       const conversationState = await getConversationState(guestInfo.phone || guestInfo.phoneNumber, hotel.id);
 //       console.log(`Current conversation state:`, conversationState);
       
 //       // Analyze the message with full context
-//       const analysis = await analyzeMessageWithImprovedContext(userMessage, residentInfo, propertyCompany, conversationHistory, conversationState);
+//       const analysis = await analyzeMessageWithImprovedContext(userMessage, guestInfo, hotel, conversationHistory, conversationState);
       
 //       console.log(`Analysis result:`, analysis);
 //       console.log(`=========================\n`);
@@ -1723,7 +1723,7 @@
 //           flowStep: null,
 //           temporaryData: {}
 //         });
-//         return await handleGeneralMessage(userMessage, conversationHistory, residentInfo, propertyCompany, conversationState);
+//         return await handleGeneralMessage(userMessage, conversationHistory, guestInfo, hotel, conversationState);
 //       }
       
 //       // Handle conversation management responses
@@ -1732,26 +1732,26 @@
 //         return analysis.message;
 //       }
       
-//       // Handle maintenance issues
+//       // Handle maintenance maintenanceRequests
 //       if (analysis.isMaintenanceIssue) {
 //         console.log('Handling maintenance issue');
-//         return await handleMaintenanceIssue(userMessage, residentInfo, propertyCompany);
+//         return await handleMaintenanceIssue(userMessage, guestInfo, hotel);
 //       }
       
 //       // Handle parking requests and status - ALWAYS AVAILABLE
-//       if (analysis.isParkingStatus && residentInfo.isResident) {
+//       if (analysis.isparkingStatus && guestInfo.isguest) {
 //         console.log('Handling parking status request');
-//         return await handleParkingStatus(residentInfo, propertyCompany);
+//         return await handleparkingStatus(guestInfo, hotel);
 //       }
       
-//       if (analysis.isParkingEdit && residentInfo.isResident) {
+//       if (analysis.isparkingEdit && guestInfo.isguest) {
 //         console.log('Handling parking edit request');
-//         return await handleParkingEdit(userMessage, residentInfo, propertyCompany);
+//         return await handleparkingEdit(userMessage, guestInfo, hotel);
 //       }
       
-//       if (analysis.isParkingRequest) {
+//       if (analysis.isparkingRequest) {
 //         console.log('Handling parking request');
-//         const response = await handleParkingRequest(userMessage, residentInfo, propertyCompany);
+//         const response = await handleparkingRequest(userMessage, guestInfo, hotel);
         
 //         // Update flow step based on what's missing
 //         const carInfo = extractCarInfo(userMessage);
@@ -1768,9 +1768,9 @@
 //         return response;
 //       }
       
-//       if (analysis.isParkingFollowUp) {
+//       if (analysis.isparkingFollowUp) {
 //         console.log('Handling parking follow-up');
-//         const response = await handleParkingFollowUpImproved(userMessage, conversationHistory, residentInfo, propertyCompany, conversationState);
+//         const response = await handleparkingFollowUpImproved(userMessage, conversationHistory, guestInfo, hotel, conversationState);
         
 //         // Check if parking pass was created successfully to reset state
 //         if (response.includes('created a daily visitor parking pass') || response.includes('Your daily visitor parking pass is ready')) {
@@ -1781,20 +1781,20 @@
 //       }
       
 //       // Handle booking requests and status - ALWAYS AVAILABLE
-//       if (analysis.isBookingStatus && residentInfo.isResident) {
+//       if (analysis.isBookingStatus && guestInfo.isguest) {
 //         console.log('Handling booking status request');
-//         return await handleBookingStatus(userMessage, residentInfo, propertyCompany);
+//         return await handleBookingStatus(userMessage, guestInfo, hotel);
 //       }
       
-//       if (analysis.isBookingManagement && residentInfo.isResident) {
+//       if (analysis.isBookingManagement && guestInfo.isguest) {
 //         console.log('Handling booking management request');
-//         return await handleBookingManagement(userMessage, residentInfo, propertyCompany);
+//         return await handleBookingManagement(userMessage, guestInfo, hotel);
 //       }
       
 //       if (analysis.isBookingRequest) {
 //         console.log('Handling booking request');
-//         if (residentInfo.isResident) {
-//           const response = await handleBookingRequestWithState(userMessage, residentInfo, propertyCompany, conversationState);
+//         if (guestInfo.isguest) {
+//           const response = await handleBookingRequestWithState(userMessage, guestInfo, hotel, conversationState);
           
 //           // Reset state if booking was successfully created
 //           if (response.includes('booked the') || response.includes('Perfect') && response.includes('booking is confirmed')) {
@@ -1803,13 +1803,13 @@
           
 //           return response;
 //         } else {
-//           return "Hi there! I'd love to help, but amenity bookings are only available for registered residents. Please visit the front desk in person or ask a resident with their phone number on file to make the booking for you.";
+//           return "Hi there! I'd love to help, but amenity bookings are only available for registered guests. Please visit the front desk in person or ask a guest with their phone number on file to make the booking for you.";
 //         }
 //       }
       
 //       // Handle general messages
 //       console.log('Handling as general message');
-//       return await handleGeneralMessage(userMessage, conversationHistory, residentInfo, propertyCompany, conversationState);
+//       return await handleGeneralMessage(userMessage, conversationHistory, guestInfo, hotel, conversationState);
       
 //     } catch (error) {
 //       console.error('Error generating AI response with improved state:', error);
@@ -1817,7 +1817,7 @@
       
 //       // Try to reset conversation state on error
 //       try {
-//         const conversationState = await getConversationState(residentInfo.phone || residentInfo.phoneNumber, propertyCompany.id);
+//         const conversationState = await getConversationState(guestInfo.phone || guestInfo.phoneNumber, hotel.id);
 //         await resetConversationState(conversationState.id);
 //       } catch (resetError) {
 //         console.error('Error resetting state after main error:', resetError);
@@ -1827,20 +1827,20 @@
 //     }
 //   }
 
-//   async function handleMaintenanceIssue(message, residentInfo, propertyCompany) {
+//   async function handleMaintenanceIssue(message, guestInfo, hotel) {
 //     try {
-//       console.log('Creating maintenance issue for:', residentInfo.isResident ? residentInfo.name : 'non-resident');
+//       console.log('Creating maintenance issue for:', guestInfo.isguest ? guestInfo.name : 'non-guest');
       
 //       const issueData = {
 //         description: message,
-//         phoneNumber: residentInfo.isResident ? residentInfo.phone : residentInfo.phoneNumber,
-//         companyId: propertyCompany.id,
+//         phoneNumber: guestInfo.isguest ? guestInfo.phone : guestInfo.phoneNumber,
+//         companyId: hotel.id,
 //         status: 'open',
 //         priority: 'normal',
 //         category: 'maintenance',
 //         createdAt: admin.firestore.FieldValue.serverTimestamp(),
 //         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-//         reportedBy: residentInfo.isResident ? 'resident' : 'visitor',
+//         reportedBy: guestInfo.isguest ? 'guest' : 'visitor',
 //         // Fix: Use regular Date objects in arrays, not FieldValue.serverTimestamp()
 //         messages: [
 //           {
@@ -1852,40 +1852,40 @@
 //         ]
 //       };
       
-//       if (residentInfo.isResident) {
-//         issueData.residentId = residentInfo.id;
-//         issueData.unitNumber = residentInfo.unitNumber;
-//         issueData.title = `Maintenance Issue - Unit ${residentInfo.unitNumber}`;
+//       if (guestInfo.isguest) {
+//         issueData.guestId = guestInfo.id;
+//         issueData.roomNumber = guestInfo.roomNumber;
+//         issueData.title = `Maintenance Issue - Unit ${guestInfo.roomNumber}`;
 //         issueData.contactInfo = {
-//           name: residentInfo.name,
-//           phone: residentInfo.phone,
-//           email: residentInfo.email || ''
+//           name: guestInfo.name,
+//           phone: guestInfo.phone,
+//           email: guestInfo.email || ''
 //         };
 //       } else {
-//         issueData.title = `Maintenance Issue - Non-resident`;
+//         issueData.title = `Maintenance Issue - Non-guest`;
 //         issueData.contactInfo = {
-//           phone: residentInfo.phoneNumber
+//           phone: guestInfo.phoneNumber
 //         };
 //       }
       
 //       console.log('Issue data to be saved:', issueData);
       
-//       const issueRef = await db.collection('issues').add(issueData);
+//       const issueRef = await db.collection('maintenanceRequests').add(issueData);
 //       console.log('Created maintenance issue successfully:', issueRef.id);
       
-//       const greeting = residentInfo.isResident ? residentInfo.name : "there";
+//       const greeting = guestInfo.isguest ? guestInfo.name : "there";
 //       return `Thanks for reporting this ${greeting}! I've logged your maintenance request and notified the superintendent and management team. Someone will get back to you shortly to address this issue.\n\nIssue ID: ${issueRef.id.substring(0, 8)}`;
       
 //     } catch (error) {
 //       console.error('Error handling maintenance issue:', error);
 //       console.error('Error details:', error.stack);
       
-//       const greeting = residentInfo.isResident ? residentInfo.name : "there";
-//       return `Sorry ${greeting}, I had trouble logging your maintenance request. Please call the front desk directly at ${propertyCompany.phone || 'the main number'}.`;
+//       const greeting = guestInfo.isguest ? guestInfo.name : "there";
+//       return `Sorry ${greeting}, I had trouble logging your maintenance request. Please call the front desk directly at ${hotel.phone || 'the main number'}.`;
 //     }
 //   }
   
-//   async function handleBookingRequestWithState(userMessage, residentInfo, propertyCompany, conversationState) {
+//   async function handleBookingRequestWithState(userMessage, guestInfo, hotel, conversationState) {
 //     try {
 //       console.log('Handling booking request with state:', userMessage);
 //       console.log('Current conversation state:', conversationState);
@@ -1900,7 +1900,7 @@
       
 //       // Extract amenity from current message if we don't have one
 //       if (!selectedAmenity) {
-//         for (const amenity of propertyCompany.amenities) {
+//         for (const amenity of hotel.amenities) {
 //           if (lowerMessage.includes(amenity.name.toLowerCase()) || 
 //               lowerMessage.includes(amenity.type.toLowerCase())) {
 //             selectedAmenity = amenity;
@@ -1935,7 +1935,7 @@
       
 //       // Check what we need to ask for
 //       if (!selectedAmenity) {
-//         const amenityList = propertyCompany.amenities
+//         const amenityList = hotel.amenities
 //           .map((a, index) => `${index + 1}. ${a.name}`)
 //           .join('\n');
         
@@ -1943,7 +1943,7 @@
 //           flowStep: 'awaiting_amenity'
 //         });
         
-//         return `Hi ${residentInfo.name}! I'd be happy to help you book an amenity. Here are the available options:\n\n${amenityList}\n\nWhich one would you like to book? You can reply with the number or name.`;
+//         return `Hi ${guestInfo.name}! I'd be happy to help you book an amenity. Here are the available options:\n\n${amenityList}\n\nWhich one would you like to book? You can reply with the number or name.`;
 //       }
       
 //       if (!startTime) {
@@ -1969,17 +1969,17 @@
 //       }
       
 //       // We have everything, proceed with booking
-//       return await createBookingWithAvailabilityCheck(selectedAmenity, startTime, endTime, residentInfo, propertyCompany, conversationState);
+//       return await createBookingWithAvailabilityCheck(selectedAmenity, startTime, endTime, guestInfo, hotel, conversationState);
       
 //     } catch (error) {
 //       console.error('Error handling booking request with state:', error);
 //       await resetConversationState(conversationState.id);
-//       return `I'm sorry ${residentInfo.name}, there was an issue processing your booking request. Please try again or contact the front desk for assistance.`;
+//       return `I'm sorry ${guestInfo.name}, there was an issue processing your booking request. Please try again or contact the front desk for assistance.`;
 //     }
 //   }
   
 //   // Helper function to create booking with availability check
-//   async function createBookingWithAvailabilityCheck(amenity, startTime, endTime, residentInfo, propertyCompany, conversationState) {
+//   async function createBookingWithAvailabilityCheck(amenity, startTime, endTime, guestInfo, hotel, conversationState) {
 //     try {
 //       console.log('Creating booking with availability check:', {
 //         amenityId: amenity.id,
@@ -1993,14 +1993,14 @@
 //         amenity.id,
 //         startTime,
 //         endTime,
-//         propertyCompany.id
+//         hotel.id
 //       );
       
 //       console.log('Availability result:', availabilityResult);
       
 //       if (!availabilityResult.available) {
 //         if (availabilityResult.reason === 'outside_business_hours') {
-//           return `Sorry ${residentInfo.name}, the ${amenity.name} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenity.name} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
 //         } else if (availabilityResult.reason === 'already_booked') {
 //           const conflictTimes = availabilityResult.conflictingSlots.map(slot => {
 //             const start = slot.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -2008,9 +2008,9 @@
 //             return `${start} - ${end}`;
 //           }).join(', ');
           
-//           return `Sorry ${residentInfo.name}, the ${amenity.name} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenity.name} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
 //         } else {
-//           return `Sorry ${residentInfo.name}, I'm having trouble checking availability right now. Please try again or contact the front desk.`;
+//           return `Sorry ${guestInfo.name}, I'm having trouble checking availability right now. Please try again or contact the front desk.`;
 //         }
 //       }
       
@@ -2021,17 +2021,17 @@
 //         const bookingData = {
 //           amenityId: amenity.id,
 //           amenityName: amenity.name,
-//           companyId: propertyCompany.id,
-//           title: `${amenity.name} - ${residentInfo.name}`,
+//           companyId: hotel.id,
+//           title: `${amenity.name} - ${guestInfo.name}`,
 //           startDate: admin.firestore.Timestamp.fromDate(startTime),
 //           endDate: admin.firestore.Timestamp.fromDate(endTime),
 //           status: 'confirmed',
-//           residentId: residentInfo.id,
-//           notes: `Booked via SMS by ${residentInfo.name}`,
+//           guestId: guestInfo.id,
+//           notes: `Booked via SMS by ${guestInfo.name}`,
 //           contactInfo: {
-//             name: residentInfo.name,
-//             phone: residentInfo.phone,
-//             email: residentInfo.email || ''
+//             name: guestInfo.name,
+//             phone: guestInfo.phone,
+//             email: guestInfo.email || ''
 //           },
 //           createdAt: admin.firestore.FieldValue.serverTimestamp(),
 //           updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -2064,53 +2064,53 @@
 //           hour12: true
 //         });
         
-//         return `Perfect ${residentInfo.name}! I've booked the ${amenity.name} for you:\n\n📅 ${formatDate}\n⏰ ${formatStartTime} - ${formatEndTime}\n🆔 Booking ID: ${bookingRef.id.substring(0, 8)}\n\nYour booking is confirmed! To view or manage your bookings anytime, just say "my bookings".`;
+//         return `Perfect ${guestInfo.name}! I've booked the ${amenity.name} for you:\n\n📅 ${formatDate}\n⏰ ${formatStartTime} - ${formatEndTime}\n🆔 Booking ID: ${bookingRef.id.substring(0, 8)}\n\nYour booking is confirmed! To view or manage your bookings anytime, just say "my bookings".`;
         
 //       } catch (bookingError) {
 //         console.error('Failed to create booking:', bookingError);
 //         await resetConversationState(conversationState.id);
-//         return `Sorry ${residentInfo.name}, I encountered an error while creating your booking. Please try again or contact the front desk for assistance. Error: ${bookingError.message}`;
+//         return `Sorry ${guestInfo.name}, I encountered an error while creating your booking. Please try again or contact the front desk for assistance. Error: ${bookingError.message}`;
 //       }
       
 //     } catch (error) {
 //       console.error('Error in createBookingWithAvailabilityCheck:', error);
 //       await resetConversationState(conversationState.id);
-//       return `Sorry ${residentInfo.name}, there was an issue processing your booking. Please contact the front desk for assistance.`;
+//       return `Sorry ${guestInfo.name}, there was an issue processing your booking. Please contact the front desk for assistance.`;
 //     }
 //   }
   
 //   // Enhanced system prompt with conversation context
-//   function buildSystemPromptWithContext(residentInfo, propertyCompany, conversationContext) {
-//     const basePrompt = `You are Claro, a friendly virtual concierge for ${propertyCompany.name}. You're helpful, conversational, and efficient.
+//   function buildSystemPromptWithContext(guestInfo, hotel, conversationContext) {
+//     const basePrompt = `You are Claro, a friendly virtual concierge for ${hotel.name}. You're helpful, conversational, and efficient.
     
-//   Property Information:
-//   - Property: ${propertyCompany.name}
-//   - Address: ${propertyCompany.address}
-//   - Available amenities: ${propertyCompany.amenities.map(a => a.name).join(', ')}
+//   Hotel Information:
+//   - Hotel: ${hotel.name}
+//   - Address: ${hotel.address}
+//   - Available amenities: ${hotel.amenities.map(a => a.name).join(', ')}
   
 //   Recent conversation context:
 //   ${conversationContext}
   
 //   Key responsibilities:
-//   - Help with maintenance issues (log to issues collection)
+//   - Help with maintenance maintenanceRequests (log to maintenanceRequests collection)
 //   - Assist with visitor parking passes (daily only, full-time needs front desk visit)
-//   - Help with amenity bookings (residents only)
+//   - Help with amenity bookings (guests only)
 //   - Provide building information
-//   - Direct complex issues to front desk
+//   - Direct complex maintenanceRequests to front desk
   
 //   Keep responses concise but warm. Use text message appropriate language.`;
   
-//     if (residentInfo.isResident) {
+//     if (guestInfo.isguest) {
 //       return `${basePrompt}
   
-//   RESIDENT: ${residentInfo.name} (Unit ${residentInfo.unitNumber})
+//   guest: ${guestInfo.name} (Unit ${guestInfo.roomNumber})
 //   - Always address them by name
-//   - They can access all resident services
+//   - They can access all guest services
 //   - Reference their unit when relevant`;
 //     } else {
 //       return `${basePrompt}
   
-//   NON-RESIDENT: General visitor
+//   NON-guest: General visitor
 //   - Greet with "Hi there!"
 //   - Limited to visitor services only (parking, general info)
 //   - Cannot book amenities (direct to front desk)`;
@@ -2118,7 +2118,7 @@
 //   }
   
 //   // Enhanced parking follow-up handler
-//   async function handleParkingFollowUpImproved(userMessage, conversationHistory, residentInfo, propertyCompany, conversationState) {
+//   async function handleparkingFollowUpImproved(userMessage, conversationHistory, guestInfo, hotel, conversationState) {
 //     try {
 //       console.log('Handling improved parking follow-up');
       
@@ -2177,7 +2177,7 @@
       
 //       // Check if we have everything
 //       if (finalDateInfo.date && finalCarInfo.licensePlate && finalCarInfo.carMake) {
-//         return await createParkingPass(finalCarInfo, finalDateInfo, residentInfo, propertyCompany);
+//         return await createparkingPass(finalCarInfo, finalDateInfo, guestInfo, hotel);
 //       }
       
 //       // Ask for missing info with context
@@ -2250,7 +2250,7 @@
 //   }
   
 //   // Function to analyze if message is a booking request
-//   async function analyzeBookingRequest(message, residentInfo, propertyCompany, conversationHistory = []) {
+//   async function analyzeBookingRequest(message, guestInfo, hotel, conversationHistory = []) {
 //     try {
 //       const bookingKeywords = ['book', 'reserve', 'schedule', 'party room', 'gym', 'pool', 'bbq', 'fitness'];
 //       const availabilityKeywords = ['available', 'booked', 'booking time', 'anyone else', 'who has', 'check availability'];
@@ -2262,25 +2262,25 @@
 //       const lowerMessage = message.toLowerCase();
       
 //       // Check if this is a parking status inquiry
-//       const isParkingStatus = parkingStatusKeywords.some(keyword => lowerMessage.includes(keyword)) ||
+//       const isparkingStatus = parkingStatusKeywords.some(keyword => lowerMessage.includes(keyword)) ||
 //                              (lowerMessage.includes('parking') && (lowerMessage.includes('do i') || lowerMessage.includes('any') || lowerMessage.includes('my') || lowerMessage.includes('current') || lowerMessage.includes('active')));
       
-//       if (isParkingStatus) {
-//         return { isParkingStatus: true };
+//       if (isparkingStatus) {
+//         return { isparkingStatus: true };
 //       }
       
 //       // Check if this is a parking pass edit request
-//       const isParkingEdit = parkingEditKeywords.some(keyword => lowerMessage.includes(keyword)) ||
-//                            (lowerMessage.includes('edit') && recentParkingContext(conversationHistory)) ||
-//                            (lowerMessage.includes('wrong') && recentParkingContext(conversationHistory)) ||
-//                            (lowerMessage.includes('not right') && recentParkingContext(conversationHistory));
+//       const isparkingEdit = parkingEditKeywords.some(keyword => lowerMessage.includes(keyword)) ||
+//                            (lowerMessage.includes('edit') && recentparkingContext(conversationHistory)) ||
+//                            (lowerMessage.includes('wrong') && recentparkingContext(conversationHistory)) ||
+//                            (lowerMessage.includes('not right') && recentparkingContext(conversationHistory));
       
-//       if (isParkingEdit) {
-//         return { isParkingEdit: true };
+//       if (isparkingEdit) {
+//         return { isparkingEdit: true };
 //       }
       
 //       // Check if this is a parking request (but not if they're asking about existing passes)
-//       const isParkingRequest = parkingKeywords.some(keyword => lowerMessage.includes(keyword)) &&
+//       const isparkingRequest = parkingKeywords.some(keyword => lowerMessage.includes(keyword)) &&
 //                               !lowerMessage.includes('do i') &&
 //                               !lowerMessage.includes('any') &&
 //                               !lowerMessage.includes('have') &&
@@ -2288,8 +2288,8 @@
 //                               !lowerMessage.includes('active') &&
 //                               !lowerMessage.includes('existing');
       
-//       if (isParkingRequest) {
-//         return { isParkingRequest: true };
+//       if (isparkingRequest) {
+//         return { isparkingRequest: true };
 //       }
       
 //       // Check if this is a booking update request (like "make it 2-3pm instead")
@@ -2301,7 +2301,7 @@
       
 //       // Check if this is a booking management request (but not if recent parking context)
 //       const isBookingManagement = managementKeywords.some(keyword => lowerMessage.includes(keyword)) && 
-//                                  !recentParkingContext(conversationHistory);
+//                                  !recentparkingContext(conversationHistory);
 //       if (isBookingManagement) {
 //         return { isBookingManagement: true };
 //       }
@@ -2330,7 +2330,7 @@
 //       );
       
 //       // Check for active parking flow
-//       const hasActiveParkingFlow = recentMessages.some(msg =>
+//       const hasActiveparkingFlow = recentMessages.some(msg =>
 //         msg.content && (
 //           msg.content.toLowerCase().includes('license plate') ||
 //           msg.content.toLowerCase().includes('car make') ||
@@ -2341,13 +2341,13 @@
 //       );
       
 //       // If we have parking flow and this looks like car info, treat as parking follow-up
-//       if (hasActiveParkingFlow && !isParkingRequest && !isParkingStatus) {
-//         return { isParkingFollowUp: true };
+//       if (hasActiveparkingFlow && !isparkingRequest && !isparkingStatus) {
+//         return { isparkingFollowUp: true };
 //       }
       
 //       // Also check if user mentioned a specific amenity in recent messages
 //       const hasRecentAmenityMention = recentMessages.some(msg => 
-//         msg.content && propertyCompany.amenities.some(a => 
+//         msg.content && hotel.amenities.some(a => 
 //           msg.content.toLowerCase().includes(a.name.toLowerCase()) || 
 //           msg.content.toLowerCase().includes(a.type.toLowerCase())
 //         )
@@ -2364,7 +2364,7 @@
 //         let amenity = null;
 //         for (const msg of recentMessages.reverse()) {
 //           if (msg.content) {
-//             amenity = propertyCompany.amenities.find(a => 
+//             amenity = hotel.amenities.find(a => 
 //               msg.content.toLowerCase().includes(a.name.toLowerCase()) || 
 //               msg.content.toLowerCase().includes(a.type.toLowerCase())
 //             );
@@ -2394,7 +2394,7 @@
       
 //       // If user mentioned an amenity and we have active booking flow, treat as amenity selection
 //       if (hasActiveBookingFlow && hasRecentAmenityMention && !hasTimeInfo) {
-//         const amenity = propertyCompany.amenities.find(a => 
+//         const amenity = hotel.amenities.find(a => 
 //           lowerMessage.includes(a.name.toLowerCase()) || 
 //           lowerMessage.includes(a.type.toLowerCase())
 //         );
@@ -2418,7 +2418,7 @@
 //       }
       
 //       // Find mentioned amenity in current message
-//       const amenity = propertyCompany.amenities.find(a => 
+//       const amenity = hotel.amenities.find(a => 
 //         lowerMessage.includes(a.name.toLowerCase()) || 
 //         lowerMessage.includes(a.type.toLowerCase())
 //       );
@@ -2448,7 +2448,7 @@
 //   }
   
 //   // Helper function to check if there's recent parking context
-//   function recentParkingContext(conversationHistory) {
+//   function recentparkingContext(conversationHistory) {
 //     const recentMessages = conversationHistory.slice(-4);
 //     return recentMessages.some(msg => 
 //       msg.content && (
@@ -2582,15 +2582,15 @@
 //   }
   
 //   // Function to handle booking update requests
-//   async function handleBookingUpdate(userMessage, residentInfo, propertyCompany) {
+//   async function handleBookingUpdate(userMessage, guestInfo, hotel) {
 //     try {
-//       console.log(`Handling booking update for resident: ${residentInfo.id}`);
+//       console.log(`Handling booking update for guest: ${guestInfo.id}`);
       
 //       // Get user's most recent upcoming booking
 //       const now = new Date();
 //       const bookingsSnapshot = await db.collection('bookings')
-//         .where('residentId', '==', residentInfo.id)
-//         .where('companyId', '==', propertyCompany.id)
+//         .where('guestId', '==', guestInfo.id)
+//         .where('companyId', '==', hotel.id)
 //         .where('status', 'in', ['pending', 'confirmed'])
 //         .get();
       
@@ -2605,7 +2605,7 @@
 //         .sort((a, b) => a.startDate.toDate() - b.startDate.toDate());
       
 //       if (upcomingBookings.length === 0) {
-//         return `Hi ${residentInfo.name}! I don't see any upcoming bookings to update. Would you like to make a new booking?`;
+//         return `Hi ${guestInfo.name}! I don't see any upcoming bookings to update. Would you like to make a new booking?`;
 //       }
       
 //       // Get the most recent booking (first in sorted list)
@@ -2615,14 +2615,14 @@
 //       const timeInfo = parseTimeRange(userMessage);
       
 //       if (!timeInfo.startTime) {
-//         return `Hi ${residentInfo.name}! I'd be happy to update your booking, but I couldn't understand the new time. Could you please specify the time like "2-3pm" or "3pm to 5pm"?`;
+//         return `Hi ${guestInfo.name}! I'd be happy to update your booking, but I couldn't understand the new time. Could you please specify the time like "2-3pm" or "3pm to 5pm"?`;
 //       }
       
 //       const newStartTime = timeInfo.startTime;
 //       const newEndTime = timeInfo.endTime || new Date(newStartTime.getTime() + 2 * 60 * 60 * 1000);
       
 //       // Find the amenity details
-//       const amenity = propertyCompany.amenities.find(a => a.id === bookingToUpdate.amenityId);
+//       const amenity = hotel.amenities.find(a => a.id === bookingToUpdate.amenityId);
 //       const amenityName = amenity ? amenity.name : bookingToUpdate.amenityId;
       
 //       // Check if new time is available
@@ -2630,13 +2630,13 @@
 //         bookingToUpdate.amenityId,
 //         newStartTime,
 //         newEndTime,
-//         propertyCompany.id,
+//         hotel.id,
 //         bookingToUpdate.id // Exclude current booking from conflict check
 //       );
       
 //       if (!availabilityResult.available) {
 //         if (availabilityResult.reason === 'outside_business_hours') {
-//           return `Sorry ${residentInfo.name}, the ${amenityName} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenityName} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
 //         } else if (availabilityResult.reason === 'already_booked') {
 //           const conflictTimes = availabilityResult.conflictingSlots.map(slot => {
 //             const start = slot.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -2644,7 +2644,7 @@
 //             return `${start} - ${end}`;
 //           }).join(', ');
           
-//           return `Sorry ${residentInfo.name}, the ${amenityName} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenityName} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
 //         }
 //       }
       
@@ -2652,7 +2652,7 @@
 //       await updateBooking(bookingToUpdate.id, {
 //         startDate: admin.firestore.Timestamp.fromDate(newStartTime),
 //         endDate: admin.firestore.Timestamp.fromDate(newEndTime),
-//         title: `${amenityName} - ${residentInfo.name}`,
+//         title: `${amenityName} - ${guestInfo.name}`,
 //         notes: `${bookingToUpdate.notes} - Updated via SMS`
 //       });
       
@@ -2674,11 +2674,11 @@
 //         hour12: true
 //       });
       
-//       return `Perfect ${residentInfo.name}! I've updated your ${amenityName} booking to ${formatDate} from ${formatStartTime} to ${formatEndTime}. Your updated booking is confirmed!`;
+//       return `Perfect ${guestInfo.name}! I've updated your ${amenityName} booking to ${formatDate} from ${formatStartTime} to ${formatEndTime}. Your updated booking is confirmed!`;
       
 //     } catch (error) {
 //       console.error('Error handling booking update:', error);
-//       return `Sorry ${residentInfo.name}, I'm having trouble updating your booking right now. Please try again or contact the front desk.`;
+//       return `Sorry ${guestInfo.name}, I'm having trouble updating your booking right now. Please try again or contact the front desk.`;
 //     }
 //   }
 
@@ -2839,22 +2839,22 @@
 //     }
 //   }
   
-//   async function handleBookingManagementImproved(userMessage, residentInfo, propertyCompany) {
+//   async function handleBookingManagementImproved(userMessage, guestInfo, hotel) {
 //     try {
 //       const lowerMessage = userMessage.toLowerCase();
       
-//       console.log(`Handling booking management for resident: ${residentInfo.id}`);
-//       console.log(`Company: ${propertyCompany.id}`);
+//       console.log(`Handling booking management for guest: ${guestInfo.id}`);
+//       console.log(`Company: ${hotel.id}`);
       
 //       // Get user's current bookings from database
 //       const bookingsSnapshot = await db.collection('bookings')
-//         .where('residentId', '==', residentInfo.id)
-//         .where('companyId', '==', propertyCompany.id)
+//         .where('guestId', '==', guestInfo.id)
+//         .where('companyId', '==', hotel.id)
 //         .where('status', 'in', ['pending', 'confirmed'])
 //         .orderBy('startDate', 'asc')
 //         .get();
       
-//       console.log(`Found ${bookingsSnapshot.docs.length} bookings for resident`);
+//       console.log(`Found ${bookingsSnapshot.docs.length} bookings for guest`);
       
 //       const userBookings = bookingsSnapshot.docs.map(doc => {
 //         const data = doc.data();
@@ -2876,33 +2876,33 @@
 //       console.log(`Found ${upcomingBookings.length} upcoming bookings`);
       
 //       if (upcomingBookings.length === 0) {
-//         return `Hi ${residentInfo.name}! You don't have any upcoming bookings to manage. Would you like to make a new booking?`;
+//         return `Hi ${guestInfo.name}! You don't have any upcoming bookings to manage. Would you like to make a new booking?`;
 //       }
       
 //       // Format bookings list using the new helper function
-//       const bookingsList = formatBookingsList(upcomingBookings, propertyCompany);
+//       const bookingsList = formatBookingsList(upcomingBookings, hotel);
       
 //       // Check if they want to edit/cancel a specific booking
 //       if (lowerMessage.includes('edit') || lowerMessage.includes('change') || lowerMessage.includes('modify')) {
-//         return `Hi ${residentInfo.name}! Here are your upcoming bookings:\n\n${bookingsList}\n\nWhich booking would you like to edit? Just reply with the number (e.g., "1") or tell me what you'd like to change.`;
+//         return `Hi ${guestInfo.name}! Here are your upcoming bookings:\n\n${bookingsList}\n\nWhich booking would you like to edit? Just reply with the number (e.g., "1") or tell me what you'd like to change.`;
 //       }
       
 //       if (lowerMessage.includes('cancel')) {
-//         return `Hi ${residentInfo.name}! Here are your upcoming bookings:\n\n${bookingsList}\n\nWhich booking would you like to cancel? Just reply with the number (e.g., "1").`;
+//         return `Hi ${guestInfo.name}! Here are your upcoming bookings:\n\n${bookingsList}\n\nWhich booking would you like to cancel? Just reply with the number (e.g., "1").`;
 //       }
       
 //       // Default - show all bookings
-//       return `Hi ${residentInfo.name}! Here are your upcoming bookings:\n\n${bookingsList}\n\nTo edit a booking, say "edit booking 1" or to cancel say "cancel booking 1". You can also make a new booking anytime!`;
+//       return `Hi ${guestInfo.name}! Here are your upcoming bookings:\n\n${bookingsList}\n\nTo edit a booking, say "edit booking 1" or to cancel say "cancel booking 1". You can also make a new booking anytime!`;
       
 //     } catch (error) {
 //       console.error('Error handling booking management:', error);
 //       console.error('Error details:', error.stack);
-//       return `Sorry ${residentInfo.name}, I'm having trouble accessing your bookings right now. Please try again or contact the front desk. Error: ${error.message}`;
+//       return `Sorry ${guestInfo.name}, I'm having trouble accessing your bookings right now. Please try again or contact the front desk. Error: ${error.message}`;
 //     }
 //   }
   
 //   // Function to handle availability checks
-//   async function handleAvailabilityCheck(userMessage, conversationHistory, residentInfo, propertyCompany) {
+//   async function handleAvailabilityCheck(userMessage, conversationHistory, guestInfo, hotel) {
 //     try {
 //       const lowerMessage = userMessage.toLowerCase();
       
@@ -2914,7 +2914,7 @@
 //       // Look for amenity in recent messages or current message
 //       for (const msg of [...recentMessages, { content: userMessage }].reverse()) {
 //         if (msg.content) {
-//           amenity = propertyCompany.amenities.find(a => 
+//           amenity = hotel.amenities.find(a => 
 //             msg.content.toLowerCase().includes(a.name.toLowerCase()) || 
 //             msg.content.toLowerCase().includes(a.type.toLowerCase())
 //           );
@@ -2934,7 +2934,7 @@
 //       }
       
 //       if (!amenity || !timeInfo.startTime) {
-//         return `Hi ${residentInfo.name}! I'd be happy to check availability for you. Could you let me know which amenity and what time you're interested in?`;
+//         return `Hi ${guestInfo.name}! I'd be happy to check availability for you. Could you let me know which amenity and what time you're interested in?`;
 //       }
       
 //       const finalEndTime = timeInfo.endTime || new Date(timeInfo.startTime.getTime() + 2 * 60 * 60 * 1000);
@@ -2944,7 +2944,7 @@
 //         amenity.id,
 //         timeInfo.startTime,
 //         finalEndTime,
-//         propertyCompany.id
+//         hotel.id
 //       );
       
 //       if (availabilityResult.available) {
@@ -2966,10 +2966,10 @@
 //           hour12: true
 //         });
         
-//         return `Good news ${residentInfo.name}! The ${amenity.name} is available on ${formatDate} from ${formatStartTime} to ${formatEndTime}. Would you like me to book it for you?`;
+//         return `Good news ${guestInfo.name}! The ${amenity.name} is available on ${formatDate} from ${formatStartTime} to ${formatEndTime}. Would you like me to book it for you?`;
 //       } else {
 //         if (availabilityResult.reason === 'outside_business_hours') {
-//           return `Sorry ${residentInfo.name}, the ${amenity.name} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenity.name} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
 //         } else if (availabilityResult.reason === 'already_booked') {
 //           const conflictTimes = availabilityResult.conflictingSlots.map(slot => {
 //             const start = slot.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -2977,29 +2977,29 @@
 //             return `${start} - ${end}`;
 //           }).join(', ');
           
-//           return `Sorry ${residentInfo.name}, the ${amenity.name} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenity.name} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
 //         } else {
-//           return `Sorry ${residentInfo.name}, I'm having trouble checking availability right now. Please try again or contact the front desk.`;
+//           return `Sorry ${guestInfo.name}, I'm having trouble checking availability right now. Please try again or contact the front desk.`;
 //         }
 //       }
 //     } catch (error) {
 //       console.error('Error handling availability check:', error);
-//       return `Sorry ${residentInfo.name}, I'm having trouble checking availability right now. Please contact the front desk for assistance.`;
+//       return `Sorry ${guestInfo.name}, I'm having trouble checking availability right now. Please contact the front desk for assistance.`;
 //     }
 //   }
   
 //   // Function to handle booking requests
-//   async function handleBookingRequest(bookingRequest, residentInfo, propertyCompany) {
+//   async function handleBookingRequest(bookingRequest, guestInfo, hotel) {
 //     try {
 //       console.log('Handling booking request:', bookingRequest);
-//       console.log('Resident info:', residentInfo);
+//       console.log('guest info:', guestInfo);
       
 //       if (bookingRequest.needsAmenitySelection) {
-//         const amenityList = propertyCompany.amenities
+//         const amenityList = hotel.amenities
 //           .map(a => `• ${a.name}`)
 //           .join('\n');
         
-//         return `Hi ${residentInfo.name}! I'd be happy to help you book an amenity. Here are the available options:\n\n${amenityList}\n\nWhich one would you like to book and for what date/time?`;
+//         return `Hi ${guestInfo.name}! I'd be happy to help you book an amenity. Here are the available options:\n\n${amenityList}\n\nWhich one would you like to book and for what date/time?`;
 //       }
       
 //       if (bookingRequest.needsDateTime) {
@@ -3032,14 +3032,14 @@
 //         amenity.id,
 //         startTime,
 //         finalEndTime,
-//         propertyCompany.id
+//         hotel.id
 //       );
       
 //       console.log('Availability result:', availabilityResult);
       
 //       if (!availabilityResult.available) {
 //         if (availabilityResult.reason === 'outside_business_hours') {
-//           return `Sorry ${residentInfo.name}, the ${amenity.name} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenity.name} is only available during business hours: ${availabilityResult.businessHours}. Would you like to try a different time?`;
 //         } else if (availabilityResult.reason === 'already_booked') {
 //           const conflictTimes = availabilityResult.conflictingSlots.map(slot => {
 //             const start = slot.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -3047,9 +3047,9 @@
 //             return `${start} - ${end}`;
 //           }).join(', ');
           
-//           return `Sorry ${residentInfo.name}, the ${amenity.name} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
+//           return `Sorry ${guestInfo.name}, the ${amenity.name} is already booked during that time. Current bookings: ${conflictTimes}. Would you like to try a different time?`;
 //         } else {
-//           return `Sorry ${residentInfo.name}, I'm having trouble checking availability right now. Please try again or contact the front desk.`;
+//           return `Sorry ${guestInfo.name}, I'm having trouble checking availability right now. Please try again or contact the front desk.`;
 //         }
 //       }
       
@@ -3062,9 +3062,9 @@
 //           amenity.name,
 //           startTime,
 //           finalEndTime,
-//           residentInfo,
-//           propertyCompany.id,
-//           `Booked via SMS by ${residentInfo.name}`
+//           guestInfo,
+//           hotel.id,
+//           `Booked via SMS by ${guestInfo.name}`
 //         );
         
 //         console.log('Booking created successfully with ID:', bookingId);
@@ -3088,16 +3088,16 @@
 //           hour12: true
 //         });
         
-//         return `Perfect ${residentInfo.name}! I've booked the ${amenity.name} for you on ${formatDate} from ${formatStartTime} to ${formatEndTime}. Your booking is currently pending approval and you'll receive confirmation soon. Booking ID: ${bookingId.substring(0, 8)}\n\nTo view or edit your bookings anytime, just say "my bookings"!`;
+//         return `Perfect ${guestInfo.name}! I've booked the ${amenity.name} for you on ${formatDate} from ${formatStartTime} to ${formatEndTime}. Your booking is currently pending approval and you'll receive confirmation soon. Booking ID: ${bookingId.substring(0, 8)}\n\nTo view or edit your bookings anytime, just say "my bookings"!`;
         
 //       } catch (bookingError) {
 //         console.error('Failed to create booking:', bookingError);
-//         return `Sorry ${residentInfo.name}, I encountered an error while creating your booking. Please try again or contact the front desk for assistance. Error: ${bookingError.message}`;
+//         return `Sorry ${guestInfo.name}, I encountered an error while creating your booking. Please try again or contact the front desk for assistance. Error: ${bookingError.message}`;
 //       }
       
 //     } catch (error) {
 //       console.error('Error handling booking request:', error);
-//       return `I'm sorry ${residentInfo.name}, there was an issue processing your booking request. Please contact the front desk for assistance.`;
+//       return `I'm sorry ${guestInfo.name}, there was an issue processing your booking request. Please contact the front desk for assistance.`;
 //     }
 //   }
   
@@ -3195,15 +3195,15 @@
 //   }
   
 //   // Function to create a booking
-//   async function createBooking(amenityId, amenityName, startDate, endDate, residentInfo, companyId, notes = '') {
+//   async function createBooking(amenityId, amenityName, startDate, endDate, guestInfo, companyId, notes = '') {
 //     try {
 //       console.log('Creating booking with params:', {
 //         amenityId,
 //         amenityName,
 //         startDate: startDate.toISOString(),
 //         endDate: endDate.toISOString(),
-//         residentId: residentInfo.id,
-//         residentName: residentInfo.name,
+//         guestId: guestInfo.id,
+//         guestName: guestInfo.name,
 //         companyId,
 //         notes
 //       });
@@ -3211,16 +3211,16 @@
 //       const bookingData = {
 //         amenityId,
 //         companyId,
-//         title: `${amenityName} - ${residentInfo.name}`,
+//         title: `${amenityName} - ${guestInfo.name}`,
 //         startDate: admin.firestore.Timestamp.fromDate(startDate),
 //         endDate: admin.firestore.Timestamp.fromDate(endDate),
 //         status: 'pending',
 //         notes,
-//         residentId: residentInfo.id,
+//         guestId: guestInfo.id,
 //         contactInfo: {
-//           name: residentInfo.name,
-//           phone: residentInfo.phone,
-//           email: residentInfo.email || '' // Handle case where email might be undefined
+//           name: guestInfo.name,
+//           phone: guestInfo.phone,
+//           email: guestInfo.email || '' // Handle case where email might be undefined
 //         },
 //         createdAt: admin.firestore.FieldValue.serverTimestamp(),
 //         updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -3263,47 +3263,47 @@
 //     }
 //   }
   
-//   // Function to build system prompt based on resident status and property
-//   function buildSystemPrompt(residentInfo, propertyCompany) {
-//     const basePrompt = `You are Claro, a friendly and relaxed virtual concierge assistant for ${propertyCompany.name}. You're not a stern receptionist or a robotic agent — you're more like a chill, helpful front desk person who just wants to make things easy for the caller. You listen, empathize, and genuinely try to help or direct the person to the right team.
+//   // Function to build system prompt based on guest status and property
+//   function buildSystemPrompt(guestInfo, hotel) {
+//     const basePrompt = `You are Claro, a friendly and relaxed virtual concierge assistant for ${hotel.name}. You're not a stern receptionist or a robotic agent — you're more like a chill, helpful front desk person who just wants to make things easy for the caller. You listen, empathize, and genuinely try to help or direct the person to the right team.
   
-//   Your tone is warm, conversational, and unhurried. You let people share what's on their mind and go with the flow. Whether it's a resident calling about a package, a visitor trying to reach a unit, or someone asking about booking amenities — your job is to make them feel heard and taken care of.
+//   Your tone is warm, conversational, and unhurried. You let people share what's on their mind and go with the flow. Whether it's a guest calling about a package, a visitor trying to reach a unit, or someone asking about booking amenities — your job is to make them feel heard and taken care of.
   
-//   Property Information:
-//   - Property: ${propertyCompany.name}
-//   - Address: ${propertyCompany.address}
-//   - Available amenities: ${propertyCompany.amenities.map(a => a.name).join(', ')}
+//   Hotel Information:
+//   - Hotel: ${hotel.name}
+//   - Address: ${hotel.address}
+//   - Available amenities: ${hotel.amenities.map(a => a.name).join(', ')}
   
 //   Key responsibilities:
-//   - For maintenance issues: Acknowledge the issue, say you'll notify the superintendent and management to get someone to fix it ASAP, and mention either you'll notify them with further details or the concierge will give them a call.
+//   - For maintenance maintenanceRequests: Acknowledge the issue, say you'll notify the superintendent and management to get someone to fix it ASAP, and mention either you'll notify them with further details or the concierge will give them a call.
 //   - For visitor parking passes: Get their license plate and make of car, then say "we've notified the concierge, please go to the front desk to pick up a pass"
-//   - For amenity bookings: ONLY residents can book amenities. Non-residents should be directed to visit the front desk or ask a registered resident to help them.
+//   - For amenity bookings: ONLY guests can book amenities. Non-guests should be directed to visit the front desk or ask a registered guest to help them.
 //   - For package inquiries: Check with the front desk about package status
 //   - For general building questions: Provide helpful information or direct to appropriate team
-//   - Always aim to resolve issues in the fastest way possible
+//   - Always aim to resolve maintenanceRequests in the fastest way possible
   
 //   Keep responses concise but warm. Use text message appropriate language.`;
   
-//     if (residentInfo.isResident) {
+//     if (guestInfo.isguest) {
 //       return `${basePrompt}
   
-//   RESIDENT INFORMATION:
-//   - Name: ${residentInfo.name}
-//   - Unit: ${residentInfo.unitNumber}
-//   - Always greet residents by their first name when starting conversations (e.g., "Hi ${residentInfo.name}!" or "Hey ${residentInfo.name}!")
+//   guest INFORMATION:
+//   - Name: ${guestInfo.name}
+//   - Unit: ${guestInfo.roomNumber}
+//   - Always greet guests by their first name when starting conversations (e.g., "Hi ${guestInfo.name}!" or "Hey ${guestInfo.name}!")
 //   - You can reference their unit when relevant.
-//   - They can book amenities and access all resident services.
-//   - When addressing maintenance issues, use their name: "Thanks for letting us know ${residentInfo.name}, I'll notify the superintendent..."`;
+//   - They can book amenities and access all guest services.
+//   - When addressing maintenance maintenanceRequests, use their name: "Thanks for letting us know ${guestInfo.name}, I'll notify the superintendent..."`;
 //     } else {
 //       return `${basePrompt}
   
-//   This person is NOT a current resident. Be helpful but do not address them by name since you don't have their information on file. They cannot book amenities or access resident-only services. 
+//   This person is NOT a current guest. Be helpful but do not address them by name since you don't have their information on file. They cannot book amenities or access guest-only services. 
   
-//   For non-residents:
+//   For non-guests:
 //   - Greet them with "Hi there!" or similar generic greeting
 //   - They can request visitor parking passes and general building information
-//   - For amenity bookings: Direct them to visit the front desk or ask a registered resident to help them
-//   - For resident-specific services: Politely explain they need to be a registered resident or visit the front desk`;
+//   - For amenity bookings: Direct them to visit the front desk or ask a registered guest to help them
+//   - For guest-specific services: Politely explain they need to be a registered guest or visit the front desk`;
 //     }
 //   }
   
@@ -3471,36 +3471,36 @@ exports.handleGuestRequest = functions.https.onRequest(async (req, res) => {
 });
 
 
-// ✅ 4. Parking Status Check
-exports.checkParkingStatus = onCall(async (request) => {
+// ✅ 4. parking Status Check
+exports.checkparkingStatus = onCall(async (request) => {
   try {
     const { phoneNumber, companyId } = request.data;
     if (!phoneNumber || !companyId) throw new Error('Phone number and company ID are required');
 
-    const residentQuery = await db.collection('residents')
+    const guestQuery = await db.collection('guests')
       .where('phone', '==', phoneNumber)
       .where('companyId', '==', companyId)
       .limit(1)
       .get();
 
-    if (residentQuery.empty) {
-      return { success: false, message: 'Resident not found' };
+    if (guestQuery.empty) {
+      return { success: false, message: 'guest not found' };
     }
 
-    const residentInfo = { id: residentQuery.docs[0].id, ...residentQuery.docs[0].data() };
+    const guestInfo = { id: guestQuery.docs[0].id, ...guestQuery.docs[0].data() };
 
     const companyDoc = await db.collection('companies').doc(companyId).get();
     if (!companyDoc.exists) {
       return { success: false, message: 'Company not found' };
     }
 
-    const propertyCompany = { id: companyDoc.id, ...companyDoc.data() };
-    const statusMessage = await handleParkingStatus(residentInfo, propertyCompany, db);
+    const hotel = { id: companyDoc.id, ...companyDoc.data() };
+    const statusMessage = await handleparkingStatus(guestInfo, hotel, db);
 
     return { success: true, message: statusMessage };
 
   } catch (error) {
-    console.error('Error in checkParkingStatus:', error);
+    console.error('Error in checkparkingStatus:', error);
     return { success: false, message: 'Trouble checking parking status.' };
   }
 });

@@ -1,11 +1,11 @@
-// components/ResidentForm.js
+// components/GuestForm.js
 import React, { useState, useEffect } from 'react';
-import './ResidentForm.css';
+import './GuestForm.css';
 
-const ResidentForm = ({ resident, onSubmit, onClose }) => {
+const GuestForm = ({ guest, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
-    unitNumber: '',
+    roomNumber: '',
     email: '',
     phone: '',
     emergencyContact: {
@@ -19,25 +19,25 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (resident) {
-      // Edit mode - populate form with existing resident data
+    if (guest) {
+      // Edit mode - populate form with existing guest data
       setFormData({
-        name: resident.name || '',
-        unitNumber: resident.unitNumber || '',
-        email: resident.email || '',
-        phone: resident.phone || '',
+        name: guest.name || '',
+        roomNumber: guest.roomNumber || '',
+        email: guest.email || '',
+        phone: guest.phone || '',
         emergencyContact: {
-          name: resident.emergencyContact?.name || '',
-          phone: resident.emergencyContact?.phone || '',
-          relationship: resident.emergencyContact?.relationship || ''
+          name: guest.emergencyContact?.name || '',
+          phone: guest.emergencyContact?.phone || '',
+          relationship: guest.emergencyContact?.relationship || ''
         },
-        notes: resident.notes || ''
+        notes: guest.notes || ''
       });
     } else {
       // Create mode - reset form
       setFormData({
         name: '',
-        unitNumber: '',
+        roomNumber: '',
         email: '',
         phone: '',
         emergencyContact: {
@@ -48,7 +48,7 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
         notes: ''
       });
     }
-  }, [resident]);
+  }, [guest]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -86,8 +86,8 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
       newErrors.name = 'Full name is required';
     }
 
-    if (!formData.unitNumber.trim()) {
-      newErrors.unitNumber = 'Unit number is required';
+    if (!formData.roomNumber.trim()) {
+      newErrors.roomNumber = 'Unit number is required';
     }
 
     if (!formData.email.trim()) {
@@ -129,9 +129,9 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
     setLoading(true);
 
     try {
-      const residentData = {
+      const guestData = {
         name: formData.name.trim(),
-        unitNumber: formData.unitNumber.trim(),
+        roomNumber: formData.roomNumber.trim(),
         email: formData.email.trim().toLowerCase(),
         phone: formData.phone.trim(),
         emergencyContact: {
@@ -143,14 +143,14 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
       };
 
       // Remove empty emergency contact if not provided
-      if (!residentData.emergencyContact.name && !residentData.emergencyContact.phone) {
-        residentData.emergencyContact = null;
+      if (!guestData.emergencyContact.name && !guestData.emergencyContact.phone) {
+        guestData.emergencyContact = null;
       }
 
-      await onSubmit(residentData);
+      await onSubmit(guestData);
     } catch (error) {
-      console.error('Error submitting resident form:', error);
-      setErrors({ general: 'Failed to save resident. Please try again.' });
+      console.error('Error submitting guest form:', error);
+      setErrors({ general: 'Failed to save guest. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -158,10 +158,10 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="resident-form-modal" onClick={e => e.stopPropagation()}>
+      <div className="guest-form-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">
-            {resident ? 'Edit Resident' : 'Add New Resident'}
+            {guest ? 'Edit guest' : 'Add New guest'}
           </h2>
           <button className="close-button" onClick={onClose}>
             <svg viewBox="0 0 24 24" fill="none">
@@ -171,7 +171,7 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="resident-form">
+        <form onSubmit={handleSubmit} className="guest-form">
           {errors.general && (
             <div className="error-banner">
               <svg viewBox="0 0 24 24" fill="none">
@@ -207,21 +207,21 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="unitNumber" className="form-label">
+                <label htmlFor="roomNumber" className="form-label">
                   Unit Number *
                 </label>
                 <input
                   type="text"
-                  id="unitNumber"
-                  name="unitNumber"
-                  value={formData.unitNumber}
+                  id="roomNumber"
+                  name="roomNumber"
+                  value={formData.roomNumber}
                   onChange={handleInputChange}
-                  className={`form-input ${errors.unitNumber ? 'error' : ''}`}
+                  className={`form-input ${errors.roomNumber ? 'error' : ''}`}
                   placeholder="e.g., 101, 2A, PH1"
                   required
                 />
-                {errors.unitNumber && (
-                  <span className="error-message">{errors.unitNumber}</span>
+                {errors.roomNumber && (
+                  <span className="error-message">{errors.roomNumber}</span>
                 )}
               </div>
             </div>
@@ -238,7 +238,7 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
                   value={formData.email}
                   onChange={handleInputChange}
                   className={`form-input ${errors.email ? 'error' : ''}`}
-                  placeholder="resident@email.com"
+                  placeholder="guest@email.com"
                   required
                 />
                 {errors.email && (
@@ -348,7 +348,7 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
                 value={formData.notes}
                 onChange={handleInputChange}
                 className="form-textarea"
-                placeholder="Any additional information about the resident, special instructions, accessibility needs, etc."
+                placeholder="Any additional information about the guest, special instructions, accessibility needs, etc."
                 rows={4}
               />
             </div>
@@ -380,7 +380,7 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
                     <polyline points="17,21 17,13 7,13 7,21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <polyline points="7,3 7,8 15,8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  {resident ? 'Update Resident' : 'Add Resident'}
+                  {guest ? 'Update guest' : 'Add guest'}
                 </>
               )}
             </button>
@@ -391,4 +391,4 @@ const ResidentForm = ({ resident, onSubmit, onClose }) => {
   );
 };
 
-export default ResidentForm;
+export default GuestForm;

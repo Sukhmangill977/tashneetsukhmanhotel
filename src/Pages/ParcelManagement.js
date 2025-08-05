@@ -1,15 +1,15 @@
-// pages/PackageCenter.js - Firebase Integrated
+// pages/ParcelManagement.js - Firebase Integrated
 import React, { useState, useEffect } from 'react';
 import { auth } from '../firebase-config';
 import { dbService } from '../database-service';
 import Layout from '../components/Layout';
 import PackageForm from '../components/PackageForm';
 import NotificationForm from '../components/NotificationForm';
-import './PackageCenter.css';
+import './ParcelManagement.css';
 
-const PackageCenter = () => {
+const ParcelManagement = () => {
   const [userCompany, setUserCompany] = useState(null);
-  const [residents, setResidents] = useState([]);
+  const [guests, setguests] = useState([]);
   const [packages, setPackages] = useState([]);
   const [filteredPackages, setFilteredPackages] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,7 +53,7 @@ const PackageCenter = () => {
       
       if (company) {
         await Promise.all([
-          loadResidents(company.id),
+          loadguests(company.id),
           loadPackages(company.id)
         ]);
       }
@@ -62,12 +62,12 @@ const PackageCenter = () => {
     }
   };
 
-  const loadResidents = async (companyId) => {
+  const loadguests = async (companyId) => {
     try {
-      const residentsData = await dbService.getResidentsByCompany(companyId);
-      setResidents(residentsData);
+      const guestsData = await dbService.getguestsByCompany(companyId);
+      setguests(guestsData);
     } catch (error) {
-      console.error('Error loading residents:', error);
+      console.error('Error loading guests:', error);
     }
   };
 
@@ -93,8 +93,8 @@ const PackageCenter = () => {
     let filtered = packages.filter(pkg => {
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch = (
-        pkg.residentName?.toLowerCase().includes(searchLower) ||
-        pkg.unitNumber?.toLowerCase().includes(searchLower) ||
+        pkg.guestName?.toLowerCase().includes(searchLower) ||
+        pkg.roomNumber?.toLowerCase().includes(searchLower) ||
         pkg.courier?.toLowerCase().includes(searchLower) ||
         pkg.trackingNumber?.toLowerCase().includes(searchLower) ||
         pkg.description?.toLowerCase().includes(searchLower)
@@ -114,13 +114,13 @@ const PackageCenter = () => {
           aValue = a.deliveredAt || a.createdAt;
           bValue = b.deliveredAt || b.createdAt;
           break;
-        case 'resident':
-          aValue = a.residentName?.toLowerCase() || '';
-          bValue = b.residentName?.toLowerCase() || '';
+        case 'guest':
+          aValue = a.guestName?.toLowerCase() || '';
+          bValue = b.guestName?.toLowerCase() || '';
           break;
         case 'unit':
-          aValue = parseInt(a.unitNumber) || 0;
-          bValue = parseInt(b.unitNumber) || 0;
+          aValue = parseInt(a.roomNumber) || 0;
+          bValue = parseInt(b.roomNumber) || 0;
           break;
         case 'courier':
           aValue = a.courier?.toLowerCase() || '';
@@ -151,7 +151,7 @@ const PackageCenter = () => {
     setShowPackageForm(true);
   };
 
-  const handleNotifyResident = (pkg) => {
+  const handleNotifyguest = (pkg) => {
     setSelectedPackage(pkg);
     setShowNotificationForm(true);
   };
@@ -159,7 +159,7 @@ const PackageCenter = () => {
   const handleMarkPickedUp = async (pkg) => {
     try {
       await dbService.markPackageAsPickedUp(pkg.id, {
-        pickupBy: pkg.residentName,
+        pickupBy: pkg.guestName,
         verification: 'front_desk_confirmation',
         notes: 'Picked up at front desk'
       });
@@ -170,9 +170,9 @@ const PackageCenter = () => {
       // Log activity
       await dbService.logActivity(userCompany.id, {
         type: 'package_pickup',
-        description: `Package picked up by ${pkg.residentName} for Unit ${pkg.unitNumber}`,
+        description: `Package picked up by ${pkg.guestName} for Unit ${pkg.roomNumber}`,
         packageId: pkg.id,
-        residentId: pkg.residentId
+        guestId: pkg.guestId
       });
       
     } catch (error) {
@@ -190,7 +190,7 @@ const PackageCenter = () => {
         // Log activity
         await dbService.logActivity(userCompany.id, {
           type: 'package_deleted',
-          description: `Package record deleted for Unit ${pkg.unitNumber}`,
+          description: `Package record deleted for Unit ${pkg.roomNumber}`,
           packageId: pkg.id
         });
         
@@ -210,17 +210,17 @@ const PackageCenter = () => {
         // Log activity
         await dbService.logActivity(userCompany.id, {
           type: 'package_updated',
-          description: `Package updated for Unit ${packageData.unitNumber}`,
+          description: `Package updated for Unit ${packageData.roomNumber}`,
           packageId: selectedPackage.id
         });
       } else {
         // Create new package
         const packageId = await dbService.createPackage(userCompany.id, packageData);
         
-        // Auto-send notification if resident is found and notification is enabled
-        if (packageData.residentId && packageData.autoNotify) {
+        // Auto-send notification if guest is found and notification is enabled
+        if (packageData.guestId && packageData.autoNotify) {
           try {
-            await dbService.sendPackageNotification(packageId, packageData.residentId, 'arrival');
+            await dbService.sendPackageNotification(packageId, packageData.guestId, 'arrival');
           } catch (notificationError) {
             console.error('Error sending auto-notification:', notificationError);
             // Don't fail the package creation if notification fails
@@ -230,7 +230,7 @@ const PackageCenter = () => {
         // Log activity
         await dbService.logActivity(userCompany.id, {
           type: 'package_created',
-          description: `New package logged for Unit ${packageData.unitNumber} from ${packageData.courier}`,
+          description: `New package logged for Unit ${packageData.roomNumber} from ${packageData.courier}`,
           packageId
         });
       }
@@ -249,10 +249,10 @@ const PackageCenter = () => {
   const handleNotificationSubmit = async (notificationData) => {
     try {
       // Send notification via your messaging service
-      if (selectedPackage && selectedPackage.residentId) {
+      if (selectedPackage && selectedPackage.guestId) {
         await dbService.sendPackageNotification(
           selectedPackage.id, 
-          selectedPackage.residentId, 
+          selectedPackage.guestId, 
           notificationData.type || 'arrival'
         );
       }
@@ -425,7 +425,7 @@ const PackageCenter = () => {
               className="filter-select"
             >
               <option value="date">Sort by Date</option>
-              <option value="resident">Sort by Resident</option>
+              <option value="guest">Sort by guest</option>
               <option value="unit">Sort by Unit</option>
               <option value="courier">Sort by Courier</option>
             </select>
@@ -465,8 +465,8 @@ const PackageCenter = () => {
                 <div key={pkg.id} className="package-item">
                   <div className="package-header">
                     <div className="package-info">
-                      <h4 className="resident-name">{pkg.residentName}</h4>
-                      <p className="unit-number">Unit {pkg.unitNumber}</p>
+                      <h4 className="guest-name">{pkg.guestName}</h4>
+                      <p className="unit-number">Unit {pkg.roomNumber}</p>
                     </div>
                     <div className="package-status">
                       <span 
@@ -510,7 +510,7 @@ const PackageCenter = () => {
                       <>
                         <button
                           className="action-btn notify-btn"
-                          onClick={() => handleNotifyResident(pkg)}
+                          onClick={() => handleNotifyguest(pkg)}
                           disabled={pkg.notificationSent}
                         >
                           {pkg.notificationSent ? 'Notified' : 'Notify'}
@@ -546,7 +546,7 @@ const PackageCenter = () => {
         {showPackageForm && (
           <PackageForm
             package={selectedPackage}
-            residents={residents}
+            guests={guests}
             onSubmit={handlePackageSubmit}
             onClose={() => {
               setShowPackageForm(false);
@@ -559,7 +559,7 @@ const PackageCenter = () => {
         {showNotificationForm && (
           <NotificationForm
             package={selectedPackage}
-            residents={residents}
+            guests={guests}
             onSubmit={handleNotificationSubmit}
             onClose={() => {
               setShowNotificationForm(false);
@@ -572,4 +572,4 @@ const PackageCenter = () => {
   );
 };
 
-export default PackageCenter;
+export default ParcelManagement;

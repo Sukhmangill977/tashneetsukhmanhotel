@@ -1,4 +1,4 @@
-// pages/VisitorManagement.js
+// pages/GuestVisitorManagement.js
 import React, { useState, useEffect } from 'react';
 import { auth } from '../firebase-config';
 import { dbService } from '../database-service';
@@ -7,21 +7,21 @@ import VisitorForm from '../components/VisitorForm';
 import ParkingRequestForm from '../components/ParkingRequestForm';
 import VisitorDetails from '../components/VisitorDetails';
 import NotificationForm from '../components/NotificationForm';
-import './VisitorManagement.css';
+import './GuestVisitorManagement.css';
 
-const VisitorManagement = () => {
+const GuestVisitorManagement = () => {
   const [userCompany, setUserCompany] = useState(null);
-  const [residents, setResidents] = useState([]);
+  const [guests, setguests] = useState([]);
   const [visitors, setVisitors] = useState([]);
-  const [parkingRequests, setParkingRequests] = useState([]);
+  const [parkingRequests, setparkingRequests] = useState([]);
   const [filteredVisitors, setFilteredVisitors] = useState([]);
-  const [filteredParkingRequests, setFilteredParkingRequests] = useState([]);
+  const [filteredparkingRequests, setFilteredparkingRequests] = useState([]);
   const [activeTab, setActiveTab] = useState('visitors');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('today');
   const [showVisitorForm, setShowVisitorForm] = useState(false);
-  const [showParkingForm, setShowParkingForm] = useState(false);
+  const [showparkingForm, setShowparkingForm] = useState(false);
   const [showVisitorDetails, setShowVisitorDetails] = useState(false);
   const [showNotificationForm, setShowNotificationForm] = useState(false);
   const [selectedVisitor, setSelectedVisitor] = useState(null);
@@ -52,9 +52,9 @@ const VisitorManagement = () => {
       
       if (company) {
         await Promise.all([
-          loadResidents(company.id),
+          loadguests(company.id),
           loadVisitors(company.id),
-          loadParkingRequests(company.id)
+          loadparkingRequests(company.id)
         ]);
       }
     } catch (error) {
@@ -62,12 +62,12 @@ const VisitorManagement = () => {
     }
   };
 
-  const loadResidents = async (companyId) => {
+  const loadguests = async (companyId) => {
     try {
-      const residentsData = await dbService.getResidentsByCompany(companyId);
-      setResidents(residentsData);
+      const guestsData = await dbService.getguestsByCompany(companyId);
+      setguests(guestsData);
     } catch (error) {
-      console.error('Error loading residents:', error);
+      console.error('Error loading guests:', error);
     }
   };
 
@@ -80,10 +80,10 @@ const VisitorManagement = () => {
     }
   };
 
-  const loadParkingRequests = async (companyId) => {
+  const loadparkingRequests = async (companyId) => {
     try {
-      const parkingData = await dbService.getParkingRequestsByCompany(companyId);
-      setParkingRequests(parkingData);
+      const parkingData = await dbService.getparkingRequestsByCompany(companyId);
+      setparkingRequests(parkingData);
     } catch (error) {
       console.error('Error loading parking requests:', error);
     }
@@ -101,8 +101,8 @@ const VisitorManagement = () => {
         const searchLower = searchTerm.toLowerCase();
         const matchesSearch = (
           visitor.name.toLowerCase().includes(searchLower) ||
-          visitor.visiting.residentName.toLowerCase().includes(searchLower) ||
-          visitor.visiting.unitNumber.toLowerCase().includes(searchLower) ||
+          visitor.visiting.guestName.toLowerCase().includes(searchLower) ||
+          visitor.visiting.roomNumber.toLowerCase().includes(searchLower) ||
           visitor.purpose.toLowerCase().includes(searchLower) ||
           (visitor.phone && visitor.phone.toLowerCase().includes(searchLower))
         );
@@ -143,13 +143,13 @@ const VisitorManagement = () => {
             aValue = a.name.toLowerCase();
             bValue = b.name.toLowerCase();
             break;
-          case 'resident':
-            aValue = a.visiting.residentName.toLowerCase();
-            bValue = b.visiting.residentName.toLowerCase();
+          case 'guest':
+            aValue = a.visiting.guestName.toLowerCase();
+            bValue = b.visiting.guestName.toLowerCase();
             break;
           case 'unit':
-            aValue = parseInt(a.visiting.unitNumber) || 0;
-            bValue = parseInt(b.visiting.unitNumber) || 0;
+            aValue = parseInt(a.visiting.roomNumber) || 0;
+            bValue = parseInt(b.visiting.roomNumber) || 0;
             break;
           case 'status':
             aValue = a.status.toLowerCase();
@@ -174,8 +174,8 @@ const VisitorManagement = () => {
         const searchLower = searchTerm.toLowerCase();
         const matchesSearch = (
           request.requesterName.toLowerCase().includes(searchLower) ||
-          request.visiting.residentName.toLowerCase().includes(searchLower) ||
-          request.visiting.unitNumber.toLowerCase().includes(searchLower) ||
+          request.visiting.guestName.toLowerCase().includes(searchLower) ||
+          request.visiting.roomNumber.toLowerCase().includes(searchLower) ||
           (request.vehicleInfo.licensePlate && request.vehicleInfo.licensePlate.toLowerCase().includes(searchLower)) ||
           (request.vehicleInfo.make && request.vehicleInfo.make.toLowerCase().includes(searchLower))
         );
@@ -213,13 +213,13 @@ const VisitorManagement = () => {
             aValue = a.requesterName.toLowerCase();
             bValue = b.requesterName.toLowerCase();
             break;
-          case 'resident':
-            aValue = a.visiting.residentName.toLowerCase();
-            bValue = b.visiting.residentName.toLowerCase();
+          case 'guest':
+            aValue = a.visiting.guestName.toLowerCase();
+            bValue = b.visiting.guestName.toLowerCase();
             break;
           case 'unit':
-            aValue = parseInt(a.visiting.unitNumber) || 0;
-            bValue = parseInt(b.visiting.unitNumber) || 0;
+            aValue = parseInt(a.visiting.roomNumber) || 0;
+            bValue = parseInt(b.visiting.roomNumber) || 0;
             break;
           case 'status':
             aValue = a.status.toLowerCase();
@@ -238,7 +238,7 @@ const VisitorManagement = () => {
         }
       });
 
-      setFilteredParkingRequests(filtered);
+      setFilteredparkingRequests(filtered);
     }
   };
 
@@ -247,9 +247,9 @@ const VisitorManagement = () => {
     setShowVisitorForm(true);
   };
 
-  const handleAddParkingRequest = () => {
+  const handleAddparkingRequest = () => {
     setSelectedRequest(null);
-    setShowParkingForm(true);
+    setShowparkingForm(true);
   };
 
   const handleEditVisitor = (visitor) => {
@@ -257,9 +257,9 @@ const VisitorManagement = () => {
     setShowVisitorForm(true);
   };
 
-  const handleEditParkingRequest = (request) => {
+  const handleEditparkingRequest = (request) => {
     setSelectedRequest(request);
-    setShowParkingForm(true);
+    setShowparkingForm(true);
   };
 
   const handleViewVisitor = (visitor) => {
@@ -278,9 +278,9 @@ const VisitorManagement = () => {
       await dbService.updateVisitor(visitor.id, updateData);
       await loadVisitors(userCompany.id);
       
-      // Send notification to resident
+      // Send notification to guest
       // This would integrate with your messaging service
-      console.log('Visitor checked in, notifying resident');
+      console.log('Visitor checked in, notifying guest');
     } catch (error) {
       console.error('Error checking in visitor:', error);
     }
@@ -300,27 +300,27 @@ const VisitorManagement = () => {
     }
   };
 
-  const handleApproveParkingRequest = async (request) => {
+  const handleApproveparkingRequest = async (request) => {
     try {
       const updateData = {
         status: 'approved',
         approvedBy: auth.currentUser?.email || 'Front Desk',
         approvedAt: new Date(),
         accessCode: generateAccessCode(),
-        parkingSpot: assignParkingSpot()
+        parkingSpot: assignparkingSpot()
       };
       
-      await dbService.updateParkingRequest(request.id, updateData);
-      await loadParkingRequests(userCompany.id);
+      await dbService.updateparkingRequest(request.id, updateData);
+      await loadparkingRequests(userCompany.id);
       
       // Send SMS notification
-      await sendParkingApprovalNotification(request, updateData);
+      await sendparkingApprovalNotification(request, updateData);
     } catch (error) {
       console.error('Error approving parking request:', error);
     }
   };
 
-  const handleDenyParkingRequest = async (request) => {
+  const handleDenyparkingRequest = async (request) => {
     try {
       const updateData = {
         status: 'denied',
@@ -328,11 +328,11 @@ const VisitorManagement = () => {
         approvedAt: new Date()
       };
       
-      await dbService.updateParkingRequest(request.id, updateData);
-      await loadParkingRequests(userCompany.id);
+      await dbService.updateparkingRequest(request.id, updateData);
+      await loadparkingRequests(userCompany.id);
       
       // Send SMS notification
-      await sendParkingDenialNotification(request);
+      await sendparkingDenialNotification(request);
     } catch (error) {
       console.error('Error denying parking request:', error);
     }
@@ -355,16 +355,16 @@ const VisitorManagement = () => {
     }
   };
 
-  const handleParkingRequestSubmit = async (requestData) => {
+  const handleparkingRequestSubmit = async (requestData) => {
     try {
       if (selectedRequest) {
-        await dbService.updateParkingRequest(selectedRequest.id, requestData);
+        await dbService.updateparkingRequest(selectedRequest.id, requestData);
       } else {
-        await dbService.createParkingRequest(userCompany.id, requestData);
+        await dbService.createparkingRequest(userCompany.id, requestData);
       }
       
-      await loadParkingRequests(userCompany.id);
-      setShowParkingForm(false);
+      await loadparkingRequests(userCompany.id);
+      setShowparkingForm(false);
       setSelectedRequest(null);
     } catch (error) {
       console.error('Error saving parking request:', error);
@@ -405,19 +405,19 @@ const VisitorManagement = () => {
     return 'VIS' + Math.random().toString(36).substr(2, 4).toUpperCase();
   };
 
-  const assignParkingSpot = () => {
+  const assignparkingSpot = () => {
     // Simple parking spot assignment logic
     const spots = ['V-1', 'V-2', 'V-3', 'V-4', 'V-5', 'V-6', 'V-7', 'V-8', 'V-9', 'V-10'];
     return spots[Math.floor(Math.random() * spots.length)];
   };
 
-  const sendParkingApprovalNotification = async (request, approvalData) => {
+  const sendparkingApprovalNotification = async (request, approvalData) => {
     // This would integrate with your Twilio SMS service
-    const message = `Your parking request for ${formatDate(request.requestedDate)} has been APPROVED. Parking spot: ${approvalData.parkingSpot}, Access code: ${approvalData.accessCode}. Building Management.`;
+    const message = `Your parking request for ${formatDate(request.requestedDate)} has been APPROVED. parking spot: ${approvalData.parkingSpot}, Access code: ${approvalData.accessCode}. Building Management.`;
     console.log('Sending approval SMS to', request.requesterPhone, ':', message);
   };
 
-  const sendParkingDenialNotification = async (request) => {
+  const sendparkingDenialNotification = async (request) => {
     // This would integrate with your Twilio SMS service
     const message = `Your parking request for ${formatDate(request.requestedDate)} has been denied. Please contact building management for more information.`;
     console.log('Sending denial SMS to', request.requesterPhone, ':', message);
@@ -479,7 +479,7 @@ const VisitorManagement = () => {
         const visitorDate = v.expectedArrival.toDate ? v.expectedArrival.toDate() : new Date(v.expectedArrival);
         return visitorDate.toDateString() === today && v.status === 'pre_registered';
       }).length,
-      pendingParking: parkingRequests.filter(r => r.status === 'pending').length
+      pendingparking: parkingRequests.filter(r => r.status === 'pending').length
     };
   };
 
@@ -509,14 +509,14 @@ const VisitorManagement = () => {
               </p>
             </div>
             <div className="header-actions">
-              <button className="secondary-btn" onClick={handleAddParkingRequest}>
+              <button className="secondary-btn" onClick={handleAddparkingRequest}>
                 <svg viewBox="0 0 24 24" fill="none">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
                   <circle cx="9" cy="9" r="2" stroke="currentColor" strokeWidth="2"/>
                   <path d="M21 15.5c-1 0-3 1-3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M21 12.5c-2 0-5 2-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Parking Request
+                parking Request
               </button>
               <button className="primary-btn" onClick={handleAddVisitor}>
                 <svg viewBox="0 0 24 24" fill="none">
@@ -568,8 +568,8 @@ const VisitorManagement = () => {
               </svg>
             </div>
             <div className="stat-content">
-              <div className="stat-number">{stats.pendingParking}</div>
-              <div className="stat-label">Parking Requests</div>
+              <div className="stat-number">{stats.pendingparking}</div>
+              <div className="stat-label">parking Requests</div>
             </div>
           </div>
 
@@ -610,7 +610,7 @@ const VisitorManagement = () => {
               <path d="M9 9h2a2 2 0 012 2v1a2 2 0 01-2 2H9V9z" stroke="currentColor" strokeWidth="2"/>
               <line x1="9" y1="9" x2="9" y2="15" stroke="currentColor" strokeWidth="2"/>
             </svg>
-            Parking Requests ({filteredParkingRequests.length})
+            parking Requests ({filteredparkingRequests.length})
           </button>
         </div>
 
@@ -624,7 +624,7 @@ const VisitorManagement = () => {
             <input
               type="text"
               placeholder={activeTab === 'visitors' ? 
-                "Search visitors by name, resident, unit..." : 
+                "Search visitors by name, guest, unit..." : 
                 "Search parking requests by name, license plate..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -674,7 +674,7 @@ const VisitorManagement = () => {
             >
               <option value="date">Sort by Date</option>
               <option value="name">Sort by Name</option>
-              <option value="resident">Sort by Resident</option>
+              <option value="guest">Sort by guest</option>
               <option value="unit">Sort by Unit</option>
               <option value="status">Sort by Status</option>
             </select>
@@ -693,7 +693,7 @@ const VisitorManagement = () => {
             </button>
 
             <div className="results-count">
-              {activeTab === 'visitors' ? filteredVisitors.length : filteredParkingRequests.length} results
+              {activeTab === 'visitors' ? filteredVisitors.length : filteredparkingRequests.length} results
             </div>
           </div>
         </div>
@@ -710,7 +710,7 @@ const VisitorManagement = () => {
                         <h3 className="visitor-name">{visitor.name}</h3>
                         <div className="visitor-meta">
                           <span className="visiting-info">
-                            Visiting {visitor.visiting.residentName} • Unit {visitor.visiting.unitNumber}
+                            Visiting {visitor.visiting.guestName} • Unit {visitor.visiting.roomNumber}
                           </span>
                           <span className="visit-time">
                             {formatDateTime(visitor.expectedArrival)}
@@ -750,7 +750,7 @@ const VisitorManagement = () => {
                       )}
                       {visitor.parkingSpot && (
                         <div className="detail-row">
-                          <span className="detail-label">Parking:</span>
+                          <span className="detail-label">parking:</span>
                           <span className="detail-value">Spot {visitor.parkingSpot}</span>
                         </div>
                       )}
@@ -844,16 +844,16 @@ const VisitorManagement = () => {
               </div>
             )
           ) : (
-            filteredParkingRequests.length > 0 ? (
+            filteredparkingRequests.length > 0 ? (
               <div className="parking-requests-list">
-                {filteredParkingRequests.map((request) => (
+                {filteredparkingRequests.map((request) => (
                   <div key={request.id} className="parking-request-card">
                     <div className="request-header">
                       <div className="request-info">
                         <h3 className="requester-name">{request.requesterName}</h3>
                         <div className="request-meta">
                           <span className="visiting-info">
-                            Visiting {request.visiting.residentName} • Unit {request.visiting.unitNumber}
+                            Visiting {request.visiting.guestName} • Unit {request.visiting.roomNumber}
                           </span>
                           <span className="request-date">
                             {formatDate(request.requestedDate)} • {request.startTime} - {request.endTime}
@@ -914,7 +914,7 @@ const VisitorManagement = () => {
                         <>
                           <button
                             className="action-btn approve"
-                            onClick={() => handleApproveParkingRequest(request)}
+                            onClick={() => handleApproveparkingRequest(request)}
                           >
                             <svg viewBox="0 0 24 24" fill="none">
                               <polyline points="20,6 9,17 4,12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -923,7 +923,7 @@ const VisitorManagement = () => {
                           </button>
                           <button
                             className="action-btn deny"
-                            onClick={() => handleDenyParkingRequest(request)}
+                            onClick={() => handleDenyparkingRequest(request)}
                           >
                             <svg viewBox="0 0 24 24" fill="none">
                               <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -935,7 +935,7 @@ const VisitorManagement = () => {
                       )}
                       <button
                         className="action-btn edit"
-                        onClick={() => handleEditParkingRequest(request)}
+                        onClick={() => handleEditparkingRequest(request)}
                       >
                         <svg viewBox="0 0 24 24" fill="none">
                           <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -961,13 +961,13 @@ const VisitorManagement = () => {
                       ? 'No parking requests match your current filters.'
                       : 'No parking requests have been submitted yet.'}
                   </p>
-                  <button className="primary-btn" onClick={handleAddParkingRequest}>
+                  <button className="primary-btn" onClick={handleAddparkingRequest}>
                     <svg viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                       <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                       <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
-                    Add Parking Request
+                    Add parking Request
                   </button>
                 </div>
               </div>
@@ -979,7 +979,7 @@ const VisitorManagement = () => {
         {showVisitorForm && (
           <VisitorForm
             visitor={selectedVisitor}
-            residents={residents}
+            guests={guests}
             onSubmit={handleVisitorSubmit}
             onClose={() => {
               setShowVisitorForm(false);
@@ -988,13 +988,13 @@ const VisitorManagement = () => {
           />
         )}
 
-        {showParkingForm && (
+        {showparkingForm && (
           <ParkingRequestForm
             request={selectedRequest}
-            residents={residents}
-            onSubmit={handleParkingRequestSubmit}
+            guests={guests}
+            onSubmit={handleparkingRequestSubmit}
             onClose={() => {
-              setShowParkingForm(false);
+              setShowparkingForm(false);
               setSelectedRequest(null);
             }}
           />
@@ -1017,7 +1017,7 @@ const VisitorManagement = () => {
         {showNotificationForm && (
           <NotificationForm
             visitor={selectedVisitor}
-            residents={residents}
+            guests={guests}
             onSubmit={handleNotificationSubmit}
             onClose={() => {
               setShowNotificationForm(false);
@@ -1030,4 +1030,4 @@ const VisitorManagement = () => {
   );
 };
 
-export default VisitorManagement;
+export default GuestVisitorManagement;

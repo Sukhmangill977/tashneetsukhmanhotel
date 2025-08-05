@@ -2,41 +2,41 @@
 import React, { useState, useEffect } from 'react';
 import './ContactSelector.css';
 
-const ContactSelector = ({ isOpen, onClose, residents = [], onSelect }) => {
+const ContactSelector = ({ isOpen, onClose, guests = [], onSelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredResidents, setFilteredResidents] = useState([]);
-  const [selectedResident, setSelectedResident] = useState(null);
+  const [filteredguests, setFilteredguests] = useState([]);
+  const [selectedguest, setSelectedguest] = useState(null);
 
   useEffect(() => {
-    filterResidents();
-  }, [residents, searchTerm]);
+    filterguests();
+  }, [guests, searchTerm]);
 
-  const filterResidents = () => {
+  const filterguests = () => {
     if (!searchTerm.trim()) {
-      setFilteredResidents(residents);
+      setFilteredguests(guests);
       return;
     }
 
-    const filtered = residents.filter(resident => {
+    const filtered = guests.filter(guest => {
       const searchLower = searchTerm.toLowerCase();
       return (
-        resident.name.toLowerCase().includes(searchLower) ||
-        resident.unitNumber.toLowerCase().includes(searchLower) ||
-        resident.phone.toLowerCase().includes(searchLower) ||
-        resident.email.toLowerCase().includes(searchLower)
+        guest.name.toLowerCase().includes(searchLower) ||
+        guest.roomNumber.toLowerCase().includes(searchLower) ||
+        guest.phone.toLowerCase().includes(searchLower) ||
+        guest.email.toLowerCase().includes(searchLower)
       );
     });
 
-    setFilteredResidents(filtered);
+    setFilteredguests(filtered);
   };
 
-  const handleSelect = (resident) => {
-    setSelectedResident(resident);
+  const handleSelect = (guest) => {
+    setSelectedguest(guest);
   };
 
   const handleConfirm = () => {
-    if (selectedResident) {
-      onSelect(selectedResident);
+    if (selectedguest) {
+      onSelect(selectedguest);
     }
   };
 
@@ -79,34 +79,34 @@ const ContactSelector = ({ isOpen, onClose, residents = [], onSelect }) => {
             </div>
           </div>
 
-          {/* Residents List */}
-          <div className="residents-list">
-            {filteredResidents.length === 0 ? (
+          {/* guests List */}
+          <div className="guests-list">
+            {filteredguests.length === 0 ? (
               <div className="empty-results">
                 <div className="empty-icon">👤</div>
-                <h4>No residents found</h4>
+                <h4>No guests found</h4>
                 <p>Try adjusting your search terms</p>
               </div>
             ) : (
-              filteredResidents.map((resident) => (
+              filteredguests.map((guest) => (
                 <div
-                  key={resident.id}
-                  className={`resident-item ${selectedResident?.id === resident.id ? 'selected' : ''}`}
-                  onClick={() => handleSelect(resident)}
+                  key={guest.id}
+                  className={`guest-item ${selectedguest?.id === guest.id ? 'selected' : ''}`}
+                  onClick={() => handleSelect(guest)}
                 >
-                  <div className="resident-avatar">
-                    {resident.name.charAt(0).toUpperCase()}
+                  <div className="guest-avatar">
+                    {guest.name.charAt(0).toUpperCase()}
                   </div>
-                  <div className="resident-info">
-                    <div className="resident-name">{resident.name}</div>
-                    <div className="resident-details">
-                      <span className="unit-number">Unit {resident.unitNumber}</span>
-                      <span className="phone-number">{formatPhone(resident.phone)}</span>
+                  <div className="guest-info">
+                    <div className="guest-name">{guest.name}</div>
+                    <div className="guest-details">
+                      <span className="unit-number">Unit {guest.roomNumber}</span>
+                      <span className="phone-number">{formatPhone(guest.phone)}</span>
                     </div>
-                    <div className="resident-email">{resident.email}</div>
+                    <div className="guest-email">{guest.email}</div>
                   </div>
                   <div className="selection-indicator">
-                    {selectedResident?.id === resident.id && (
+                    {selectedguest?.id === guest.id && (
                       <span className="checkmark">✓</span>
                     )}
                   </div>
@@ -124,7 +124,7 @@ const ContactSelector = ({ isOpen, onClose, residents = [], onSelect }) => {
           <button 
             className="confirm-btn" 
             onClick={handleConfirm}
-            disabled={!selectedResident}
+            disabled={!selectedguest}
           >
             <span className="btn-icon">✓</span>
             Select Contact

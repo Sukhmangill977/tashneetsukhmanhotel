@@ -8,14 +8,14 @@ const MessageTemplateModal = ({ isOpen, onClose, onSelectTemplate }) => {
     {
       id: 'custom_1',
       name: 'Weekly Newsletter',
-      content: 'Hello residents! Here\'s your weekly building update: [CONTENT]. Have a great week!',
+      content: 'Hello guests! Here\'s your weekly building update: [CONTENT]. Have a great week!',
       category: 'newsletter',
       createdAt: new Date('2024-01-15')
     },
     {
       id: 'custom_2',
       name: 'Noise Complaint Follow-up',
-      content: 'Thank you for reporting the noise issue. We have addressed this with the resident and will monitor the situation.',
+      content: 'Thank you for reporting the noise issue. We have addressed this with the guest and will monitor the situation.',
       category: 'complaint',
       createdAt: new Date('2024-01-10')
     }
@@ -76,8 +76,8 @@ const MessageTemplateModal = ({ isOpen, onClose, onSelectTemplate }) => {
       },
       {
         id: 'parking_approved',
-        name: 'Visitor Parking Approved',
-        content: 'Your visitor parking request has been approved. Parking spot: [SPOT]. Access code: [CODE]. Valid until [TIME].'
+        name: 'Visitor parking Approved',
+        content: 'Your visitor parking request has been approved. parking spot: [SPOT]. Access code: [CODE]. Valid until [TIME].'
       }
     ],
     booking: [
@@ -111,7 +111,7 @@ const MessageTemplateModal = ({ isOpen, onClose, onSelectTemplate }) => {
       {
         id: 'building_update',
         name: 'Building Update',
-        content: 'Important update for all residents: [UPDATE DETAILS]. Please contact the office if you have any questions.'
+        content: 'Important update for all guests: [UPDATE DETAILS]. Please contact the office if you have any questions.'
       }
     ]
   };

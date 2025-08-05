@@ -10,7 +10,7 @@ import './MessageCenter.css';
 
 const MessageCenter = () => {
   const [userCompany, setUserCompany] = useState(null);
-  const [residents, setResidents] = useState([]);
+  const [guests, setguests] = useState([]);
   const [activeTab, setActiveTab] = useState('inbox');
   const [loading, setLoading] = useState(true);
   
@@ -60,7 +60,7 @@ const MessageCenter = () => {
       
       if (company) {
         await Promise.all([
-          loadResidents(company.id),
+          loadguests(company.id),
           loadMessages(company.id),
           loadCallLogs(company.id)
         ]);
@@ -70,12 +70,12 @@ const MessageCenter = () => {
     }
   };
 
-  const loadResidents = async (companyId) => {
+  const loadguests = async (companyId) => {
     try {
-      const residentsData = await dbService.getResidentsByCompany(companyId);
-      setResidents(residentsData);
+      const guestsData = await dbService.getguestsByCompany(companyId);
+      setguests(guestsData);
     } catch (error) {
-      console.error('Error loading residents:', error);
+      console.error('Error loading guests:', error);
     }
   };
 
@@ -134,8 +134,8 @@ const MessageCenter = () => {
         const searchLower = searchTerm.toLowerCase();
         return (
           item.phoneNumber?.toLowerCase().includes(searchLower) ||
-          item.residentName?.toLowerCase().includes(searchLower) ||
-          item.unitNumber?.toLowerCase().includes(searchLower) ||
+          item.guestName?.toLowerCase().includes(searchLower) ||
+          item.roomNumber?.toLowerCase().includes(searchLower) ||
           item.content?.toLowerCase().includes(searchLower) ||
           item.summary?.toLowerCase().includes(searchLower)
         );
@@ -172,8 +172,8 @@ const MessageCenter = () => {
     setFilteredData(data);
   };
 
-  const getResidentByPhone = (phoneNumber) => {
-    return residents.find(r => r.phone === phoneNumber);
+  const getguestByPhone = (phoneNumber) => {
+    return guests.find(r => r.phone === phoneNumber);
   };
 
   const markAsRead = async (itemId, type) => {
@@ -192,14 +192,14 @@ const MessageCenter = () => {
   const handleSendMessage = async (messageData) => {
     try {
       if (composerType === 'mass') {
-        // Send to all residents
-        const messagePromises = residents.map(async (resident) => {
+        // Send to all guests
+        const messagePromises = guests.map(async (guest) => {
           const newMessage = {
             companyId: userCompany.id,
-            phoneNumber: resident.phone,
-            residentId: resident.id,
-            residentName: resident.name,
-            unitNumber: resident.unitNumber,
+            phoneNumber: guest.phone,
+            guestId: guest.id,
+            guestName: guest.name,
+            roomNumber: guest.roomNumber,
             content: messageData.content,
             direction: 'outgoing',
             type: 'sms',
@@ -210,7 +210,7 @@ const MessageCenter = () => {
           };
           
           // In real implementation, send via Twilio
-          console.log('Sending mass message to:', resident.phone);
+          console.log('Sending mass message to:', guest.phone);
           return await dbService.createMessage(userCompany.id, newMessage);
         });
         
@@ -218,13 +218,13 @@ const MessageCenter = () => {
         await loadMessages(userCompany.id);
         
       } else if (composerType === 'individual') {
-        const resident = selectedContact;
+        const guest = selectedContact;
         const newMessage = {
           companyId: userCompany.id,
-          phoneNumber: resident.phone,
-          residentId: resident.id,
-          residentName: resident.name,
-          unitNumber: resident.unitNumber,
+          phoneNumber: guest.phone,
+          guestId: guest.id,
+          guestName: guest.name,
+          roomNumber: guest.roomNumber,
           content: messageData.content,
           direction: 'outgoing',
           type: 'sms',
@@ -235,7 +235,7 @@ const MessageCenter = () => {
         };
         
         // In real implementation, send via Twilio
-        console.log('Sending individual message to:', resident.phone);
+        console.log('Sending individual message to:', guest.phone);
         await dbService.createMessage(userCompany.id, newMessage);
         await loadMessages(userCompany.id);
         
@@ -244,9 +244,9 @@ const MessageCenter = () => {
         const replyMessage = {
           companyId: userCompany.id,
           phoneNumber: originalMessage.phoneNumber,
-          residentId: originalMessage.residentId,
-          residentName: originalMessage.residentName,
-          unitNumber: originalMessage.unitNumber,
+          guestId: originalMessage.guestId,
+          guestName: originalMessage.guestName,
+          roomNumber: originalMessage.roomNumber,
           content: messageData.content,
           direction: 'outgoing',
           type: 'sms',
@@ -371,7 +371,7 @@ const MessageCenter = () => {
       <div className="search-box">
         <input
           type="text"
-          placeholder="Search messages, calls, or residents..."
+          placeholder="Search messages, calls, or guests..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
@@ -445,7 +445,7 @@ const MessageCenter = () => {
         </div>
       ) : (
         filteredData.map((item) => {
-          const resident = getResidentByPhone(item.phoneNumber);
+          const guest = getguestByPhone(item.phoneNumber);
           const isCall = item.type === 'call';
           
           return (
@@ -461,7 +461,7 @@ const MessageCenter = () => {
                   </div>
                   <div className="contact-details">
                     <h4 className="contact-name">
-                      {resident ? `${resident.name} - Unit ${resident.unitNumber}` : item.phoneNumber}
+                      {guest ? `${guest.name} - Unit ${guest.roomNumber}` : item.phoneNumber}
                     </h4>
                     <p className="phone-number">{item.phoneNumber}</p>
                   </div>
@@ -509,13 +509,13 @@ const MessageCenter = () => {
                   >
                     Reply
                   </button>
-                  {resident && (
+                  {guest && (
                     <button 
                       className="action-btn small-btn"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Navigate to resident profile
-                        console.log('View resident profile:', resident.id);
+                        // Navigate to guest profile
+                        console.log('View guest profile:', guest.id);
                       }}
                     >
                       View Profile
@@ -560,7 +560,7 @@ const MessageCenter = () => {
               setSelectedMessage(null);
             }}
             onSend={handleSendMessage}
-            residents={residents}
+            guests={guests}
             selectedContact={selectedContact}
             setSelectedContact={setSelectedContact}
             replyTo={composerType === 'reply' ? selectedMessage : null}
@@ -573,7 +573,7 @@ const MessageCenter = () => {
             isOpen={showMassMessage}
             onClose={() => setShowMassMessage(false)}
             onSend={handleSendMessage}
-            residents={residents}
+            guests={guests}
             type="mass"
           />
         )}

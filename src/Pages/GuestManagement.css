@@ -1,6 +1,6 @@
-/* pages/ResidentManagement.css */
+/* pages/GuestManagement.css */
 
-.resident-management {
+.guest-management {
     max-width: 100%;
     margin: 0 auto;
   }
@@ -184,8 +184,8 @@
     font-weight: 500;
   }
   
-  /* Residents Container */
-  .residents-container {
+  /* guests Container */
+  .guests-container {
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
@@ -193,14 +193,14 @@
     overflow: hidden;
   }
   
-  .residents-grid {
+  .guests-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 24px;
     padding: 24px;
   }
   
-  .resident-card {
+  .guest-card {
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
@@ -209,20 +209,20 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
   
-  .resident-card:hover {
+  .guest-card:hover {
     border-color: #3b82f6;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
     transform: translateY(-2px);
   }
   
-  .resident-header {
+  .guest-header {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
   }
   
-  .resident-avatar {
+  .guest-avatar {
     width: 48px;
     height: 48px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -237,12 +237,12 @@
     flex-shrink: 0;
   }
   
-  .resident-info {
+  .guest-info {
     flex: 1;
     min-width: 0;
   }
   
-  .resident-name {
+  .guest-name {
     font-size: 18px;
     font-weight: 700;
     color: #1e293b;
@@ -250,14 +250,14 @@
     line-height: 1.2;
   }
   
-  .resident-unit {
+  .guest-unit {
     font-size: 14px;
     color: #64748b;
     margin: 0;
     font-weight: 600;
   }
   
-  .resident-actions {
+  .guest-actions {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -311,7 +311,7 @@
     height: 16px;
   }
   
-  .resident-details {
+  .guest-details {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -341,7 +341,7 @@
     white-space: nowrap;
   }
   
-  .resident-footer {
+  .guest-footer {
     border-top: 1px solid #f1f5f9;
     padding-top: 16px;
   }
@@ -432,7 +432,7 @@
   
   /* Responsive Design */
   @media (max-width: 1200px) {
-    .residents-grid {
+    .guests-grid {
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 20px;
     }
@@ -459,21 +459,21 @@
       font-size: 24px;
     }
   
-    .residents-grid {
+    .guests-grid {
       grid-template-columns: 1fr;
       gap: 16px;
       padding: 16px;
     }
   
-    .resident-card {
+    .guest-card {
       padding: 16px;
     }
   
-    .resident-header {
+    .guest-header {
       margin-bottom: 12px;
     }
   
-    .resident-actions {
+    .guest-actions {
       gap: 6px;
     }
   
@@ -499,13 +499,13 @@
       gap: 4px;
     }
   
-    .resident-avatar {
+    .guest-avatar {
       width: 40px;
       height: 40px;
       font-size: 16px;
     }
   
-    .resident-name {
+    .guest-name {
       font-size: 16px;
     }
   

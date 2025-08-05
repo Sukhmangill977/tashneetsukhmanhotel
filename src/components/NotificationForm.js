@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './NotificationForm.css';
 
-const NotificationForm = ({ package: pkg, residents, onSubmit, onClose }) => {
+const NotificationForm = ({ package: pkg, guests, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     recipientType: 'package', // package, custom
     recipient: '',
@@ -80,7 +80,7 @@ Building Management`
       // Pre-fill with package recipient info
       setFormData(prev => ({
         ...prev,
-        recipient: pkg.residentName,
+        recipient: pkg.guestName,
         recipientEmail: pkg.recipientEmail,
         recipientPhone: pkg.recipientPhone
       }));
@@ -113,7 +113,7 @@ Building Management`
       setFormData(prev => ({
         ...prev,
         recipientType: 'package',
-        recipient: pkg.residentName,
+        recipient: pkg.guestName,
         recipientEmail: pkg.recipientEmail,
         recipientPhone: pkg.recipientPhone
       }));
@@ -126,14 +126,14 @@ Building Management`
         recipientPhone: ''
       }));
     } else {
-      const selectedResident = residents.find(r => r.id === recipientId);
-      if (selectedResident) {
+      const selectedguest = guests.find(r => r.id === recipientId);
+      if (selectedguest) {
         setFormData(prev => ({
           ...prev,
-          recipientType: 'resident',
-          recipient: selectedResident.name,
-          recipientEmail: selectedResident.email,
-          recipientPhone: selectedResident.phone
+          recipientType: 'guest',
+          recipient: selectedguest.name,
+          recipientEmail: selectedguest.email,
+          recipientPhone: selectedguest.phone
         }));
       }
     }
@@ -157,7 +157,7 @@ Building Management`
       if (pkg) {
         message = message
           .replace(/\{name\}/g, formData.recipient || '{name}')
-          .replace(/\{unit\}/g, pkg.unitNumber || '{unit}')
+          .replace(/\{unit\}/g, pkg.roomNumber || '{unit}')
           .replace(/\{courier\}/g, pkg.courier || '{courier}')
           .replace(/\{description\}/g, pkg.description || '{description}')
           .replace(/\{delivered_time\}/g, pkg.deliveredAt ? pkg.deliveredAt.toLocaleString() : '{delivered_time}')
@@ -324,12 +324,12 @@ Building Management`
                 className="form-select"
                 value={formData.recipientType === 'package' ? 'package' : formData.recipientType === 'custom' ? 'custom' : ''}
               >
-                {pkg && <option value="package">Package Recipient: {pkg.residentName}</option>}
+                {pkg && <option value="package">Package Recipient: {pkg.guestName}</option>}
                 <option value="custom">Custom Recipient</option>
-                <optgroup label="Residents">
-                  {residents.map(resident => (
-                    <option key={resident.id} value={resident.id}>
-                      {resident.name} - Unit {resident.unitNumber}
+                <optgroup label="guests">
+                  {guests.map(guest => (
+                    <option key={guest.id} value={guest.id}>
+                      {guest.name} - Unit {guest.roomNumber}
                     </option>
                   ))}
                 </optgroup>

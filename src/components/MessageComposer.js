@@ -7,7 +7,7 @@ const MessageComposer = ({
   isOpen, 
   onClose, 
   onSend, 
-  residents = [], 
+  guests = [], 
   selectedContact, 
   setSelectedContact, 
   replyTo = null, 
@@ -85,7 +85,7 @@ const MessageComposer = ({
       await onSend({
         content: message.trim(),
         template: selectedTemplate || null,
-        recipientCount: type === 'mass' ? residents.length : 1
+        recipientCount: type === 'mass' ? guests.length : 1
       });
       
       setMessage('');
@@ -102,7 +102,7 @@ const MessageComposer = ({
   const getTitle = () => {
     switch (type) {
       case 'mass': return 'Send Mass Message';
-      case 'reply': return `Reply to ${replyTo?.residentName || replyTo?.phoneNumber}`;
+      case 'reply': return `Reply to ${replyTo?.guestName || replyTo?.phoneNumber}`;
       case 'individual': return 'Send Message';
       default: return 'Send Message';
     }
@@ -110,11 +110,11 @@ const MessageComposer = ({
 
   const getRecipientInfo = () => {
     if (type === 'mass') {
-      return `Sending to all ${residents.length} residents`;
+      return `Sending to all ${guests.length} guests`;
     } else if (type === 'reply' && replyTo) {
-      return `Replying to: ${replyTo.residentName || replyTo.phoneNumber}`;
+      return `Replying to: ${replyTo.guestName || replyTo.phoneNumber}`;
     } else if (type === 'individual' && selectedContact) {
-      return `Sending to: ${selectedContact.name} - Unit ${selectedContact.unitNumber}`;
+      return `Sending to: ${selectedContact.name} - Unit ${selectedContact.roomNumber}`;
     }
     return 'No recipient selected';
   };
@@ -141,7 +141,7 @@ const MessageComposer = ({
                   <div className="contact-info">
                     <span className="contact-name">{selectedContact.name}</span>
                     <span className="contact-details">
-                      Unit {selectedContact.unitNumber} • {selectedContact.phone}
+                      Unit {selectedContact.roomNumber} • {selectedContact.phone}
                     </span>
                   </div>
                   <button 
@@ -235,7 +235,7 @@ const MessageComposer = ({
               ) : (
                 <>
                   <span className="send-icon">📤</span>
-                  {type === 'mass' ? `Send to ${residents.length} residents` : 'Send Message'}
+                  {type === 'mass' ? `Send to ${guests.length} guests` : 'Send Message'}
                 </>
               )}
             </button>
@@ -247,7 +247,7 @@ const MessageComposer = ({
           <ContactSelector
             isOpen={showContactSelector}
             onClose={() => setShowContactSelector(false)}
-            residents={residents}
+            guests={guests}
             onSelect={(contact) => {
               setSelectedContact(contact);
               setShowContactSelector(false);

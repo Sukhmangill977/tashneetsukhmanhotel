@@ -86,7 +86,7 @@ const LoginPage = () => {
               </div>
               <div className="login-brand-text">
                 <h1 className="login-brand-title">Claro AI</h1>
-                <p className="login-brand-subtitle">Property Management CRM</p>
+                <p className="login-brand-subtitle">Hotel Management CRM</p>
               </div>
               <p className="login-welcome-text">AI-Powered Concierge Dashboard</p>
             </div>

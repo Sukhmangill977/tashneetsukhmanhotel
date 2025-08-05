@@ -17,12 +17,12 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   
   // Data states
-  const [residents, setResidents] = useState([]);
+  const [guests, setguests] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [packages, setPackages] = useState([]);
   const [messages, setMessages] = useState([]);
   const [calls, setCalls] = useState([]);
-  const [issues, setIssues] = useState([]);
+  const [maintenanceRequests, setmaintenanceRequests] = useState([]);
   const [visitors, setVisitors] = useState([]);
   
   // Modal states
@@ -32,12 +32,12 @@ const Dashboard = () => {
   
   // Statistics
   const [stats, setStats] = useState({
-    totalResidents: 0,
+    totalguests: 0,
     todaysBookings: 0,
     pendingPackages: 0,
     unreadMessages: 0,
     missedCalls: 0,
-    openIssues: 0,
+    openmaintenanceRequests: 0,
     todaysVisitors: 0,
     responseTime: 0
   });
@@ -60,12 +60,12 @@ const Dashboard = () => {
       
       if (company) {
         await Promise.all([
-          loadResidents(company.id),
+          loadguests(company.id),
           loadBookings(company.id),
           loadPackages(company.id),
           loadMessages(company.id),
           loadCalls(company.id),
-          loadIssues(company.id),
+          loadmaintenanceRequests(company.id),
           loadVisitors(company.id)
         ]);
       }
@@ -74,12 +74,12 @@ const Dashboard = () => {
     }
   };
 
-  const loadResidents = async (companyId) => {
+  const loadguests = async (companyId) => {
     try {
-      const data = await dbService.getResidentsByCompany(companyId);
-      setResidents(data);
+      const data = await dbService.getguestsByCompany(companyId);
+      setguests(data);
     } catch (error) {
-      console.error('Error loading residents:', error);
+      console.error('Error loading guests:', error);
     }
   };
 
@@ -121,12 +121,12 @@ const Dashboard = () => {
     }
   };
 
-  const loadIssues = async (companyId) => {
+  const loadmaintenanceRequests = async (companyId) => {
     try {
-      const data = await dbService.getIssuesByCompany(companyId);
-      setIssues(data);
+      const data = await dbService.getmaintenanceRequestsByCompany(companyId);
+      setmaintenanceRequests(data);
     } catch (error) {
-      console.error('Error loading issues:', error);
+      console.error('Error loading maintenanceRequests:', error);
     }
   };
 
@@ -142,14 +142,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     calculateStats();
-  }, [residents, bookings, packages, messages, calls, issues, visitors]);
+  }, [guests, bookings, packages, messages, calls, maintenanceRequests, visitors]);
 
   const calculateStats = () => {
     const today = new Date();
     const todayStr = today.toDateString();
 
     setStats({
-      totalResidents: residents.length,
+      totalguests: guests.length,
       todaysBookings: bookings.filter(b => {
         const bookingDate = b.startDate?.toDate ? b.startDate.toDate() : new Date(b.startDate);
         return bookingDate.toDateString() === todayStr;
@@ -157,7 +157,7 @@ const Dashboard = () => {
       pendingPackages: packages.filter(p => p.status === 'pending').length,
       unreadMessages: messages.filter(m => !m.isRead && m.direction === 'incoming').length,
       missedCalls: calls.filter(c => c.status === 'missed').length,
-      openIssues: issues.filter(i => i.status === 'open').length,
+      openmaintenanceRequests: maintenanceRequests.filter(i => i.status === 'open').length,
       todaysVisitors: visitors.filter(v => {
         const visitDate = v.expectedArrival?.toDate ? v.expectedArrival.toDate() : new Date(v.expectedArrival);
         return visitDate?.toDateString() === todayStr;
@@ -214,8 +214,8 @@ const Dashboard = () => {
       .slice(0, 5);
   };
 
-  const getRecentIssues = () => {
-    return issues
+  const getRecentmaintenanceRequests = () => {
+    return maintenanceRequests
       .filter(issue => issue.status === 'open')
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, 5);
@@ -291,7 +291,7 @@ const Dashboard = () => {
   const todaysBookings = getTodaysBookings();
   const recentPackages = getRecentPackages();
   const recentMessages = getRecentMessages();
-  const recentIssues = getRecentIssues();
+  const recentmaintenanceRequests = getRecentmaintenanceRequests();
   const todaysVisitors = getTodaysVisitors();
 
   return (
@@ -339,11 +339,11 @@ const Dashboard = () => {
 
         {/* Stats Overview */}
         <div className="stats-grid">
-          <div className="stat-card residents" onClick={() => navigate('/residents')}>
+          <div className="stat-card guests" onClick={() => navigate('/guests')}>
             <div className="stat-icon">👥</div>
             <div className="stat-content">
-              <h3>{stats.totalResidents}</h3>
-              <p>Total Residents</p>
+              <h3>{stats.totalguests}</h3>
+              <p>Total guests</p>
               <span className="stat-change">Active accounts</span>
             </div>
           </div>
@@ -384,11 +384,11 @@ const Dashboard = () => {
   </div>
 </div>
 
-<div className="stat-card issues" onClick={() => navigate('/complaints')}>
+<div className="stat-card maintenanceRequests" onClick={() => navigate('/complaints')}>
   <div className="stat-icon"><FaExclamationTriangle /></div>
   <div className="stat-content">
-    <h3>{stats.openIssues}</h3>
-    <p>Open Issues</p>
+    <h3>{stats.openmaintenanceRequests}</h3>
+    <p>Open maintenanceRequests</p>
     <span className="stat-change">Require attention</span>
   </div>
 </div>
@@ -440,7 +440,7 @@ const Dashboard = () => {
                       </div>
                       <div className="activity-details">
                         <h4>{booking.title}</h4>
-                        <p>Unit {booking.contactInfo?.unitNumber || 'N/A'}</p>
+                        <p>Unit {booking.contactInfo?.roomNumber || 'N/A'}</p>
                       </div>
                       <div className="activity-status confirmed">
                         {booking.status}
@@ -477,7 +477,7 @@ const Dashboard = () => {
                         {formatDate(pkg.createdAt)}
                       </div>
                       <div className="activity-details">
-                        <h4>Unit {pkg.unitNumber}</h4>
+                        <h4>Unit {pkg.roomNumber}</h4>
                         <p>{pkg.courier} - {pkg.description}</p>
                       </div>
                       <div className="activity-status pending">
@@ -515,7 +515,7 @@ const Dashboard = () => {
                         {formatTime(msg.timestamp)}
                       </div>
                       <div className="activity-details">
-                        <h4>{msg.residentName || msg.phoneNumber}</h4>
+                        <h4>{msg.guestName || msg.phoneNumber}</h4>
                         <p>{msg.content?.substring(0, 50)}...</p>
                       </div>
                       <div className="activity-status unread">
@@ -528,10 +528,10 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Open Issues */}
+          {/* Open maintenanceRequests */}
           <div className="activity-card">
             <div className="activity-header">
-              <h3>Open Issues</h3>
+              <h3>Open maintenanceRequests</h3>
               <button 
                 className="view-all-btn"
                 onClick={() => navigate('/complaints')}
@@ -540,21 +540,21 @@ const Dashboard = () => {
               </button>
             </div>
             <div className="activity-content">
-              {recentIssues.length === 0 ? (
+              {recentmaintenanceRequests.length === 0 ? (
                 <div className="empty-state">
                   <div className="empty-icon">✅</div>
-                  <p>No open issues</p>
+                  <p>No open maintenanceRequests</p>
                 </div>
               ) : (
                 <div className="activity-list">
-                  {recentIssues.map(issue => (
+                  {recentmaintenanceRequests.map(issue => (
                     <div key={issue.id} className="activity-item">
                       <div className="activity-time">
                         {formatDate(issue.createdAt)}
                       </div>
                       <div className="activity-details">
                         <h4>{issue.title}</h4>
-                        <p>Unit {issue.unitNumber} - {issue.category}</p>
+                        <p>Unit {issue.roomNumber} - {issue.category}</p>
                       </div>
                       <div className={`activity-status ${issue.priority}`}>
                         {issue.priority}
@@ -592,7 +592,7 @@ const Dashboard = () => {
                       </div>
                       <div className="activity-details">
                         <h4>{visitor.name}</h4>
-                        <p>Visiting Unit {visitor.unitNumber}</p>
+                        <p>Visiting Unit {visitor.roomNumber}</p>
                       </div>
                       <div className={`activity-status ${visitor.status}`}>
                         {visitor.status}
@@ -650,7 +650,7 @@ const Dashboard = () => {
         {showBookingModal && (
           <div className="modal-backdrop">
             <BookingForm
-              residents={residents}
+              guests={guests}
               amenities={userCompany?.amenities || []}
               onSubmit={handleQuickBooking}
               onClose={() => setShowBookingModal(false)}
@@ -663,14 +663,14 @@ const Dashboard = () => {
             isOpen={showMessageModal}
             onClose={() => setShowMessageModal(false)}
             onSend={handleQuickMessage}
-            residents={residents}
+            guests={guests}
             type="individual"
           />
         )}
 
         {showPackageModal && (
           <PackageForm
-            residents={residents}
+            guests={guests}
             onSubmit={handleQuickPackage}
             onClose={() => setShowPackageModal(false)}
           />

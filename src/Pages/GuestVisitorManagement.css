@@ -1,6 +1,6 @@
-/* pages/PackageCenter.css */
+/* pages/GuestVisitorManagement.css */
 
-.package-center {
+.visitor-management {
     max-width: 100%;
     margin: 0 auto;
   }
@@ -115,19 +115,19 @@
     flex-shrink: 0;
   }
   
-  .stat-icon.pending {
+  .stat-icon.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+  }
+  
+  .stat-icon.expected {
     background: rgba(245, 158, 11, 0.1);
     color: #f59e0b;
   }
   
-  .stat-icon.notified {
+  .stat-icon.parking {
     background: rgba(59, 130, 246, 0.1);
     color: #3b82f6;
-  }
-  
-  .stat-icon.picked-up {
-    background: rgba(16, 185, 129, 0.1);
-    color: #10b981;
   }
   
   .stat-icon.total {
@@ -156,6 +156,50 @@
     font-size: 14px;
     color: #64748b;
     font-weight: 600;
+  }
+  
+  /* Tab Navigation */
+  .tab-navigation {
+    display: flex;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 24px;
+    gap: 4px;
+  }
+  
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .tab-btn:hover {
+    color: #334155;
+    background: rgba(59, 130, 246, 0.05);
+  }
+  
+  .tab-btn.active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  }
+  
+  .tab-btn svg {
+    width: 18px;
+    height: 18px;
   }
   
   /* Search and Filter Bar */
@@ -265,8 +309,8 @@
     white-space: nowrap;
   }
   
-  /* Packages Container */
-  .packages-container {
+  /* Content Container */
+  .content-container {
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
@@ -274,26 +318,27 @@
     overflow: hidden;
   }
   
-  .packages-list {
+  /* Visitors List */
+  .visitors-list {
     display: flex;
     flex-direction: column;
     gap: 1px;
     background: #f1f5f9;
   }
   
-  .package-card {
+  .visitor-card {
     background: white;
     padding: 24px;
     transition: all 0.2s ease;
     border-left: 4px solid transparent;
   }
   
-  .package-card:hover {
+  .visitor-card:hover {
     background: #f8fafc;
     border-left-color: #3b82f6;
   }
   
-  .package-header {
+  .visitor-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -301,11 +346,11 @@
     gap: 16px;
   }
   
-  .package-info {
+  .visitor-info {
     flex: 1;
   }
   
-  .package-title {
+  .visitor-name {
     font-size: 18px;
     font-weight: 700;
     color: #1e293b;
@@ -313,25 +358,25 @@
     line-height: 1.2;
   }
   
-  .package-meta {
+  .visitor-meta {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
   
-  .resident-info {
+  .visiting-info {
     font-size: 14px;
     color: #3b82f6;
     font-weight: 600;
   }
   
-  .delivery-time {
+  .visit-time {
     font-size: 14px;
     color: #64748b;
     font-weight: 500;
   }
   
-  .package-status {
+  .visitor-status {
     flex-shrink: 0;
   }
   
@@ -345,7 +390,7 @@
     color: white;
   }
   
-  .package-details {
+  .visitor-details {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
@@ -377,7 +422,7 @@
     word-break: break-word;
   }
   
-  .package-actions {
+  .visitor-actions {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -397,6 +442,26 @@
     transition: all 0.2s ease;
   }
   
+  .action-btn.checkin {
+    background: #10b981;
+    color: white;
+  }
+  
+  .action-btn.checkin:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+  
+  .action-btn.checkout {
+    background: #6b7280;
+    color: white;
+  }
+  
+  .action-btn.checkout:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+  }
+  
   .action-btn.notify {
     background: #3b82f6;
     color: white;
@@ -407,29 +472,123 @@
     transform: translateY(-1px);
   }
   
-  .action-btn.pickup {
-    background: #10b981;
-    color: white;
-  }
-  
-  .action-btn.pickup:hover {
-    background: #059669;
-    transform: translateY(-1px);
-  }
-  
-  .action-btn.edit {
+  .action-btn.view {
     background: #f59e0b;
     color: white;
   }
   
-  .action-btn.edit:hover {
+  .action-btn.view:hover {
     background: #d97706;
+    transform: translateY(-1px);
+  }
+  
+  .action-btn.edit {
+    background: #8b5cf6;
+    color: white;
+  }
+  
+  .action-btn.edit:hover {
+    background: #7c3aed;
     transform: translateY(-1px);
   }
   
   .action-btn svg {
     width: 14px;
     height: 14px;
+  }
+  
+  /* parking Requests List */
+  .parking-requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: #f1f5f9;
+  }
+  
+  .parking-request-card {
+    background: white;
+    padding: 24px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+  }
+  
+  .parking-request-card:hover {
+    background: #f8fafc;
+    border-left-color: #3b82f6;
+  }
+  
+  .request-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+  
+  .request-info {
+    flex: 1;
+  }
+  
+  .requester-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+  }
+  
+  .request-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .request-date {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .request-status {
+    flex-shrink: 0;
+  }
+  
+  .request-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .request-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .action-btn.approve {
+    background: #10b981;
+    color: white;
+  }
+  
+  .action-btn.approve:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+  
+  .action-btn.deny {
+    background: #ef4444;
+    color: white;
+  }
+  
+  .action-btn.deny:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
   }
   
   /* Empty State */
@@ -503,7 +662,8 @@
       grid-template-columns: repeat(2, 1fr);
     }
     
-    .package-details {
+    .visitor-details,
+    .request-details {
       grid-template-columns: 1fr;
       gap: 8px;
     }
@@ -540,29 +700,44 @@
       gap: 16px;
     }
   
-    .package-card {
+    .tab-navigation {
+      flex-direction: column;
+      gap: 4px;
+    }
+  
+    .tab-btn {
+      justify-content: flex-start;
+    }
+  
+    .visitor-card,
+    .parking-request-card {
       padding: 20px;
     }
   
-    .package-header {
+    .visitor-header,
+    .request-header {
       flex-direction: column;
       align-items: stretch;
       gap: 12px;
     }
   
-    .package-meta {
+    .visitor-meta,
+    .request-meta {
       flex-direction: row;
       gap: 12px;
     }
   
-    .package-actions {
+    .visitor-actions,
+    .request-actions {
       justify-content: center;
+      flex-direction: column;
+      gap: 8px;
     }
   
     .action-btn {
       flex: 1;
       justify-content: center;
-      min-width: 0;
+      width: 100%;
     }
   }
   
@@ -577,7 +752,8 @@
       gap: 8px;
     }
   
-    .package-details {
+    .visitor-details,
+    .request-details {
       padding: 12px;
     }
   
@@ -590,17 +766,8 @@
       min-width: auto;
     }
   
-    .package-actions {
-      flex-direction: column;
-      gap: 8px;
-    }
-  
-    .action-btn {
-      flex: none;
-      width: 100%;
-    }
-  
-    .package-meta {
+    .visitor-meta,
+    .request-meta {
       flex-direction: column;
       gap: 4px;
     }

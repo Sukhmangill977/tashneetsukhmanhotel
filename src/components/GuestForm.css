@@ -1,4 +1,4 @@
-/* components/ResidentForm.css */
+/* components/GuestForm.css */
 
 .modal-backdrop {
     position: fixed;
@@ -18,7 +18,7 @@
     to { opacity: 1; }
   }
   
-  .resident-form-modal {
+  .guest-form-modal {
     background: white;
     border-radius: 16px;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
@@ -80,7 +80,7 @@
     height: 20px;
   }
   
-  .resident-form {
+  .guest-form {
     padding: 32px;
     max-height: calc(90vh - 80px);
     overflow-y: auto;
@@ -88,15 +88,15 @@
     scrollbar-color: #cbd5e1 transparent;
   }
   
-  .resident-form::-webkit-scrollbar {
+  .guest-form::-webkit-scrollbar {
     width: 6px;
   }
   
-  .resident-form::-webkit-scrollbar-track {
+  .guest-form::-webkit-scrollbar-track {
     background: transparent;
   }
   
-  .resident-form::-webkit-scrollbar-thumb {
+  .guest-form::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
@@ -308,7 +308,7 @@
       padding: 16px;
     }
     
-    .resident-form-modal {
+    .guest-form-modal {
       max-width: 100%;
       max-height: 95vh;
     }
@@ -321,7 +321,7 @@
       font-size: 20px;
     }
     
-    .resident-form {
+    .guest-form {
       padding: 24px;
     }
     
@@ -351,7 +351,7 @@
       padding: 16px 20px;
     }
     
-    .resident-form {
+    .guest-form {
       padding: 20px;
     }
     

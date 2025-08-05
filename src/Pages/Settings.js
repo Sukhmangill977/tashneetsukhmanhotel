@@ -179,7 +179,7 @@ const Settings = () => {
         }
       };
 
-      await dbService.updatePropertyCompany(userCompany.id, updatedCompany);
+      await dbService.updatehotel(userCompany.id, updatedCompany);
       setUserCompany(updatedCompany);
       setSuccessMessage('Company settings saved successfully!');
     } catch (error) {
@@ -350,7 +350,7 @@ const Settings = () => {
             <div className="integration-icon twilio">📱</div>
             <div>
               <h4>Twilio SMS</h4>
-              <p>Send SMS messages to residents</p>
+              <p>Send SMS messages to guests</p>
             </div>
           </div>
           <label className="toggle-switch">
@@ -486,7 +486,7 @@ const Settings = () => {
         <div className="automation-item">
           <div className="automation-info">
             <h4>Package Notifications</h4>
-            <p>Automatically notify residents when packages arrive</p>
+            <p>Automatically notify guests when packages arrive</p>
           </div>
           <label className="toggle-switch">
             <input
@@ -516,7 +516,7 @@ const Settings = () => {
         <div className="automation-item">
           <div className="automation-info">
             <h4>Maintenance Alerts</h4>
-            <p>Notify residents about scheduled maintenance</p>
+            <p>Notify guests about scheduled maintenance</p>
           </div>
           <label className="toggle-switch">
             <input

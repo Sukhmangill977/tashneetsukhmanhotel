@@ -1,52 +1,52 @@
-// components/ResidentDetails.js
+// components/GuestDetails.js
 import React, { useState, useEffect } from 'react';
 import { dbService } from '../database-service';
-import './ResidentDetails.css';
+import './GuestDetails.css';
 
-const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
+const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [residentData, setResidentData] = useState({
+  const [guestData, setguestData] = useState({
     bookings: [],
-    issues: [],
+    maintenanceRequests: [],
     messages: [],
     visitors: []
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadResidentData();
-  }, [resident]);
+    loadguestData();
+  }, [guest]);
 
-  const loadResidentData = async () => {
-    if (!resident || !userCompany) return;
+  const loadguestData = async () => {
+    if (!guest || !userCompany) return;
     
     setLoading(true);
     try {
-      // Load all related data for this resident
-      const [bookings, issues] = await Promise.all([
+      // Load all related data for this guest
+      const [bookings, maintenanceRequests] = await Promise.all([
         dbService.getBookingsByCompany(userCompany.id),
-        dbService.getIssuesByCompany(userCompany.id)
+        dbService.getmaintenanceRequestsByCompany(userCompany.id)
       ]);
 
-      // Filter data for this specific resident
-      const residentBookings = bookings.filter(booking => 
-        booking.residentId === resident.id ||
-        booking.contactInfo?.email === resident.email
+      // Filter data for this specific guest
+      const guestBookings = bookings.filter(booking => 
+        booking.guestId === guest.id ||
+        booking.contactInfo?.email === guest.email
       );
 
-      const residentIssues = issues.filter(issue => 
-        issue.residentId === resident.id ||
-        issue.unitNumber === resident.unitNumber
+      const guestmaintenanceRequests = maintenanceRequests.filter(issue => 
+        issue.guestId === guest.id ||
+        issue.roomNumber === guest.roomNumber
       );
 
-      setResidentData({
-        bookings: residentBookings,
-        issues: residentIssues,
+      setguestData({
+        bookings: guestBookings,
+        maintenanceRequests: guestmaintenanceRequests,
         messages: [], // TODO: Implement when message system is ready
         visitors: []  // TODO: Implement when visitor system is ready
       });
     } catch (error) {
-      console.error('Error loading resident data:', error);
+      console.error('Error loading guest data:', error);
     } finally {
       setLoading(false);
     }
@@ -111,10 +111,10 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: '👤' },
-    { id: 'bookings', label: 'Bookings', icon: '📅', count: residentData.bookings.length },
-    { id: 'issues', label: 'Issues', icon: '⚠️', count: residentData.issues.length },
-    { id: 'messages', label: 'Messages', icon: '💬', count: residentData.messages.length },
-    { id: 'visitors', label: 'Visitors', icon: '👥', count: residentData.visitors.length }
+    { id: 'bookings', label: 'Bookings', icon: '📅', count: guestData.bookings.length },
+    { id: 'maintenanceRequests', label: 'maintenanceRequests', icon: '⚠️', count: guestData.maintenanceRequests.length },
+    { id: 'messages', label: 'Messages', icon: '💬', count: guestData.messages.length },
+    { id: 'visitors', label: 'Visitors', icon: '👥', count: guestData.visitors.length }
   ];
 
   const renderOverviewTab = () => (
@@ -125,38 +125,38 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
           <div className="info-list">
             <div className="info-item">
               <span className="info-label">Email:</span>
-              <span className="info-value">{resident.email}</span>
+              <span className="info-value">{guest.email}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Phone:</span>
-              <span className="info-value">{resident.phone}</span>
+              <span className="info-value">{guest.phone}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Unit:</span>
-              <span className="info-value">Unit {resident.unitNumber}</span>
+              <span className="info-value">Unit {guest.roomNumber}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Resident Since:</span>
-              <span className="info-value">{formatDate(resident.createdAt)}</span>
+              <span className="info-label">guest Since:</span>
+              <span className="info-value">{formatDate(guest.createdAt)}</span>
             </div>
           </div>
         </div>
 
-        {resident.emergencyContact && resident.emergencyContact.name && (
+        {guest.emergencyContact && guest.emergencyContact.name && (
           <div className="info-card">
             <h3>Emergency Contact</h3>
             <div className="info-list">
               <div className="info-item">
                 <span className="info-label">Name:</span>
-                <span className="info-value">{resident.emergencyContact.name}</span>
+                <span className="info-value">{guest.emergencyContact.name}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">Phone:</span>
-                <span className="info-value">{resident.emergencyContact.phone}</span>
+                <span className="info-value">{guest.emergencyContact.phone}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">Relationship:</span>
-                <span className="info-value">{resident.emergencyContact.relationship}</span>
+                <span className="info-value">{guest.emergencyContact.relationship}</span>
               </div>
             </div>
           </div>
@@ -166,28 +166,28 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
           <h3>Activity Summary</h3>
           <div className="activity-stats">
             <div className="stat-item">
-              <div className="stat-number">{residentData.bookings.length}</div>
+              <div className="stat-number">{guestData.bookings.length}</div>
               <div className="stat-label">Total Bookings</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number">{residentData.issues.length}</div>
-              <div className="stat-label">Issues Reported</div>
+              <div className="stat-number">{guestData.maintenanceRequests.length}</div>
+              <div className="stat-label">maintenanceRequests Reported</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number">{residentData.messages.length}</div>
+              <div className="stat-number">{guestData.messages.length}</div>
               <div className="stat-label">Messages</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number">{residentData.visitors.length}</div>
+              <div className="stat-number">{guestData.visitors.length}</div>
               <div className="stat-label">Visitors</div>
             </div>
           </div>
         </div>
 
-        {resident.notes && (
+        {guest.notes && (
           <div className="info-card full-width">
             <h3>Notes</h3>
-            <p className="notes-content">{resident.notes}</p>
+            <p className="notes-content">{guest.notes}</p>
           </div>
         )}
       </div>
@@ -196,9 +196,9 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
 
   const renderBookingsTab = () => (
     <div className="tab-content">
-      {residentData.bookings.length > 0 ? (
+      {guestData.bookings.length > 0 ? (
         <div className="data-list">
-          {residentData.bookings
+          {guestData.bookings
             .sort((a, b) => {
               const dateA = a.startDate.toDate ? a.startDate.toDate() : new Date(a.startDate);
               const dateB = b.startDate.toDate ? b.startDate.toDate() : new Date(b.startDate);
@@ -252,17 +252,17 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
         <div className="empty-tab">
           <div className="empty-icon">📅</div>
           <h3>No Bookings</h3>
-          <p>This resident hasn't made any bookings yet.</p>
+          <p>This guest hasn't made any bookings yet.</p>
         </div>
       )}
     </div>
   );
 
-  const renderIssuesTab = () => (
+  const rendermaintenanceRequestsTab = () => (
     <div className="tab-content">
-      {residentData.issues.length > 0 ? (
+      {guestData.maintenanceRequests.length > 0 ? (
         <div className="data-list">
-          {residentData.issues
+          {guestData.maintenanceRequests
             .sort((a, b) => {
               const dateA = a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
               const dateB = b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
@@ -321,8 +321,8 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
       ) : (
         <div className="empty-tab">
           <div className="empty-icon">⚠️</div>
-          <h3>No Issues</h3>
-          <p>This resident hasn't reported any issues.</p>
+          <h3>No maintenanceRequests</h3>
+          <p>This guest hasn't reported any maintenanceRequests.</p>
         </div>
       )}
     </div>
@@ -372,7 +372,7 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
     switch (activeTab) {
       case 'overview': return renderOverviewTab();
       case 'bookings': return renderBookingsTab();
-      case 'issues': return renderIssuesTab();
+      case 'maintenanceRequests': return rendermaintenanceRequestsTab();
       case 'messages': return renderMessagesTab();
       case 'visitors': return renderVisitorsTab();
       default: return renderOverviewTab();
@@ -381,15 +381,15 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="resident-details-modal" onClick={e => e.stopPropagation()}>
+      <div className="guest-details-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="resident-header-info">
-            <div className="resident-avatar large">
-              {resident.name.charAt(0).toUpperCase()}
+          <div className="guest-header-info">
+            <div className="guest-avatar large">
+              {guest.name.charAt(0).toUpperCase()}
             </div>
-            <div className="resident-info">
-              <h2 className="resident-name">{resident.name}</h2>
-              <p className="resident-unit">Unit {resident.unitNumber}</p>
+            <div className="guest-info">
+              <h2 className="guest-name">{guest.name}</h2>
+              <p className="guest-unit">Unit {guest.roomNumber}</p>
             </div>
           </div>
           <div className="header-actions">
@@ -429,7 +429,7 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
           {loading ? (
             <div className="loading-state">
               <div className="loading-spinner"></div>
-              <p>Loading resident data...</p>
+              <p>Loading guest data...</p>
             </div>
           ) : (
             renderTabContent()
@@ -440,4 +440,4 @@ const ResidentDetails = ({ resident, userCompany, onEdit, onClose }) => {
   );
 };
 
-export default ResidentDetails;
+export default GuestDetails;

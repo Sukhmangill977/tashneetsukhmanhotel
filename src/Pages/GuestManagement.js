@@ -1,20 +1,20 @@
-// pages/ResidentManagement.js
+// pages/GuestManagement.js
 import React, { useState, useEffect } from 'react';
 import { auth } from '../firebase-config';
 import { dbService } from '../database-service';
 import Layout from '../components/Layout';
-import ResidentForm from '../components/ResidentForm';
-import ResidentDetails from '../components/ResidentDetails';
-import './ResidentManagement.css';
+import GuestForm from '../components/GuestForm';
+import GuestDetails from '../components/GuestDetails';
+import './GuestManagement.css';
 
-const ResidentManagement = () => {
+const GuestManagement = () => {
   const [userCompany, setUserCompany] = useState(null);
-  const [residents, setResidents] = useState([]);
-  const [filteredResidents, setFilteredResidents] = useState([]);
+  const [guests, setguests] = useState([]);
+  const [filteredguests, setFilteredguests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedResident, setSelectedResident] = useState(null);
-  const [showResidentForm, setShowResidentForm] = useState(false);
-  const [showResidentDetails, setShowResidentDetails] = useState(false);
+  const [selectedguest, setSelectedguest] = useState(null);
+  const [showGuestForm, setShowGuestForm] = useState(false);
+  const [showGuestDetails, setShowGuestDetails] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -31,8 +31,8 @@ const ResidentManagement = () => {
   }, []);
 
   useEffect(() => {
-    filterAndSortResidents();
-  }, [residents, searchTerm, sortBy, sortOrder]);
+    filterAndSortguests();
+  }, [guests, searchTerm, sortBy, sortOrder]);
 
   const loadUserData = async (email) => {
     try {
@@ -40,34 +40,34 @@ const ResidentManagement = () => {
       setUserCompany(company);
       
       if (company) {
-        await loadResidents(company.id);
+        await loadguests(company.id);
       }
     } catch (error) {
       console.error('Error loading user data:', error);
     }
   };
 
-  const loadResidents = async (companyId) => {
+  const loadguests = async (companyId) => {
     try {
-      const residentsData = await dbService.getResidentsByCompany(companyId);
-      setResidents(residentsData);
+      const guestsData = await dbService.getguestsByCompany(companyId);
+      setguests(guestsData);
     } catch (error) {
-      console.error('Error loading residents:', error);
+      console.error('Error loading guests:', error);
     }
   };
 
-  const filterAndSortResidents = () => {
-    let filtered = residents.filter(resident => {
+  const filterAndSortguests = () => {
+    let filtered = guests.filter(guest => {
       const searchLower = searchTerm.toLowerCase();
       return (
-        resident.name.toLowerCase().includes(searchLower) ||
-        resident.unitNumber.toLowerCase().includes(searchLower) ||
-        resident.email.toLowerCase().includes(searchLower) ||
-        resident.phone.toLowerCase().includes(searchLower)
+        guest.name.toLowerCase().includes(searchLower) ||
+        guest.roomNumber.toLowerCase().includes(searchLower) ||
+        guest.email.toLowerCase().includes(searchLower) ||
+        guest.phone.toLowerCase().includes(searchLower)
       );
     });
 
-    // Sort residents
+    // Sort guests
     filtered.sort((a, b) => {
       let aValue, bValue;
       
@@ -77,8 +77,8 @@ const ResidentManagement = () => {
           bValue = b.name.toLowerCase();
           break;
         case 'unit':
-          aValue = parseInt(a.unitNumber) || 0;
-          bValue = parseInt(b.unitNumber) || 0;
+          aValue = parseInt(a.roomNumber) || 0;
+          bValue = parseInt(b.roomNumber) || 0;
           break;
         case 'email':
           aValue = a.email.toLowerCase();
@@ -100,49 +100,49 @@ const ResidentManagement = () => {
       }
     });
 
-    setFilteredResidents(filtered);
+    setFilteredguests(filtered);
   };
 
-  const handleAddResident = () => {
-    setSelectedResident(null);
-    setShowResidentForm(true);
+  const handleAddguest = () => {
+    setSelectedguest(null);
+    setShowGuestForm(true);
   };
 
-  const handleEditResident = (resident) => {
-    setSelectedResident(resident);
-    setShowResidentForm(true);
+  const handleEditguest = (guest) => {
+    setSelectedguest(guest);
+    setShowGuestForm(true);
   };
 
-  const handleViewResident = (resident) => {
-    setSelectedResident(resident);
-    setShowResidentDetails(true);
+  const handleViewguest = (guest) => {
+    setSelectedguest(guest);
+    setShowGuestDetails(true);
   };
 
-  const handleDeleteResident = async (resident) => {
-    if (window.confirm(`Are you sure you want to delete ${resident.name}?`)) {
+  const handleDeleteguest = async (guest) => {
+    if (window.confirm(`Are you sure you want to delete ${guest.name}?`)) {
       try {
-        await dbService.deleteResident(resident.id);
-        await loadResidents(userCompany.id);
+        await dbService.deleteguest(guest.id);
+        await loadguests(userCompany.id);
       } catch (error) {
-        console.error('Error deleting resident:', error);
-        alert('Error deleting resident. Please try again.');
+        console.error('Error deleting guest:', error);
+        alert('Error deleting guest. Please try again.');
       }
     }
   };
 
-  const handleResidentSubmit = async (residentData) => {
+  const handleguestSubmit = async (guestData) => {
     try {
-      if (selectedResident) {
-        await dbService.updateResident(selectedResident.id, residentData);
+      if (selectedguest) {
+        await dbService.updateguest(selectedguest.id, guestData);
       } else {
-        await dbService.addResident(userCompany.id, residentData);
+        await dbService.addguest(userCompany.id, guestData);
       }
       
-      await loadResidents(userCompany.id);
-      setShowResidentForm(false);
-      setSelectedResident(null);
+      await loadguests(userCompany.id);
+      setShowGuestForm(false);
+      setSelectedguest(null);
     } catch (error) {
-      console.error('Error saving resident:', error);
+      console.error('Error saving guest:', error);
       throw error;
     }
   };
@@ -164,35 +164,35 @@ const ResidentManagement = () => {
 
   if (loading) {
     return (
-      <Layout currentPageName="Resident Management">
+      <Layout currentPageName="guest Management">
         <div className="loading-state">
           <div className="loading-spinner"></div>
-          <p>Loading residents...</p>
+          <p>Loading guests...</p>
         </div>
       </Layout>
     );
   }
 
   return (
-    <Layout currentPageName="Resident Management">
-      <div className="resident-management">
+    <Layout currentPageName="guest Management">
+      <div className="guest-management">
         {/* Page Header */}
         <div className="page-header">
           <div className="header-content">
             <div className="header-left">
-              <h1 className="page-title">Resident Management</h1>
+              <h1 className="page-title">guest Management</h1>
               <p className="page-description">
-                Manage resident information, contacts, and unit assignments
+                Manage guest information, contacts, and unit assignments
               </p>
             </div>
             <div className="header-actions">
-              <button className="primary-btn" onClick={handleAddResident}>
+              <button className="primary-btn" onClick={handleAddguest}>
                 <svg viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                   <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                   <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-                Add Resident
+                Add guest
               </button>
             </div>
           </div>
@@ -207,7 +207,7 @@ const ResidentManagement = () => {
             </svg>
             <input
               type="text"
-              placeholder="Search residents by name, unit, email, or phone..."
+              placeholder="Search guests by name, unit, email, or phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -242,29 +242,29 @@ const ResidentManagement = () => {
             </div>
 
             <div className="results-count">
-              {filteredResidents.length} of {residents.length} residents
+              {filteredguests.length} of {guests.length} guests
             </div>
           </div>
         </div>
 
-        {/* Residents Grid */}
-        <div className="residents-container">
-          {filteredResidents.length > 0 ? (
-            <div className="residents-grid">
-              {filteredResidents.map((resident) => (
-                <div key={resident.id} className="resident-card">
-                  <div className="resident-header">
-                    <div className="resident-avatar">
-                      {resident.name.charAt(0).toUpperCase()}
+        {/* guests Grid */}
+        <div className="guests-container">
+          {filteredguests.length > 0 ? (
+            <div className="guests-grid">
+              {filteredguests.map((guest) => (
+                <div key={guest.id} className="guest-card">
+                  <div className="guest-header">
+                    <div className="guest-avatar">
+                      {guest.name.charAt(0).toUpperCase()}
                     </div>
-                    <div className="resident-info">
-                      <h3 className="resident-name">{resident.name}</h3>
-                      <p className="resident-unit">Unit {resident.unitNumber}</p>
+                    <div className="guest-info">
+                      <h3 className="guest-name">{guest.name}</h3>
+                      <p className="guest-unit">Unit {guest.roomNumber}</p>
                     </div>
-                    <div className="resident-actions">
+                    <div className="guest-actions">
                       <button
                         className="action-btn view"
-                        onClick={() => handleViewResident(resident)}
+                        onClick={() => handleViewguest(guest)}
                         title="View Details"
                       >
                         <svg viewBox="0 0 24 24" fill="none">
@@ -274,8 +274,8 @@ const ResidentManagement = () => {
                       </button>
                       <button
                         className="action-btn edit"
-                        onClick={() => handleEditResident(resident)}
-                        title="Edit Resident"
+                        onClick={() => handleEditguest(guest)}
+                        title="Edit guest"
                       >
                         <svg viewBox="0 0 24 24" fill="none">
                           <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -284,8 +284,8 @@ const ResidentManagement = () => {
                       </button>
                       <button
                         className="action-btn delete"
-                        onClick={() => handleDeleteResident(resident)}
-                        title="Delete Resident"
+                        onClick={() => handleDeleteguest(guest)}
+                        title="Delete guest"
                       >
                         <svg viewBox="0 0 24 24" fill="none">
                           <polyline points="3,6 5,6 21,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -295,19 +295,19 @@ const ResidentManagement = () => {
                     </div>
                   </div>
 
-                  <div className="resident-details">
+                  <div className="guest-details">
                     <div className="detail-item">
                       <svg viewBox="0 0 24 24" fill="none">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="2"/>
                         <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="2"/>
                       </svg>
-                      <span>{resident.email}</span>
+                      <span>{guest.email}</span>
                     </div>
                     <div className="detail-item">
                       <svg viewBox="0 0 24 24" fill="none">
                         <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" strokeWidth="2"/>
                       </svg>
-                      <span>{resident.phone}</span>
+                      <span>{guest.phone}</span>
                     </div>
                     <div className="detail-item">
                       <svg viewBox="0 0 24 24" fill="none">
@@ -316,14 +316,14 @@ const ResidentManagement = () => {
                         <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                         <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2"/>
                       </svg>
-                      <span>Added {formatDate(resident.createdAt)}</span>
+                      <span>Added {formatDate(guest.createdAt)}</span>
                     </div>
                   </div>
 
-                  <div className="resident-footer">
+                  <div className="guest-footer">
                     <button
                       className="contact-btn"
-                      onClick={() => handleViewResident(resident)}
+                      onClick={() => handleViewguest(guest)}
                     >
                       View Profile
                     </button>
@@ -339,49 +339,49 @@ const ResidentManagement = () => {
                   <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
                   <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                <h3>No residents found</h3>
+                <h3>No guests found</h3>
                 <p>
                   {searchTerm
-                    ? `No residents match "${searchTerm}". Try adjusting your search.`
-                    : 'Get started by adding your first resident.'}
+                    ? `No guests match "${searchTerm}". Try adjusting your search.`
+                    : 'Get started by adding your first guest.'}
                 </p>
-                <button className="primary-btn" onClick={handleAddResident}>
+                <button className="primary-btn" onClick={handleAddguest}>
                   <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                     <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                     <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
-                  Add First Resident
+                  Add First guest
                 </button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Resident Form Modal */}
-        {showResidentForm && (
-          <ResidentForm
-            resident={selectedResident}
-            onSubmit={handleResidentSubmit}
+        {/* guest Form Modal */}
+        {showGuestForm && (
+          <GuestForm
+            guest={selectedguest}
+            onSubmit={handleguestSubmit}
             onClose={() => {
-              setShowResidentForm(false);
-              setSelectedResident(null);
+              setShowGuestForm(false);
+              setSelectedguest(null);
             }}
           />
         )}
 
-        {/* Resident Details Modal */}
-        {showResidentDetails && selectedResident && (
-          <ResidentDetails
-            resident={selectedResident}
+        {/* guest Details Modal */}
+        {showGuestDetails && selectedguest && (
+          <GuestDetails
+            guest={selectedguest}
             userCompany={userCompany}
             onEdit={() => {
-              setShowResidentDetails(false);
-              setShowResidentForm(true);
+              setShowGuestDetails(false);
+              setShowGuestForm(true);
             }}
             onClose={() => {
-              setShowResidentDetails(false);
-              setSelectedResident(null);
+              setShowGuestDetails(false);
+              setSelectedguest(null);
             }}
           />
         )}
@@ -390,4 +390,4 @@ const ResidentManagement = () => {
   );
 };
 
-export default ResidentManagement;
+export default GuestManagement;

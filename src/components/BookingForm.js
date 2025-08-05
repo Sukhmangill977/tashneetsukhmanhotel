@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import './BookingForm.css';
 
-const BookingForm = ({ booking, residents, amenities, onSubmit, onClose }) => {
+const BookingForm = ({ booking, guests, amenities, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     title: '',
     amenityId: '',
-    residentId: '',
+    guestId: '',
     startDate: '',
     startTime: '',
     endDate: '',
@@ -31,7 +31,7 @@ const BookingForm = ({ booking, residents, amenities, onSubmit, onClose }) => {
       setFormData({
         title: booking.title || '',
         amenityId: booking.amenityId || '',
-        residentId: booking.residentId || '',
+        guestId: booking.guestId || '',
         startDate: startDate.toISOString().split('T')[0],
         startTime: startDate.toTimeString().slice(0, 5),
         endDate: endDate.toISOString().split('T')[0],
@@ -90,17 +90,17 @@ const BookingForm = ({ booking, residents, amenities, onSubmit, onClose }) => {
     }
   };
 
-  const handleResidentChange = (e) => {
-    const residentId = e.target.value;
-    const selectedResident = residents.find(r => r.id === residentId);
+  const handleguestChange = (e) => {
+    const guestId = e.target.value;
+    const selectedguest = guests.find(r => r.id === guestId);
     
     setFormData(prev => ({
       ...prev,
-      residentId,
-      contactInfo: selectedResident ? {
-        name: selectedResident.name,
-        phone: selectedResident.phone,
-        email: selectedResident.email
+      guestId,
+      contactInfo: selectedguest ? {
+        name: selectedguest.name,
+        phone: selectedguest.phone,
+        email: selectedguest.email
       } : {
         name: '',
         phone: '',
@@ -190,7 +190,7 @@ const BookingForm = ({ booking, residents, amenities, onSubmit, onClose }) => {
       const bookingData = {
         title: formData.title.trim(),
         amenityId: formData.amenityId,
-        residentId: formData.residentId || null,
+        guestId: formData.guestId || null,
         startDate: startDateTime,
         endDate: endDateTime,
         notes: formData.notes.trim(),
@@ -219,10 +219,10 @@ const BookingForm = ({ booking, residents, amenities, onSubmit, onClose }) => {
     ));
   };
 
-  const getResidentOptions = () => {
-    return residents.map(resident => (
-      <option key={resident.id} value={resident.id}>
-        {resident.name} - Unit {resident.unitNumber}
+  const getguestOptions = () => {
+    return guests.map(guest => (
+      <option key={guest.id} value={guest.id}>
+        {guest.name} - Unit {guest.roomNumber}
       </option>
     ));
   };
@@ -377,18 +377,18 @@ const BookingForm = ({ booking, residents, amenities, onSubmit, onClose }) => {
             <h3 className="section-title">Contact Information</h3>
             
             <div className="form-group">
-              <label htmlFor="residentId" className="form-label">
-                Select Resident (Optional)
+              <label htmlFor="guestId" className="form-label">
+                Select guest (Optional)
               </label>
               <select
-                id="residentId"
-                name="residentId"
-                value={formData.residentId}
-                onChange={handleResidentChange}
+                id="guestId"
+                name="guestId"
+                value={formData.guestId}
+                onChange={handleguestChange}
                 className="form-select"
               >
-                <option value="">Select resident or enter custom contact</option>
-                {getResidentOptions()}
+                <option value="">Select guest or enter custom contact</option>
+                {getguestOptions()}
               </select>
             </div>
 

@@ -20,7 +20,7 @@ import {
   
   class DatabaseService {
     // Company Management
-    async createPropertyCompany(companyData) {
+    async createhotel(companyData) {
       try {
         const companyRef = doc(collection(db, 'propertyCompanies'));
         await setDoc(companyRef, {
@@ -35,7 +35,7 @@ import {
       }
     }
   
-    async getPropertyCompany(companyId) {
+    async gethotel(companyId) {
       try {
         const companyDoc = await getDoc(doc(db, 'propertyCompanies', companyId));
         return companyDoc.exists() ? { id: companyDoc.id, ...companyDoc.data() } : null;
@@ -101,54 +101,54 @@ import {
       }
     }
   
-    // Resident Management
-    async addResident(companyId, residentData) {
+    // guest Management
+    async addguest(companyId, guestData) {
       try {
-        const residentRef = doc(collection(db, 'residents'));
-        await setDoc(residentRef, {
-          ...residentData,
+        const guestRef = doc(collection(db, 'guests'));
+        await setDoc(guestRef, {
+          ...guestData,
           companyId,
           createdAt: new Date(),
           updatedAt: new Date()
         });
-        return residentRef.id;
+        return guestRef.id;
       } catch (error) {
-        console.error('Error adding resident:', error);
+        console.error('Error adding guest:', error);
         throw error;
       }
     }
   
-    async getResidentsByCompany(companyId) {
+    async getguestsByCompany(companyId) {
       try {
         const q = query(
-          collection(db, 'residents'), 
+          collection(db, 'guests'), 
           where('companyId', '==', companyId)
         );
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (error) {
-        console.error('Error getting residents:', error);
+        console.error('Error getting guests:', error);
         throw error;
       }
     }
   
-    async updateResident(residentId, updates) {
+    async updateguest(guestId, updates) {
       try {
-        await updateDoc(doc(db, 'residents', residentId), {
+        await updateDoc(doc(db, 'guests', guestId), {
           ...updates,
           updatedAt: new Date()
         });
       } catch (error) {
-        console.error('Error updating resident:', error);
+        console.error('Error updating guest:', error);
         throw error;
       }
     }
   
-    async deleteResident(residentId) {
+    async deleteguest(guestId) {
       try {
-        await deleteDoc(doc(db, 'residents', residentId));
+        await deleteDoc(doc(db, 'guests', guestId));
       } catch (error) {
-        console.error('Error deleting resident:', error);
+        console.error('Error deleting guest:', error);
         throw error;
       }
     }
@@ -214,10 +214,10 @@ import {
       }
     }
   
-    // Issues/Messages Management
+    // maintenanceRequests/Messages Management
     async createIssue(companyId, issueData) {
       try {
-        const issueRef = doc(collection(db, 'issues'));
+        const issueRef = doc(collection(db, 'maintenanceRequests'));
         await setDoc(issueRef, {
           ...issueData,
           companyId,
@@ -232,23 +232,23 @@ import {
       }
     }
   
-    async getIssuesByCompany(companyId) {
+    async getmaintenanceRequestsByCompany(companyId) {
       try {
         const q = query(
-          collection(db, 'issues'), 
+          collection(db, 'maintenanceRequests'), 
           where('companyId', '==', companyId)
         );
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (error) {
-        console.error('Error getting issues:', error);
+        console.error('Error getting maintenanceRequests:', error);
         throw error;
       }
     }
   
     async updateIssue(issueId, updates) {
       try {
-        await updateDoc(doc(db, 'issues', issueId), {
+        await updateDoc(doc(db, 'maintenanceRequests', issueId), {
           ...updates,
           updatedAt: new Date()
         });
@@ -320,8 +320,8 @@ async createVisitor(companyId, visitorData) {
     }
   }
   
-  // Parking Request Management
-  async createParkingRequest(companyId, requestData) {
+  // parking Request Management
+  async createparkingRequest(companyId, requestData) {
     try {
       const requestRef = doc(collection(db, 'parkingRequests'));
       await setDoc(requestRef, {
@@ -338,7 +338,7 @@ async createVisitor(companyId, visitorData) {
     }
   }
   
-  async getParkingRequestsByCompany(companyId, startDate = null, endDate = null) {
+  async getparkingRequestsByCompany(companyId, startDate = null, endDate = null) {
     try {
       let q = query(
         collection(db, 'parkingRequests'), 
@@ -361,7 +361,7 @@ async createVisitor(companyId, visitorData) {
     }
   }
   
-  async updateParkingRequest(requestId, updates) {
+  async updateparkingRequest(requestId, updates) {
     try {
       await updateDoc(doc(db, 'parkingRequests', requestId), {
         ...updates,
@@ -373,7 +373,7 @@ async createVisitor(companyId, visitorData) {
     }
   }
   
-  async deleteParkingRequest(requestId) {
+  async deleteparkingRequest(requestId) {
     try {
       await deleteDoc(doc(db, 'parkingRequests', requestId));
     } catch (error) {
@@ -407,7 +407,7 @@ async createVisitor(companyId, visitorData) {
   }
   
   // Get pending parking requests
-  async getPendingParkingRequests(companyId) {
+  async getPendingparkingRequests(companyId) {
     try {
       const q = query(
         collection(db, 'parkingRequests'),
@@ -510,29 +510,29 @@ async createMessage(companyId, messageData) {
     }
   }
   
-  // Auto-associate messages/calls with residents based on phone number
-  async associateContactWithResident(companyId, phoneNumber) {
+  // Auto-associate messages/calls with guests based on phone number
+  async associateContactWithguest(companyId, phoneNumber) {
     try {
-      const residentsQuery = query(
-        collection(db, 'residents'),
+      const guestsQuery = query(
+        collection(db, 'guests'),
         where('companyId', '==', companyId),
         where('phone', '==', phoneNumber)
       );
       
-      const querySnapshot = await getDocs(residentsQuery);
+      const querySnapshot = await getDocs(guestsQuery);
       
       if (!querySnapshot.empty) {
-        const resident = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+        const guest = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
         return {
-          residentId: resident.id,
-          residentName: resident.name,
-          unitNumber: resident.unitNumber
+          guestId: guest.id,
+          guestName: guest.name,
+          roomNumber: guest.roomNumber
         };
       }
       
-      return null; // No resident found for this number
+      return null; // No guest found for this number
     } catch (error) {
-      console.error('Error associating contact with resident:', error);
+      console.error('Error associating contact with guest:', error);
       return null;
     }
   }
@@ -678,8 +678,8 @@ async createMessage(companyId, messageData) {
   // Twilio Integration Helpers (for when you implement Twilio)
   async logIncomingMessage(companyId, twilioData) {
     try {
-      // Associate with resident if possible
-      const residentInfo = await this.associateContactWithResident(companyId, twilioData.From);
+      // Associate with guest if possible
+      const guestInfo = await this.associateContactWithguest(companyId, twilioData.From);
       
       const messageData = {
         phoneNumber: twilioData.From,
@@ -690,7 +690,7 @@ async createMessage(companyId, messageData) {
         timestamp: new Date(),
         isRead: false,
         twilioSid: twilioData.MessageSid,
-        ...residentInfo
+        ...guestInfo
       };
       
       return await this.createMessage(companyId, messageData);
@@ -722,8 +722,8 @@ async createMessage(companyId, messageData) {
   
   async logIncomingCall(companyId, retellData) {
     try {
-      // Associate with resident if possible
-      const residentInfo = await this.associateContactWithResident(companyId, retellData.from);
+      // Associate with guest if possible
+      const guestInfo = await this.associateContactWithguest(companyId, retellData.from);
       
       const callData = {
         phoneNumber: retellData.from,
@@ -735,7 +735,7 @@ async createMessage(companyId, messageData) {
         aiSummary: retellData.ai_summary,
         transcription: retellData.transcription,
         retellCallId: retellData.call_id,
-        ...residentInfo
+        ...guestInfo
       };
       
       return await this.createCallLog(companyId, callData);
@@ -757,15 +757,15 @@ async createMessage(companyId, messageData) {
       
       const filteredMessages = messages.filter(message => 
         message.phoneNumber?.toLowerCase().includes(searchLower) ||
-        message.residentName?.toLowerCase().includes(searchLower) ||
-        message.unitNumber?.toLowerCase().includes(searchLower) ||
+        message.guestName?.toLowerCase().includes(searchLower) ||
+        message.roomNumber?.toLowerCase().includes(searchLower) ||
         message.content?.toLowerCase().includes(searchLower)
       );
       
       const filteredCalls = calls.filter(call => 
         call.phoneNumber?.toLowerCase().includes(searchLower) ||
-        call.residentName?.toLowerCase().includes(searchLower) ||
-        call.unitNumber?.toLowerCase().includes(searchLower) ||
+        call.guestName?.toLowerCase().includes(searchLower) ||
+        call.roomNumber?.toLowerCase().includes(searchLower) ||
         call.summary?.toLowerCase().includes(searchLower) ||
         call.aiSummary?.toLowerCase().includes(searchLower)
       );
@@ -871,7 +871,7 @@ async createPackage(companyId, packageData) {
     try {
       await updateDoc(doc(db, 'packages', packageId), {
         status: 'picked_up',
-        pickupBy: pickupData.pickupBy || 'Resident',
+        pickupBy: pickupData.pickupBy || 'guest',
         pickedUpAt: new Date(),
         pickupNotes: pickupData.notes || '',
         updatedAt: new Date()
@@ -968,8 +968,8 @@ async createPackage(companyId, packageData) {
       const searchLower = searchTerm.toLowerCase();
       
       return packages.filter(pkg => 
-        pkg.residentName?.toLowerCase().includes(searchLower) ||
-        pkg.unitNumber?.toLowerCase().includes(searchLower) ||
+        pkg.guestName?.toLowerCase().includes(searchLower) ||
+        pkg.roomNumber?.toLowerCase().includes(searchLower) ||
         pkg.courier?.toLowerCase().includes(searchLower) ||
         pkg.trackingNumber?.toLowerCase().includes(searchLower) ||
         pkg.description?.toLowerCase().includes(searchLower) ||
@@ -983,34 +983,34 @@ async createPackage(companyId, packageData) {
   }
   
   // Package notifications integration
-  async sendPackageNotification(packageId, residentId, notificationType = 'arrival') {
+  async sendPackageNotification(packageId, guestId, notificationType = 'arrival') {
     try {
       const pkg = await this.getPackage(packageId);
-      const resident = await this.getResident(residentId);
+      const guest = await this.getguest(guestId);
       
-      if (!pkg || !resident) {
-        throw new Error('Package or resident not found');
+      if (!pkg || !guest) {
+        throw new Error('Package or guest not found');
       }
       
       let messageContent;
       
       switch (notificationType) {
         case 'arrival':
-          messageContent = `Hi ${resident.name}! A package from ${pkg.courier} has arrived at the front desk for Unit ${pkg.unitNumber}. Please pick it up during business hours. Tracking: ${pkg.trackingNumber || 'N/A'}. Building Management.`;
+          messageContent = `Hi ${guest.name}! A package from ${pkg.courier} has arrived at the front desk for Unit ${pkg.roomNumber}. Please pick it up during business hours. Tracking: ${pkg.trackingNumber || 'N/A'}. Building Management.`;
           break;
         case 'reminder':
-          messageContent = `Reminder: You have a package waiting at the front desk for pickup. Unit ${pkg.unitNumber}. Please collect it during business hours. Building Management.`;
+          messageContent = `Reminder: You have a package waiting at the front desk for pickup. Unit ${pkg.roomNumber}. Please collect it during business hours. Building Management.`;
           break;
         case 'final_notice':
-          messageContent = `FINAL NOTICE: Your package has been waiting for pickup for several days. Unit ${pkg.unitNumber}. Please collect it immediately or contact building management. Building Management.`;
+          messageContent = `FINAL NOTICE: Your package has been waiting for pickup for several days. Unit ${pkg.roomNumber}. Please collect it immediately or contact building management. Building Management.`;
           break;
         default:
-          messageContent = `Package notification for Unit ${pkg.unitNumber}. Please contact building management for details.`;
+          messageContent = `Package notification for Unit ${pkg.roomNumber}. Please contact building management for details.`;
       }
       
       // This would integrate with your Twilio SMS service
       console.log('Sending package notification:', {
-        to: resident.phone,
+        to: guest.phone,
         message: messageContent,
         packageId,
         type: notificationType
@@ -1025,9 +1025,9 @@ async createPackage(companyId, packageData) {
       // Log the notification
       await this.logActivity(pkg.companyId, {
         type: 'package_notification',
-        description: `Package notification sent to ${resident.name} (Unit ${pkg.unitNumber})`,
+        description: `Package notification sent to ${guest.name} (Unit ${pkg.roomNumber})`,
         packageId,
-        residentId,
+        guestId,
         notificationType
       });
       
@@ -1068,8 +1068,8 @@ async createPackage(companyId, packageData) {
     try {
       const notificationPromises = packageIds.map(async (packageId) => {
         const pkg = await this.getPackage(packageId);
-        if (pkg && pkg.residentId) {
-          return this.sendPackageNotification(packageId, pkg.residentId, notificationType);
+        if (pkg && pkg.guestId) {
+          return this.sendPackageNotification(packageId, pkg.guestId, notificationType);
         }
       });
       
@@ -1131,8 +1131,8 @@ async createPackage(companyId, packageData) {
     const unitCounts = {};
     
     packages.forEach(pkg => {
-      if (pkg.unitNumber) {
-        unitCounts[pkg.unitNumber] = (unitCounts[pkg.unitNumber] || 0) + 1;
+      if (pkg.roomNumber) {
+        unitCounts[pkg.roomNumber] = (unitCounts[pkg.roomNumber] || 0) + 1;
       }
     });
     

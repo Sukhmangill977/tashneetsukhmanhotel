@@ -125,12 +125,12 @@
     flex-shrink: 0;
   }
   
-  .stat-card.residents .stat-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+  .stat-card.guests .stat-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
   .stat-card.bookings .stat-icon { background: linear-gradient(135deg, #10b981, #059669); }
   .stat-card.packages .stat-icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
   .stat-card.messages .stat-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
   .stat-card.calls .stat-icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
-  .stat-card.issues .stat-icon { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .stat-card.maintenanceRequests .stat-icon { background: linear-gradient(135deg, #f97316, #ea580c); }
   .stat-card.visitors .stat-icon { background: linear-gradient(135deg, #06b6d4, #0891b2); }
   .stat-card.performance .stat-icon { background: linear-gradient(135deg, #84cc16, #65a30d); }
   

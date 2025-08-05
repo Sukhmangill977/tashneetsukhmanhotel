@@ -3,12 +3,12 @@ import { auth } from '../firebase-config';
 import { dbService } from '../database-service';
 import Layout from '../components/Layout';
 import BookingForm from '../components/BookingForm';
-import './BookingCalendar.css';
+import './ServiceBookingCalendar.css';
 
-const BookingCalendar = () => {
+const ServiceBookingCalendar = () => {
   const [userCompany, setUserCompany] = useState(null);
   const [bookings, setBookings] = useState([]);
-  const [residents, setResidents] = useState([]);
+  const [guests, setguests] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showBookingForm, setShowBookingForm] = useState(false);
@@ -35,7 +35,7 @@ const BookingCalendar = () => {
       if (company) {
         await Promise.all([
           loadBookings(company.id),
-          loadResidents(company.id)
+          loadguests(company.id)
         ]);
       }
     } catch (error) {
@@ -52,12 +52,12 @@ const BookingCalendar = () => {
     }
   };
 
-  const loadResidents = async (companyId) => {
+  const loadguests = async (companyId) => {
     try {
-      const residentsData = await dbService.getResidentsByCompany(companyId);
-      setResidents(residentsData);
+      const guestsData = await dbService.getguestsByCompany(companyId);
+      setguests(guestsData);
     } catch (error) {
-      console.error('Error loading residents:', error);
+      console.error('Error loading guests:', error);
     }
   };
 
@@ -428,7 +428,7 @@ const BookingCalendar = () => {
         {showBookingForm && (
           <BookingForm
             booking={selectedBooking}
-            residents={residents}
+            guests={guests}
             amenities={userCompany?.amenities || []}
             onSubmit={handleBookingSubmit}
             onClose={() => {
@@ -442,4 +442,4 @@ const BookingCalendar = () => {
   );
 };
 
-export default BookingCalendar;
+export default ServiceBookingCalendar;

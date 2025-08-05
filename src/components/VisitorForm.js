@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import './VisitorForm.css';
 
-const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
+const VisitorForm = ({ visitor, guests, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     visiting: {
-      residentId: '',
-      residentName: '',
-      unitNumber: ''
+      guestId: '',
+      guestName: '',
+      roomNumber: ''
     },
     purpose: '',
     expectedArrival: '',
@@ -44,9 +44,9 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
         phone: visitor.phone || '',
         email: visitor.email || '',
         visiting: {
-          residentId: visitor.visiting?.residentId || '',
-          residentName: visitor.visiting?.residentName || '',
-          unitNumber: visitor.visiting?.unitNumber || ''
+          guestId: visitor.visiting?.guestId || '',
+          guestName: visitor.visiting?.guestName || '',
+          roomNumber: visitor.visiting?.roomNumber || ''
         },
         purpose: visitor.purpose || '',
         expectedArrival: arrivalDate.toISOString().split('T')[0],
@@ -115,26 +115,26 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
     }
   };
 
-  const handleResidentChange = (e) => {
-    const residentId = e.target.value;
-    const selectedResident = residents.find(r => r.id === residentId);
+  const handleguestChange = (e) => {
+    const guestId = e.target.value;
+    const selectedguest = guests.find(r => r.id === guestId);
     
-    if (selectedResident) {
+    if (selectedguest) {
       setFormData(prev => ({
         ...prev,
         visiting: {
-          residentId,
-          residentName: selectedResident.name,
-          unitNumber: selectedResident.unitNumber
+          guestId,
+          guestName: selectedguest.name,
+          roomNumber: selectedguest.roomNumber
         }
       }));
     } else {
       setFormData(prev => ({
         ...prev,
         visiting: {
-          residentId: '',
-          residentName: '',
-          unitNumber: ''
+          guestId: '',
+          guestName: '',
+          roomNumber: ''
         }
       }));
     }
@@ -151,12 +151,12 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
       newErrors.phone = 'Phone number is required';
     }
 
-    if (!formData.visiting.residentName.trim()) {
-      newErrors['visiting.residentName'] = 'Resident name is required';
+    if (!formData.visiting.guestName.trim()) {
+      newErrors['visiting.guestName'] = 'guest name is required';
     }
 
-    if (!formData.visiting.unitNumber.trim()) {
-      newErrors['visiting.unitNumber'] = 'Unit number is required';
+    if (!formData.visiting.roomNumber.trim()) {
+      newErrors['visiting.roomNumber'] = 'Unit number is required';
     }
 
     if (!formData.purpose.trim()) {
@@ -220,9 +220,9 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
         phone: formData.phone.trim(),
         email: formData.email.trim() || null,
         visiting: {
-          residentId: formData.visiting.residentId || null,
-          residentName: formData.visiting.residentName.trim(),
-          unitNumber: formData.visiting.unitNumber.trim()
+          guestId: formData.visiting.guestId || null,
+          guestName: formData.visiting.guestName.trim(),
+          roomNumber: formData.visiting.roomNumber.trim()
         },
         purpose: formData.purpose.trim(),
         expectedArrival: arrivalDateTime,
@@ -379,20 +379,20 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
             <h3 className="section-title">Visiting Information</h3>
             
             <div className="form-group">
-              <label htmlFor="residentId" className="form-label">
-                Select Resident
+              <label htmlFor="guestId" className="form-label">
+                Select guest
               </label>
               <select
-                id="residentId"
-                name="residentId"
-                value={formData.visiting.residentId}
-                onChange={handleResidentChange}
+                id="guestId"
+                name="guestId"
+                value={formData.visiting.guestId}
+                onChange={handleguestChange}
                 className="form-select"
               >
-                <option value="">Select resident or enter manually</option>
-                {residents.map(resident => (
-                  <option key={resident.id} value={resident.id}>
-                    {resident.name} - Unit {resident.unitNumber}
+                <option value="">Select guest or enter manually</option>
+                {guests.map(guest => (
+                  <option key={guest.id} value={guest.id}>
+                    {guest.name} - Unit {guest.roomNumber}
                   </option>
                 ))}
               </select>
@@ -400,40 +400,40 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
 
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="residentName" className="form-label">
-                  Resident Name *
+                <label htmlFor="guestName" className="form-label">
+                  guest Name *
                 </label>
                 <input
                   type="text"
-                  id="residentName"
-                  name="visiting.residentName"
-                  value={formData.visiting.residentName}
+                  id="guestName"
+                  name="visiting.guestName"
+                  value={formData.visiting.guestName}
                   onChange={handleInputChange}
-                  className={`form-input ${errors['visiting.residentName'] ? 'error' : ''}`}
-                  placeholder="Resident being visited"
+                  className={`form-input ${errors['visiting.guestName'] ? 'error' : ''}`}
+                  placeholder="guest being visited"
                   required
                 />
-                {errors['visiting.residentName'] && (
-                  <span className="error-message">{errors['visiting.residentName']}</span>
+                {errors['visiting.guestName'] && (
+                  <span className="error-message">{errors['visiting.guestName']}</span>
                 )}
               </div>
 
               <div className="form-group">
-                <label htmlFor="unitNumber" className="form-label">
+                <label htmlFor="roomNumber" className="form-label">
                   Unit Number *
                 </label>
                 <input
                   type="text"
-                  id="unitNumber"
-                  name="visiting.unitNumber"
-                  value={formData.visiting.unitNumber}
+                  id="roomNumber"
+                  name="visiting.roomNumber"
+                  value={formData.visiting.roomNumber}
                   onChange={handleInputChange}
-                  className={`form-input ${errors['visiting.unitNumber'] ? 'error' : ''}`}
+                  className={`form-input ${errors['visiting.roomNumber'] ? 'error' : ''}`}
                   placeholder="e.g., 101, 2A"
                   required
                 />
-                {errors['visiting.unitNumber'] && (
-                  <span className="error-message">{errors['visiting.unitNumber']}</span>
+                {errors['visiting.roomNumber'] && (
+                  <span className="error-message">{errors['visiting.roomNumber']}</span>
                 )}
               </div>
             </div>
@@ -516,7 +516,7 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
           </div>
 
           <div className="form-section">
-            <h3 className="section-title">Parking & Vehicle Information</h3>
+            <h3 className="section-title">parking & Vehicle Information</h3>
             
             <div className="form-group">
               <label className="checkbox-label">
@@ -527,7 +527,7 @@ const VisitorForm = ({ visitor, residents, onSubmit, onClose }) => {
                   onChange={handleInputChange}
                   className="form-checkbox"
                 />
-                <span className="checkbox-text">Parking required</span>
+                <span className="checkbox-text">parking required</span>
               </label>
             </div>
 

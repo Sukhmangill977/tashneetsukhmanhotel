@@ -7,12 +7,12 @@ import LoginPage from './components/LoginPage';
 
 // Pages
 import Dashboard from './Pages/Dashboard';
-import BookingCalendar from './Pages/BookingCalendar';
-import ResidentManagement from './Pages/ResidentManagement';
-import PackageCenter from './Pages/PackageCenter';
-import VisitorManagement from './Pages/VisitorManagement';
+import ServiceBookingCalendar from './Pages/ServiceBookingCalendar';
+import GuestManagement from './Pages/GuestManagement';
+import ParcelManagement from './Pages/ParcelManagement';
+import GuestVisitorManagement from './Pages/GuestVisitorManagement';
 import MessageCenter from './Pages/MessageCenter';
-import ComplaintsRequests from './Pages/ComplaintsRequests';
+import GuestRequestsIssues from './Pages/GuestRequestsIssues';
 import Settings from './Pages/Settings';
 
 import './App.css';
@@ -105,16 +105,16 @@ function App() {
             path="/calendar"
             element={
               <ProtectedRoute>
-                <BookingCalendar />
+                <ServiceBookingCalendar />
               </ProtectedRoute>
             }
           />
 
           <Route
-            path="/residents"
+            path="/guests"
             element={
               <ProtectedRoute>
-                <ResidentManagement />
+                <GuestManagement />
               </ProtectedRoute>
             }
           />
@@ -123,7 +123,7 @@ function App() {
             path="/packages"
             element={
               <ProtectedRoute>
-                <PackageCenter />
+                <ParcelManagement />
               </ProtectedRoute>
             }
           />
@@ -132,7 +132,7 @@ function App() {
             path="/visitors"
             element={
               <ProtectedRoute>
-                <VisitorManagement />
+                <GuestVisitorManagement />
               </ProtectedRoute>
             }
           />
@@ -150,7 +150,7 @@ function App() {
             path="/complaints"
             element={
               <ProtectedRoute>
-                <ComplaintsRequests />
+                <GuestRequestsIssues />
               </ProtectedRoute>
             }
           />
