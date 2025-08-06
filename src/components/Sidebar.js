@@ -7,7 +7,7 @@ import BookingForm from './BookingForm';
 import MessageComposer from './MessageComposer';
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, onClose, userCompany }) => {
+const Sidebar = ({ isOpen, onClose, userHotel }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -33,19 +33,19 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
 
   useEffect(() => {
     loadUnreadCounts();
-  }, [userCompany]);
+  }, [userHotel]);
 
   useEffect(() => {
     loadComponentData();
-  }, [userCompany]);
+  }, [userHotel]);
   
   const loadComponentData = async () => {
-    if (!userCompany) return;
+    if (!userHotel) return;
     
     try {
-      const guestsData = await dbService.getguestsByCompany(userCompany.id);
+      const guestsData = await dbService.getguestsByHotel(userHotel.id);
       setguests(guestsData);
-      setAmenities(userCompany.amenities || []);
+      setAmenities(userHotel.amenities || []);
     } catch (error) {
       console.error('Error loading component data:', error);
     }
@@ -61,7 +61,7 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
   
   const handleBookingSubmit = async (bookingData) => {
     try {
-      await dbService.createBooking(userCompany.id, bookingData);
+      await dbService.serviceBookings(userHotel.id, bookingData);
       setShowBookingModal(false);
       // Optionally show success notification
     } catch (error) {
@@ -81,10 +81,10 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
   };
 
   const loadUnreadCounts = async () => {
-    if (!userCompany) return;
+    if (!userHotel) return;
     
     try {
-      const maintenanceRequests = await dbService.getmaintenanceRequestsByCompany(userCompany.id);
+      const maintenanceRequests = await dbService.getmaintenanceRequestsByHotel(userHotel.id);
       const openmaintenanceRequests = maintenanceRequests.filter(issue => issue.status === 'open');
       
       setUnreadCounts({
@@ -235,8 +235,8 @@ const Sidebar = ({ isOpen, onClose, userCompany }) => {
                 {userProfile?.name || user?.displayName || 'User'}
               </p>
               <p className="user-email">{user?.email}</p>
-              <p className="user-company">
-                {userCompany?.name || 'Hotel Management'}
+              <p className="user-Hotel">
+                {userHotel?.name || 'Hotel Management'}
               </p>
             </div>
           </div>

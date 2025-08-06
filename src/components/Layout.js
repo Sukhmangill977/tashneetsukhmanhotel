@@ -8,7 +8,7 @@ import './Layout.css';
 
 const Layout = ({ children, currentPageName }) => {
   const [user, setUser] = useState(null);
-  const [userCompany, setUserCompany] = useState(null);
+  const [userHotel, setUserHotel] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -16,10 +16,10 @@ const Layout = ({ children, currentPageName }) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         setUser(user);
-        await loadUserCompany(user.email);
+        await loadUserHotel(user.email);
       } else {
         setUser(null);
-        setUserCompany(null);
+        setUserHotel(null);
       }
       setLoading(false);
     });
@@ -27,12 +27,12 @@ const Layout = ({ children, currentPageName }) => {
     return () => unsubscribe();
   }, []);
 
-  const loadUserCompany = async (email) => {
+  const loadUserHotel = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
-      setUserCompany(company);
+      const Hotel = await dbService.getHotelByEmail(email);
+      setUserHotel(Hotel);
     } catch (error) {
-      console.error('Error loading user company:', error);
+      console.error('Error loading user Hotel:', error);
     }
   };
 
@@ -71,7 +71,7 @@ const Layout = ({ children, currentPageName }) => {
       <Sidebar
         isOpen={sidebarOpen}
         onClose={handleSidebarClose}
-        userCompany={userCompany}
+        userHotel={userHotel}
       />
 
       {/* Main Content Area */}
@@ -80,7 +80,7 @@ const Layout = ({ children, currentPageName }) => {
         <Header
           currentPageName={currentPageName}
           onMenuToggle={handleMenuToggle}
-          userCompany={userCompany}
+          userHotel={userHotel}
         />
 
         {/* Page Content */}

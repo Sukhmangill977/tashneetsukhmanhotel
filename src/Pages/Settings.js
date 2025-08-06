@@ -7,16 +7,16 @@ import Layout from '../components/Layout';
 import './Settings.css';
 
 const Settings = () => {
-  const [userCompany, setUserCompany] = useState(null);
+  const [userHotel, setUserHotel] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('company');
+  const [activeTab, setActiveTab] = useState('Hotel');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Company Settings State
-  const [companySettings, setCompanySettings] = useState({
+  // Hotel Settings State
+  const [HotelSettings, setHotelSettings] = useState({
     name: '',
     address: '',
     phone: '',
@@ -76,40 +76,40 @@ const Settings = () => {
 
   const loadUserData = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
+      const Hotel = await dbService.getHotelByEmail(email);
       const profile = await dbService.getUserProfile(auth.currentUser?.uid);
       
-      setUserCompany(company);
+      setUserHotel(Hotel);
       setUserProfile(profile);
       
-      if (company) {
-        setCompanySettings({
-          name: company.name || '',
-          address: company.address || '',
-          phone: company.phone || '',
-          email: company.email || '',
-          businessHours: company.settings?.businessHours || {
+      if (Hotel) {
+        setHotelSettings({
+          name: Hotel.name || '',
+          address: Hotel.address || '',
+          phone: Hotel.phone || '',
+          email: Hotel.email || '',
+          businessHours: Hotel.settings?.businessHours || {
             start: '09:00',
             end: '17:00',
             timezone: 'America/Toronto'
           },
-          twilioSettings: company.settings?.twilioSettings || {
+          twilioSettings: Hotel.settings?.twilioSettings || {
             phoneNumber: '',
             accountSid: '',
             authToken: '',
             enabled: false
           },
-          retellSettings: company.settings?.retellSettings || {
+          retellSettings: Hotel.settings?.retellSettings || {
             agentId: '',
             apiKey: '',
             enabled: false
           },
-          notifications: company.settings?.notifications || {
+          notifications: Hotel.settings?.notifications || {
             emailAlerts: true,
             smsAlerts: true,
             emergencyOnly: false
           },
-          automations: company.settings?.automations || {
+          automations: Hotel.settings?.automations || {
             autoResponder: false,
             packageNotifications: true,
             bookingConfirmations: true,
@@ -137,8 +137,8 @@ const Settings = () => {
     }
   };
 
-  const handleCompanySettingsChange = (section, field, value) => {
-    setCompanySettings(prev => ({
+  const handleHotelSettingsChange = (section, field, value) => {
+    setHotelSettings(prev => ({
       ...prev,
       [section]: {
         ...prev[section],
@@ -157,34 +157,34 @@ const Settings = () => {
     }));
   };
 
-  const saveCompanySettings = async () => {
+  const saveHotelSettings = async () => {
     setSaving(true);
     setErrorMessage('');
     setSuccessMessage('');
 
     try {
-      const updatedCompany = {
-        ...userCompany,
-        name: companySettings.name,
-        address: companySettings.address,
-        phone: companySettings.phone,
-        email: companySettings.email,
+      const updatedHotel = {
+        ...userHotel,
+        name: HotelSettings.name,
+        address: HotelSettings.address,
+        phone: HotelSettings.phone,
+        email: HotelSettings.email,
         settings: {
-          businessHours: companySettings.businessHours,
-          twilioSettings: companySettings.twilioSettings,
-          retellSettings: companySettings.retellSettings,
-          notifications: companySettings.notifications,
-          automations: companySettings.automations,
+          businessHours: HotelSettings.businessHours,
+          twilioSettings: HotelSettings.twilioSettings,
+          retellSettings: HotelSettings.retellSettings,
+          notifications: HotelSettings.notifications,
+          automations: HotelSettings.automations,
           updatedAt: new Date()
         }
       };
 
-      await dbService.updatehotel(userCompany.id, updatedCompany);
-      setUserCompany(updatedCompany);
-      setSuccessMessage('Company settings saved successfully!');
+      await dbService.updatehotel(userHotel.id, updatedHotel);
+      setUserHotel(updatedHotel);
+      setSuccessMessage('Hotel settings saved successfully!');
     } catch (error) {
-      console.error('Error saving company settings:', error);
-      setErrorMessage('Failed to save company settings');
+      console.error('Error saving Hotel settings:', error);
+      setErrorMessage('Failed to save Hotel settings');
     } finally {
       setSaving(false);
     }
@@ -240,22 +240,22 @@ const Settings = () => {
     setSuccessMessage('Retell AI connection test would be implemented here');
   };
 
-  const renderCompanySettings = () => (
+  const renderHotelSettings = () => (
     <div className="settings-section">
       <div className="section-header">
-        <h3 className="section-title">Company Information</h3>
-        <p className="section-description">Manage your property management company details</p>
+        <h3 className="section-title">Hotel Information</h3>
+        <p className="section-description">Manage your property management Hotel details</p>
       </div>
 
       <div className="settings-grid">
         <div className="setting-group">
-          <label className="setting-label">Company Name</label>
+          <label className="setting-label">Hotel Name</label>
           <input
             type="text"
-            value={companySettings.name}
-            onChange={(e) => setCompanySettings(prev => ({ ...prev, name: e.target.value }))}
+            value={HotelSettings.name}
+            onChange={(e) => setHotelSettings(prev => ({ ...prev, name: e.target.value }))}
             className="setting-input"
-            placeholder="Your Company Name"
+            placeholder="Your Hotel Name"
           />
         </div>
 
@@ -263,8 +263,8 @@ const Settings = () => {
           <label className="setting-label">Business Phone</label>
           <input
             type="tel"
-            value={companySettings.phone}
-            onChange={(e) => setCompanySettings(prev => ({ ...prev, phone: e.target.value }))}
+            value={HotelSettings.phone}
+            onChange={(e) => setHotelSettings(prev => ({ ...prev, phone: e.target.value }))}
             className="setting-input"
             placeholder="+1 (555) 123-4567"
           />
@@ -274,8 +274,8 @@ const Settings = () => {
           <label className="setting-label">Address</label>
           <input
             type="text"
-            value={companySettings.address}
-            onChange={(e) => setCompanySettings(prev => ({ ...prev, address: e.target.value }))}
+            value={HotelSettings.address}
+            onChange={(e) => setHotelSettings(prev => ({ ...prev, address: e.target.value }))}
             className="setting-input"
             placeholder="123 Main Street, City, Province"
           />
@@ -285,10 +285,10 @@ const Settings = () => {
           <label className="setting-label">Contact Email</label>
           <input
             type="email"
-            value={companySettings.email}
-            onChange={(e) => setCompanySettings(prev => ({ ...prev, email: e.target.value }))}
+            value={HotelSettings.email}
+            onChange={(e) => setHotelSettings(prev => ({ ...prev, email: e.target.value }))}
             className="setting-input"
-            placeholder="contact@company.com"
+            placeholder="contact@Hotel.com"
           />
         </div>
       </div>
@@ -305,8 +305,8 @@ const Settings = () => {
           <label className="setting-label">Start Time</label>
           <input
             type="time"
-            value={companySettings.businessHours.start}
-            onChange={(e) => handleCompanySettingsChange('businessHours', 'start', e.target.value)}
+            value={HotelSettings.businessHours.start}
+            onChange={(e) => handleHotelSettingsChange('businessHours', 'start', e.target.value)}
             className="setting-input"
           />
         </div>
@@ -315,8 +315,8 @@ const Settings = () => {
           <label className="setting-label">End Time</label>
           <input
             type="time"
-            value={companySettings.businessHours.end}
-            onChange={(e) => handleCompanySettingsChange('businessHours', 'end', e.target.value)}
+            value={HotelSettings.businessHours.end}
+            onChange={(e) => handleHotelSettingsChange('businessHours', 'end', e.target.value)}
             className="setting-input"
           />
         </div>
@@ -324,8 +324,8 @@ const Settings = () => {
         <div className="setting-group">
           <label className="setting-label">Timezone</label>
           <select
-            value={companySettings.businessHours.timezone}
-            onChange={(e) => handleCompanySettingsChange('businessHours', 'timezone', e.target.value)}
+            value={HotelSettings.businessHours.timezone}
+            onChange={(e) => handleHotelSettingsChange('businessHours', 'timezone', e.target.value)}
             className="setting-select"
           >
             <option value="America/Toronto">Eastern Time (Toronto)</option>
@@ -356,22 +356,22 @@ const Settings = () => {
           <label className="toggle-switch">
             <input
               type="checkbox"
-              checked={companySettings.twilioSettings.enabled}
-              onChange={(e) => handleCompanySettingsChange('twilioSettings', 'enabled', e.target.checked)}
+              checked={HotelSettings.twilioSettings.enabled}
+              onChange={(e) => handleHotelSettingsChange('twilioSettings', 'enabled', e.target.checked)}
             />
             <span className="toggle-slider"></span>
           </label>
         </div>
 
-        {companySettings.twilioSettings.enabled && (
+        {HotelSettings.twilioSettings.enabled && (
           <div className="integration-settings">
             <div className="settings-grid">
               <div className="setting-group">
                 <label className="setting-label">Phone Number</label>
                 <input
                   type="tel"
-                  value={companySettings.twilioSettings.phoneNumber}
-                  onChange={(e) => handleCompanySettingsChange('twilioSettings', 'phoneNumber', e.target.value)}
+                  value={HotelSettings.twilioSettings.phoneNumber}
+                  onChange={(e) => handleHotelSettingsChange('twilioSettings', 'phoneNumber', e.target.value)}
                   className="setting-input"
                   placeholder="+1 (555) 123-4567"
                 />
@@ -382,8 +382,8 @@ const Settings = () => {
                 <label className="setting-label">Account SID</label>
                 <input
                   type="text"
-                  value={companySettings.twilioSettings.accountSid}
-                  onChange={(e) => handleCompanySettingsChange('twilioSettings', 'accountSid', e.target.value)}
+                  value={HotelSettings.twilioSettings.accountSid}
+                  onChange={(e) => handleHotelSettingsChange('twilioSettings', 'accountSid', e.target.value)}
                   className="setting-input"
                   placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                 />
@@ -393,8 +393,8 @@ const Settings = () => {
                 <label className="setting-label">Auth Token</label>
                 <input
                   type="password"
-                  value={companySettings.twilioSettings.authToken}
-                  onChange={(e) => handleCompanySettingsChange('twilioSettings', 'authToken', e.target.value)}
+                  value={HotelSettings.twilioSettings.authToken}
+                  onChange={(e) => handleHotelSettingsChange('twilioSettings', 'authToken', e.target.value)}
                   className="setting-input"
                   placeholder="Your Twilio Auth Token"
                 />
@@ -431,22 +431,22 @@ const Settings = () => {
           <label className="toggle-switch">
             <input
               type="checkbox"
-              checked={companySettings.retellSettings.enabled}
-              onChange={(e) => handleCompanySettingsChange('retellSettings', 'enabled', e.target.checked)}
+              checked={HotelSettings.retellSettings.enabled}
+              onChange={(e) => handleHotelSettingsChange('retellSettings', 'enabled', e.target.checked)}
             />
             <span className="toggle-slider"></span>
           </label>
         </div>
 
-        {companySettings.retellSettings.enabled && (
+        {HotelSettings.retellSettings.enabled && (
           <div className="integration-settings">
             <div className="settings-grid">
               <div className="setting-group">
                 <label className="setting-label">Agent ID</label>
                 <input
                   type="text"
-                  value={companySettings.retellSettings.agentId}
-                  onChange={(e) => handleCompanySettingsChange('retellSettings', 'agentId', e.target.value)}
+                  value={HotelSettings.retellSettings.agentId}
+                  onChange={(e) => handleHotelSettingsChange('retellSettings', 'agentId', e.target.value)}
                   className="setting-input"
                   placeholder="agent_xxxxxxxxxxxxxxxx"
                 />
@@ -456,8 +456,8 @@ const Settings = () => {
                 <label className="setting-label">API Key</label>
                 <input
                   type="password"
-                  value={companySettings.retellSettings.apiKey}
-                  onChange={(e) => handleCompanySettingsChange('retellSettings', 'apiKey', e.target.value)}
+                  value={HotelSettings.retellSettings.apiKey}
+                  onChange={(e) => handleHotelSettingsChange('retellSettings', 'apiKey', e.target.value)}
                   className="setting-input"
                   placeholder="Your Retell AI API Key"
                 />
@@ -491,8 +491,8 @@ const Settings = () => {
           <label className="toggle-switch">
             <input
               type="checkbox"
-              checked={companySettings.automations.packageNotifications}
-              onChange={(e) => handleCompanySettingsChange('automations', 'packageNotifications', e.target.checked)}
+              checked={HotelSettings.automations.packageNotifications}
+              onChange={(e) => handleHotelSettingsChange('automations', 'packageNotifications', e.target.checked)}
             />
             <span className="toggle-slider"></span>
           </label>
@@ -501,13 +501,13 @@ const Settings = () => {
         <div className="automation-item">
           <div className="automation-info">
             <h4>Booking Confirmations</h4>
-            <p>Send automatic confirmation messages for bookings</p>
+            <p>Send automatic confirmation messages for serviceBookings</p>
           </div>
           <label className="toggle-switch">
             <input
               type="checkbox"
-              checked={companySettings.automations.bookingConfirmations}
-              onChange={(e) => handleCompanySettingsChange('automations', 'bookingConfirmations', e.target.checked)}
+              checked={HotelSettings.automations.bookingConfirmations}
+              onChange={(e) => handleHotelSettingsChange('automations', 'bookingConfirmations', e.target.checked)}
             />
             <span className="toggle-slider"></span>
           </label>
@@ -521,8 +521,8 @@ const Settings = () => {
           <label className="toggle-switch">
             <input
               type="checkbox"
-              checked={companySettings.automations.maintenanceAlerts}
-              onChange={(e) => handleCompanySettingsChange('automations', 'maintenanceAlerts', e.target.checked)}
+              checked={HotelSettings.automations.maintenanceAlerts}
+              onChange={(e) => handleHotelSettingsChange('automations', 'maintenanceAlerts', e.target.checked)}
             />
             <span className="toggle-slider"></span>
           </label>
@@ -536,8 +536,8 @@ const Settings = () => {
           <label className="toggle-switch">
             <input
               type="checkbox"
-              checked={companySettings.automations.autoResponder}
-              onChange={(e) => handleCompanySettingsChange('automations', 'autoResponder', e.target.checked)}
+              checked={HotelSettings.automations.autoResponder}
+              onChange={(e) => handleHotelSettingsChange('automations', 'autoResponder', e.target.checked)}
             />
             <span className="toggle-slider"></span>
           </label>
@@ -547,11 +547,11 @@ const Settings = () => {
       <div className="section-actions">
         <button
           type="button"
-          onClick={saveCompanySettings}
+          onClick={saveHotelSettings}
           disabled={saving}
           className="save-btn primary"
         >
-          {saving ? 'Saving...' : 'Save Company Settings'}
+          {saving ? 'Saving...' : 'Save Hotel Settings'}
         </button>
       </div>
     </div>
@@ -736,7 +736,7 @@ const Settings = () => {
         <div className="settings-header">
           <h1 className="page-title">Settings</h1>
           <p className="page-description">
-            Configure your company settings, integrations, and preferences
+            Configure your Hotel settings, integrations, and preferences
           </p>
         </div>
 
@@ -757,11 +757,11 @@ const Settings = () => {
         <div className="settings-container">
           <div className="settings-tabs">
             <button
-              className={`tab-btn ${activeTab === 'company' ? 'active' : ''}`}
-              onClick={() => setActiveTab('company')}
+              className={`tab-btn ${activeTab === 'Hotel' ? 'active' : ''}`}
+              onClick={() => setActiveTab('Hotel')}
             >
               <span className="tab-icon">🏢</span>
-              Company Settings
+              Hotel Settings
             </button>
             <button
               className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
@@ -773,7 +773,7 @@ const Settings = () => {
           </div>
 
           <div className="settings-content">
-            {activeTab === 'company' ? renderCompanySettings() : renderProfileSettings()}
+            {activeTab === 'Hotel' ? renderHotelSettings() : renderProfileSettings()}
           </div>
         </div>
       </div>

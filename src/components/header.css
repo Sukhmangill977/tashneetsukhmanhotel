@@ -59,7 +59,7 @@
     line-height: 1.2;
   }
   
-  .company-name {
+  .Hotel-name {
     font-size: 0.8rem;
     color: #64748b;
     font-weight: 500;
@@ -708,7 +708,7 @@
       font-size: 1.3rem;
     }
     
-    .company-name {
+    .Hotel-name {
       display: none;
     }
     

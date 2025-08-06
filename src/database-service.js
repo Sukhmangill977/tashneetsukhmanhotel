@@ -19,28 +19,28 @@ import {
   import { auth } from './firebase-config';
   
   class DatabaseService {
-    // Company Management
-    async createhotel(companyData) {
+    // Hotel Management
+    async createhotel(HotelData) {
       try {
-        const companyRef = doc(collection(db, 'propertyCompanies'));
-        await setDoc(companyRef, {
-          ...companyData,
+        const HotelRef = doc(collection(db, 'HotelCompanies'));
+        await setDoc(HotelRef, {
+          ...HotelData,
           createdAt: new Date(),
           updatedAt: new Date()
         });
-        return companyRef.id;
+        return HotelRef.id;
       } catch (error) {
-        console.error('Error creating property company:', error);
+        console.error('Error creating property Hotel:', error);
         throw error;
       }
     }
   
-    async gethotel(companyId) {
+    async gethotel(hotelId) {
       try {
-        const companyDoc = await getDoc(doc(db, 'propertyCompanies', companyId));
-        return companyDoc.exists() ? { id: companyDoc.id, ...companyDoc.data() } : null;
+        const HotelDoc = await getDoc(doc(db, 'HotelCompanies', hotelId));
+        return HotelDoc.exists() ? { id: HotelDoc.id, ...HotelDoc.data() } : null;
       } catch (error) {
-        console.error('Error getting property company:', error);
+        console.error('Error getting property Hotel:', error);
         throw error;
       }
     }
@@ -81,11 +81,11 @@ import {
       }
     }
   
-    // Get company by concierge email
-    async getCompanyByEmail(email) {
+    // Get Hotel by concierge email
+    async getHotelByEmail(email) {
       try {
         const q = query(
-          collection(db, 'propertyCompanies'), 
+          collection(db, 'HotelCompanies'), 
           where('conciergeEmails', 'array-contains', email)
         );
         const querySnapshot = await getDocs(q);
@@ -96,18 +96,18 @@ import {
         }
         return null;
       } catch (error) {
-        console.error('Error getting company by email:', error);
+        console.error('Error getting Hotel by email:', error);
         throw error;
       }
     }
   
     // guest Management
-    async addguest(companyId, guestData) {
+    async addguest(hotelId, guestData) {
       try {
         const guestRef = doc(collection(db, 'guests'));
         await setDoc(guestRef, {
           ...guestData,
-          companyId,
+          hotelId,
           createdAt: new Date(),
           updatedAt: new Date()
         });
@@ -118,11 +118,11 @@ import {
       }
     }
   
-    async getguestsByCompany(companyId) {
+    async getguestsByHotel(hotelId) {
       try {
         const q = query(
           collection(db, 'guests'), 
-          where('companyId', '==', companyId)
+          where('hotelId', '==', hotelId)
         );
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -154,12 +154,12 @@ import {
     }
   
     // Calendar/Booking Management
-    async createBooking(companyId, bookingData) {
+    async serviceBookings(hotelId, bookingData) {
       try {
-        const bookingRef = doc(collection(db, 'bookings'));
+        const bookingRef = doc(collection(db, 'serviceBookings'));
         await setDoc(bookingRef, {
           ...bookingData,
-          companyId,
+          hotelId,
           createdAt: new Date(),
           updatedAt: new Date()
         });
@@ -170,11 +170,11 @@ import {
       }
     }
   
-    async getBookingsByCompany(companyId, startDate = null, endDate = null) {
+    async getBookingsByHotel(hotelId, startDate = null, endDate = null) {
       try {
         let q = query(
-          collection(db, 'bookings'), 
-          where('companyId', '==', companyId)
+          collection(db, 'serviceBookings'), 
+          where('hotelId', '==', hotelId)
         );
         
         // Add date filtering if provided
@@ -188,14 +188,14 @@ import {
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (error) {
-        console.error('Error getting bookings:', error);
+        console.error('Error getting serviceBookings:', error);
         throw error;
       }
     }
   
     async updateBooking(bookingId, updates) {
       try {
-        await updateDoc(doc(db, 'bookings', bookingId), {
+        await updateDoc(doc(db, 'serviceBookings', bookingId), {
           ...updates,
           updatedAt: new Date()
         });
@@ -207,7 +207,7 @@ import {
   
     async deleteBooking(bookingId) {
       try {
-        await deleteDoc(doc(db, 'bookings', bookingId));
+        await deleteDoc(doc(db, 'serviceBookings', bookingId));
       } catch (error) {
         console.error('Error deleting booking:', error);
         throw error;
@@ -215,12 +215,12 @@ import {
     }
   
     // maintenanceRequests/Messages Management
-    async createIssue(companyId, issueData) {
+    async createGuestRequest(hotelId, issueData) {
       try {
         const issueRef = doc(collection(db, 'maintenanceRequests'));
         await setDoc(issueRef, {
           ...issueData,
-          companyId,
+          hotelId,
           status: 'open',
           createdAt: new Date(),
           updatedAt: new Date()
@@ -232,11 +232,11 @@ import {
       }
     }
   
-    async getmaintenanceRequestsByCompany(companyId) {
+    async getmaintenanceRequestsByHotel(hotelId) {
       try {
         const q = query(
           collection(db, 'maintenanceRequests'), 
-          where('companyId', '==', companyId)
+          where('hotelId', '==', hotelId)
         );
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -259,12 +259,12 @@ import {
     }
 
 // Visitor Management
-async createVisitor(companyId, visitorData) {
+async createGuestVisitorr(hotelId, visitorData) {
     try {
       const visitorRef = doc(collection(db, 'visitors'));
       await setDoc(visitorRef, {
         ...visitorData,
-        companyId,
+        hotelId,
         status: 'pre_registered',
         createdAt: new Date(),
         updatedAt: new Date()
@@ -276,11 +276,11 @@ async createVisitor(companyId, visitorData) {
     }
   }
   
-  async getVisitorsByCompany(companyId, startDate = null, endDate = null) {
+  async getVisitorsByHotel(hotelId, startDate = null, endDate = null) {
     try {
       let q = query(
         collection(db, 'visitors'), 
-        where('companyId', '==', companyId)
+        where('hotelId', '==', hotelId)
       );
       
       // Add date filtering if provided
@@ -311,7 +311,7 @@ async createVisitor(companyId, visitorData) {
     }
   }
   
-  async deleteVisitor(visitorId) {
+  async deleteGuestVisitor(visitorId) {
     try {
       await deleteDoc(doc(db, 'visitors', visitorId));
     } catch (error) {
@@ -321,12 +321,12 @@ async createVisitor(companyId, visitorData) {
   }
   
   // parking Request Management
-  async createparkingRequest(companyId, requestData) {
+  async createparkingRequest(hotelId, requestData) {
     try {
       const requestRef = doc(collection(db, 'parkingRequests'));
       await setDoc(requestRef, {
         ...requestData,
-        companyId,
+        hotelId,
         status: 'pending',
         createdAt: new Date(),
         updatedAt: new Date()
@@ -338,11 +338,11 @@ async createVisitor(companyId, visitorData) {
     }
   }
   
-  async getparkingRequestsByCompany(companyId, startDate = null, endDate = null) {
+  async getparkingRequestsByHotel(hotelId, startDate = null, endDate = null) {
     try {
       let q = query(
         collection(db, 'parkingRequests'), 
-        where('companyId', '==', companyId)
+        where('hotelId', '==', hotelId)
       );
       
       // Add date filtering if provided
@@ -383,7 +383,7 @@ async createVisitor(companyId, visitorData) {
   }
   
   // Get visitors checked in today
-  async getTodaysCheckedInVisitors(companyId) {
+  async getTodaysCheckedInVisitors(hotelId) {
     try {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -392,7 +392,7 @@ async createVisitor(companyId, visitorData) {
       
       const q = query(
         collection(db, 'visitors'),
-        where('companyId', '==', companyId),
+        where('hotelId', '==', hotelId),
         where('status', '==', 'checked_in'),
         where('actualArrival', '>=', today),
         where('actualArrival', '<', tomorrow)
@@ -407,11 +407,11 @@ async createVisitor(companyId, visitorData) {
   }
   
   // Get pending parking requests
-  async getPendingparkingRequests(companyId) {
+  async getPendingparkingRequests(hotelId) {
     try {
       const q = query(
         collection(db, 'parkingRequests'),
-        where('companyId', '==', companyId),
+        where('hotelId', '==', hotelId),
         where('status', '==', 'pending')
       );
       
@@ -424,12 +424,12 @@ async createVisitor(companyId, visitorData) {
   }
 
 // Messages & Call Logs Management
-async createMessage(companyId, messageData) {
+async createMessage(hotelId, messageData) {
     try {
       const messageRef = doc(collection(db, 'messages'));
       await setDoc(messageRef, {
         ...messageData,
-        companyId,
+        hotelId,
         createdAt: new Date(),
         updatedAt: new Date()
       });
@@ -440,11 +440,11 @@ async createMessage(companyId, messageData) {
     }
   }
   
-  async getMessagesByCompany(companyId) {
+  async getMessagesByHotel(hotelId) {
     try {
       const q = query(
         collection(db, 'messages'), 
-        where('companyId', '==', companyId)
+        where('hotelId', '==', hotelId)
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -467,12 +467,12 @@ async createMessage(companyId, messageData) {
     }
   }
   
-  async createCallLog(companyId, callData) {
+  async createCallLog(hotelId, callData) {
     try {
       const callRef = doc(collection(db, 'callLogs'));
       await setDoc(callRef, {
         ...callData,
-        companyId,
+        hotelId,
         type: 'call',
         createdAt: new Date(),
         updatedAt: new Date()
@@ -484,11 +484,11 @@ async createMessage(companyId, messageData) {
     }
   }
   
-  async getCallLogsByCompany(companyId) {
+  async getCallLogsByHotel(hotelId) {
     try {
       const q = query(
         collection(db, 'callLogs'), 
-        where('companyId', '==', companyId)
+        where('hotelId', '==', hotelId)
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -511,11 +511,11 @@ async createMessage(companyId, messageData) {
   }
   
   // Auto-associate messages/calls with guests based on phone number
-  async associateContactWithguest(companyId, phoneNumber) {
+  async associateContactWithguest(hotelId, phoneNumber) {
     try {
       const guestsQuery = query(
         collection(db, 'guests'),
-        where('companyId', '==', companyId),
+        where('hotelId', '==', hotelId),
         where('phone', '==', phoneNumber)
       );
       
@@ -538,11 +538,11 @@ async createMessage(companyId, messageData) {
   }
   
   // Get conversation thread between concierge and a specific phone number
-  async getConversationThread(companyId, phoneNumber) {
+  async getConversationThread(hotelId, phoneNumber) {
     try {
       const messagesQuery = query(
         collection(db, 'messages'),
-        where('companyId', '==', companyId),
+        where('hotelId', '==', hotelId),
         where('phoneNumber', '==', phoneNumber)
       );
       
@@ -555,11 +555,11 @@ async createMessage(companyId, messageData) {
   }
   
   // Analytics and summary methods
-  async getMessageStats(companyId, dateRange = null) {
+  async getMessageStats(hotelId, dateRange = null) {
     try {
       let q = query(
         collection(db, 'messages'),
-        where('companyId', '==', companyId)
+        where('hotelId', '==', hotelId)
       );
       
       if (dateRange) {
@@ -585,11 +585,11 @@ async createMessage(companyId, messageData) {
     }
   }
   
-  async getCallStats(companyId, dateRange = null) {
+  async getCallStats(hotelId, dateRange = null) {
     try {
       let q = query(
         collection(db, 'callLogs'),
-        where('companyId', '==', companyId)
+        where('hotelId', '==', hotelId)
       );
       
       if (dateRange) {
@@ -676,10 +676,10 @@ async createMessage(companyId, messageData) {
   }
   
   // Twilio Integration Helpers (for when you implement Twilio)
-  async logIncomingMessage(companyId, twilioData) {
+  async logIncomingMessage(hotelId, twilioData) {
     try {
       // Associate with guest if possible
-      const guestInfo = await this.associateContactWithguest(companyId, twilioData.From);
+      const guestInfo = await this.associateContactWithguest(hotelId, twilioData.From);
       
       const messageData = {
         phoneNumber: twilioData.From,
@@ -693,14 +693,14 @@ async createMessage(companyId, messageData) {
         ...guestInfo
       };
       
-      return await this.createMessage(companyId, messageData);
+      return await this.createMessage(hotelId, messageData);
     } catch (error) {
       console.error('Error logging incoming message:', error);
       throw error;
     }
   }
   
-  async logOutgoingMessage(companyId, messageData, twilioResponse) {
+  async logOutgoingMessage(hotelId, messageData, twilioResponse) {
     try {
       const messageRecord = {
         ...messageData,
@@ -713,17 +713,17 @@ async createMessage(companyId, messageData) {
         sentBy: auth.currentUser?.email
       };
       
-      return await this.createMessage(companyId, messageRecord);
+      return await this.createMessage(hotelId, messageRecord);
     } catch (error) {
       console.error('Error logging outgoing message:', error);
       throw error;
     }
   }
   
-  async logIncomingCall(companyId, retellData) {
+  async logIncomingCall(hotelId, retellData) {
     try {
       // Associate with guest if possible
-      const guestInfo = await this.associateContactWithguest(companyId, retellData.from);
+      const guestInfo = await this.associateContactWithguest(hotelId, retellData.from);
       
       const callData = {
         phoneNumber: retellData.from,
@@ -738,7 +738,7 @@ async createMessage(companyId, messageData) {
         ...guestInfo
       };
       
-      return await this.createCallLog(companyId, callData);
+      return await this.createCallLog(hotelId, callData);
     } catch (error) {
       console.error('Error logging incoming call:', error);
       throw error;
@@ -746,11 +746,11 @@ async createMessage(companyId, messageData) {
   }
   
   // Search functionality
-  async searchMessagesAndCalls(companyId, searchTerm) {
+  async searchMessagesAndCalls(hotelId, searchTerm) {
     try {
       const [messages, calls] = await Promise.all([
-        this.getMessagesByCompany(companyId),
-        this.getCallLogsByCompany(companyId)
+        this.getMessagesByHotel(hotelId),
+        this.getCallLogsByHotel(hotelId)
       ]);
       
       const searchLower = searchTerm.toLowerCase();
@@ -782,11 +782,11 @@ async createMessage(companyId, messageData) {
   }
   
   // Bulk operations
-  async markAllMessagesAsRead(companyId, phoneNumber = null) {
+  async markAllMessagesAsRead(hotelId, phoneNumber = null) {
     try {
       let q = query(
         collection(db, 'messages'),
-        where('companyId', '==', companyId),
+        where('hotelId', '==', hotelId),
         where('isRead', '==', false),
         where('direction', '==', 'incoming')
       );
@@ -813,12 +813,12 @@ async createMessage(companyId, messageData) {
   }
 
   // Package Management
-async createPackage(companyId, packageData) {
+async createParcel(hotelId, packageData) {
     try {
       const packageRef = doc(collection(db, 'packages'));
       await setDoc(packageRef, {
         ...packageData,
-        companyId,
+        hotelId,
         status: 'pending',
         notificationSent: false,
         createdAt: new Date(),
@@ -831,11 +831,11 @@ async createPackage(companyId, packageData) {
     }
   }
   
-  async getPackagesByCompany(companyId) {
+  async getPackagesByHotel(hotelId) {
     try {
       const q = query(
         collection(db, 'packages'), 
-        where('companyId', '==', companyId),
+        where('hotelId', '==', hotelId),
         orderBy('createdAt', 'desc')
       );
       const querySnapshot = await getDocs(q);
@@ -898,11 +898,11 @@ async createPackage(companyId, packageData) {
   }
   
   // Package Statistics
-  async getPackageStats(companyId, dateRange = null) {
+  async getPackageStats(hotelId, dateRange = null) {
     try {
       let q = query(
         collection(db, 'packages'),
-        where('companyId', '==', companyId)
+        where('hotelId', '==', hotelId)
       );
       
       if (dateRange) {
@@ -961,9 +961,9 @@ async createPackage(companyId, packageData) {
   }
   
   // Search packages
-  async searchPackages(companyId, searchTerm) {
+  async searchPackages(hotelId, searchTerm) {
     try {
-      const packages = await this.getPackagesByCompany(companyId);
+      const packages = await this.getPackagesByHotel(hotelId);
       
       const searchLower = searchTerm.toLowerCase();
       
@@ -1023,7 +1023,7 @@ async createPackage(companyId, packageData) {
       });
       
       // Log the notification
-      await this.logActivity(pkg.companyId, {
+      await this.logActivity(pkg.hotelId, {
         type: 'package_notification',
         description: `Package notification sent to ${guest.name} (Unit ${pkg.roomNumber})`,
         packageId,
@@ -1082,15 +1082,15 @@ async createPackage(companyId, packageData) {
   }
   
   // Package reports
-  async generatePackageReport(companyId, dateRange) {
+  async generatePackageReport(hotelId, dateRange) {
     try {
-      const packages = await this.getPackagesByCompany(companyId);
+      const packages = await this.getPackagesByHotel(hotelId);
       const filteredPackages = packages.filter(pkg => {
         const pkgDate = pkg.createdAt.toDate ? pkg.createdAt.toDate() : new Date(pkg.createdAt);
         return pkgDate >= dateRange.start && pkgDate <= dateRange.end;
       });
       
-      const stats = await this.getPackageStats(companyId, dateRange);
+      const stats = await this.getPackageStats(hotelId, dateRange);
       
       return {
         period: {

@@ -13,18 +13,18 @@ import { FaPhoneAlt, FaExclamationTriangle } from 'react-icons/fa';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [userCompany, setUserCompany] = useState(null);
+  const [userHotel, setUserHotel] = useState(null);//  const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(true);
   
   // Data states
   const [guests, setguests] = useState([]);
-  const [bookings, setBookings] = useState([]);
+  const [serviceBookings, setBookings] = useState([]);
   const [packages, setPackages] = useState([]);
   const [messages, setMessages] = useState([]);
   const [calls, setCalls] = useState([]);
   const [maintenanceRequests, setmaintenanceRequests] = useState([]);
   const [visitors, setVisitors] = useState([]);
-  
+  const [rooms, setRooms] = useState([]); // NEW: To manage room status
   // Modal states
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
@@ -55,18 +55,18 @@ const Dashboard = () => {
 
   const loadDashboardData = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
-      setUserCompany(company);
+      const Hotel = await dbService.getHotelByEmail(email);
+      setUserHotel(Hotel);
       
-      if (company) {
+      if (Hotel) {
         await Promise.all([
-          loadguests(company.id),
-          loadBookings(company.id),
-          loadPackages(company.id),
-          loadMessages(company.id),
-          loadCalls(company.id),
-          loadmaintenanceRequests(company.id),
-          loadVisitors(company.id)
+          loadguests(Hotel.id),
+          loadBookings(Hotel.id),
+          loadPackages(Hotel.id),
+          loadMessages(Hotel.id),
+          loadCalls(Hotel.id),
+          loadmaintenanceRequests(Hotel.id),
+          loadVisitors(Hotel.id)
         ]);
       }
     } catch (error) {
@@ -74,66 +74,66 @@ const Dashboard = () => {
     }
   };
 
-  const loadguests = async (companyId) => {
+  const loadguests = async (hotelId) => {
     try {
-      const data = await dbService.getguestsByCompany(companyId);
+      const data = await dbService.getguestsByHotel(hotelId);
       setguests(data);
     } catch (error) {
       console.error('Error loading guests:', error);
     }
   };
 
-  const loadBookings = async (companyId) => {
+  const loadBookings = async (hotelId) => {
     try {
-      const data = await dbService.getBookingsByCompany(companyId);
+      const data = await dbService.getBookingsByHotel(hotelId);
       setBookings(data);
     } catch (error) {
-      console.error('Error loading bookings:', error);
+      console.error('Error loading serviceBookings:', error);
     }
   };
 
-  const loadPackages = async (companyId) => {
+  const loadPackages = async (hotelId) => {
     try {
-      const data = await dbService.getPackagesByCompany(companyId);
+      const data = await dbService.getPackagesByHotel(hotelId);
       setPackages(data);
     } catch (error) {
       console.error('Error loading packages:', error);
     }
   };
 
-  const loadMessages = async (companyId) => {
+  const loadMessages = async (hotelId) => {
     try {
-      const data = await dbService.getMessagesByCompany ? 
-        await dbService.getMessagesByCompany(companyId) : [];
+      const data = await dbService.getMessagesByHotel ? 
+        await dbService.getMessagesByHotel(hotelId) : [];
       setMessages(data);
     } catch (error) {
       console.error('Error loading messages:', error);
     }
   };
 
-  const loadCalls = async (companyId) => {
+  const loadCalls = async (hotelId) => {
     try {
-      const data = await dbService.getCallLogsByCompany ? 
-        await dbService.getCallLogsByCompany(companyId) : [];
+      const data = await dbService.getCallLogsByHotel ? 
+        await dbService.getCallLogsByHotel(hotelId) : [];
       setCalls(data);
     } catch (error) {
       console.error('Error loading calls:', error);
     }
   };
 
-  const loadmaintenanceRequests = async (companyId) => {
+  const loadmaintenanceRequests = async (hotelId) => {
     try {
-      const data = await dbService.getmaintenanceRequestsByCompany(companyId);
+      const data = await dbService.getmaintenanceRequestsByHotel(hotelId);
       setmaintenanceRequests(data);
     } catch (error) {
       console.error('Error loading maintenanceRequests:', error);
     }
   };
 
-  const loadVisitors = async (companyId) => {
+  const loadVisitors = async (hotelId) => {
     try {
-      const data = await dbService.getVisitorsByCompany ? 
-        await dbService.getVisitorsByCompany(companyId) : [];
+      const data = await dbService.getVisitorsByHotel ? 
+        await dbService.getVisitorsByHotel(hotelId) : [];
       setVisitors(data);
     } catch (error) {
       console.error('Error loading visitors:', error);
@@ -142,7 +142,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     calculateStats();
-  }, [guests, bookings, packages, messages, calls, maintenanceRequests, visitors]);
+  }, [guests, serviceBookings, packages, messages, calls, maintenanceRequests, visitors]);
 
   const calculateStats = () => {
     const today = new Date();
@@ -150,7 +150,7 @@ const Dashboard = () => {
 
     setStats({
       totalguests: guests.length,
-      todaysBookings: bookings.filter(b => {
+      todaysBookings: serviceBookings.filter(b => {
         const bookingDate = b.startDate?.toDate ? b.startDate.toDate() : new Date(b.startDate);
         return bookingDate.toDateString() === todayStr;
       }).length,
@@ -187,7 +187,7 @@ const Dashboard = () => {
     const today = new Date();
     const todayStr = today.toDateString();
     
-    return bookings
+    return serviceBookings
       .filter(booking => {
         const bookingDate = booking.startDate?.toDate ? booking.startDate.toDate() : new Date(booking.startDate);
         return bookingDate.toDateString() === todayStr;
@@ -249,9 +249,9 @@ const Dashboard = () => {
 
   const handleQuickBooking = async (bookingData) => {
     try {
-      await dbService.createBooking(userCompany.id, bookingData);
+      await dbService.serviceBookings(userHotel.id, bookingData);
       setShowBookingModal(false);
-      await loadBookings(userCompany.id);
+      await loadBookings(userHotel.id);
     } catch (error) {
       console.error('Error creating booking:', error);
     }
@@ -269,9 +269,9 @@ const Dashboard = () => {
 
   const handleQuickPackage = async (packageData) => {
     try {
-      await dbService.createPackage(userCompany.id, packageData);
+      await dbService.createParcel(userHotel.id, packageData);
       setShowPackageModal(false);
-      await loadPackages(userCompany.id);
+      await loadPackages(userHotel.id);
     } catch (error) {
       console.error('Error logging package:', error);
     }
@@ -304,7 +304,7 @@ const Dashboard = () => {
               Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'}!
             </h1>
             <p className="welcome-subtitle">
-              Here's what's happening at {userCompany?.name || 'your building'} today
+              Here's what's happening at {userHotel?.name || 'your building'} today
             </p>
           </div>
           
@@ -348,7 +348,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-         <div className="stat-card bookings" onClick={() => navigate('/calendar')}>
+         <div className="stat-card serviceBookings" onClick={() => navigate('/calendar')}>
   <div className="stat-icon"><FaRegClipboard /></div>
   <div className="stat-content">
     <h3>{stats.todaysBookings}</h3>
@@ -429,7 +429,7 @@ const Dashboard = () => {
               {todaysBookings.length === 0 ? (
                 <div className="empty-state">
                   <div className="empty-icon">📅</div>
-                  <p>No bookings scheduled for today</p>
+                  <p>No serviceBookings scheduled for today</p>
                 </div>
               ) : (
                 <div className="activity-list">
@@ -651,7 +651,7 @@ const Dashboard = () => {
           <div className="modal-backdrop">
             <BookingForm
               guests={guests}
-              amenities={userCompany?.amenities || []}
+              amenities={userHotel?.amenities || []}
               onSubmit={handleQuickBooking}
               onClose={() => setShowBookingModal(false)}
             />

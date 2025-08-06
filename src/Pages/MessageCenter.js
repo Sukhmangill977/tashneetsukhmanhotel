@@ -9,7 +9,7 @@ import MessageTemplateModal from '../components/MessageTemplateModal';
 import './MessageCenter.css';
 
 const MessageCenter = () => {
-  const [userCompany, setUserCompany] = useState(null);
+  const [userHotel, setUserHotel] = useState(null);
   const [guests, setguests] = useState([]);
   const [activeTab, setActiveTab] = useState('inbox');
   const [loading, setLoading] = useState(true);
@@ -55,14 +55,14 @@ const MessageCenter = () => {
 
   const loadUserData = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
-      setUserCompany(company);
+      const Hotel = await dbService.getHotelByEmail(email);
+      setUserHotel(Hotel);
       
-      if (company) {
+      if (Hotel) {
         await Promise.all([
-          loadguests(company.id),
-          loadMessages(company.id),
-          loadCallLogs(company.id)
+          loadguests(Hotel.id),
+          loadMessages(Hotel.id),
+          loadCallLogs(Hotel.id)
         ]);
       }
     } catch (error) {
@@ -70,18 +70,18 @@ const MessageCenter = () => {
     }
   };
 
-  const loadguests = async (companyId) => {
+  const loadguests = async (hotelId) => {
     try {
-      const guestsData = await dbService.getguestsByCompany(companyId);
+      const guestsData = await dbService.getguestsByHotel(hotelId);
       setguests(guestsData);
     } catch (error) {
       console.error('Error loading guests:', error);
     }
   };
 
-  const loadMessages = async (companyId) => {
+  const loadMessages = async (hotelId) => {
     try {
-      const messagesData = await dbService.getMessagesByCompany(companyId);
+      const messagesData = await dbService.getMessagesByHotel(hotelId);
       setMessages(messagesData);
       updateStats(messagesData, callLogs);
     } catch (error) {
@@ -89,9 +89,9 @@ const MessageCenter = () => {
     }
   };
 
-  const loadCallLogs = async (companyId) => {
+  const loadCallLogs = async (hotelId) => {
     try {
-      const callLogsData = await dbService.getCallLogsByCompany(companyId);
+      const callLogsData = await dbService.getCallLogsByHotel(hotelId);
       setCallLogs(callLogsData);
       updateStats(messages, callLogsData);
     } catch (error) {
@@ -195,7 +195,7 @@ const MessageCenter = () => {
         // Send to all guests
         const messagePromises = guests.map(async (guest) => {
           const newMessage = {
-            companyId: userCompany.id,
+            hotelId: userHotel.id,
             phoneNumber: guest.phone,
             guestId: guest.id,
             guestName: guest.name,
@@ -211,16 +211,16 @@ const MessageCenter = () => {
           
           // In real implementation, send via Twilio
           console.log('Sending mass message to:', guest.phone);
-          return await dbService.createMessage(userCompany.id, newMessage);
+          return await dbService.createMessage(userHotel.id, newMessage);
         });
         
         await Promise.all(messagePromises);
-        await loadMessages(userCompany.id);
+        await loadMessages(userHotel.id);
         
       } else if (composerType === 'individual') {
         const guest = selectedContact;
         const newMessage = {
-          companyId: userCompany.id,
+          hotelId: userHotel.id,
           phoneNumber: guest.phone,
           guestId: guest.id,
           guestName: guest.name,
@@ -236,13 +236,13 @@ const MessageCenter = () => {
         
         // In real implementation, send via Twilio
         console.log('Sending individual message to:', guest.phone);
-        await dbService.createMessage(userCompany.id, newMessage);
-        await loadMessages(userCompany.id);
+        await dbService.createMessage(userHotel.id, newMessage);
+        await loadMessages(userHotel.id);
         
       } else if (composerType === 'reply') {
         const originalMessage = selectedMessage;
         const replyMessage = {
-          companyId: userCompany.id,
+          hotelId: userHotel.id,
           phoneNumber: originalMessage.phoneNumber,
           guestId: originalMessage.guestId,
           guestName: originalMessage.guestName,
@@ -258,8 +258,8 @@ const MessageCenter = () => {
         };
         
         console.log('Sending reply to:', originalMessage.phoneNumber);
-        await dbService.createMessage(userCompany.id, replyMessage);
-        await loadMessages(userCompany.id);
+        await dbService.createMessage(userHotel.id, replyMessage);
+        await loadMessages(userHotel.id);
       }
       
       setShowComposer(false);

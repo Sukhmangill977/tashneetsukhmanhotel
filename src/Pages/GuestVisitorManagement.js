@@ -10,7 +10,7 @@ import NotificationForm from '../components/NotificationForm';
 import './GuestVisitorManagement.css';
 
 const GuestVisitorManagement = () => {
-  const [userCompany, setUserCompany] = useState(null);
+  const [userHotel, setUserHotel] = useState(null);
   const [guests, setguests] = useState([]);
   const [visitors, setVisitors] = useState([]);
   const [parkingRequests, setparkingRequests] = useState([]);
@@ -47,14 +47,14 @@ const GuestVisitorManagement = () => {
 
   const loadUserData = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
-      setUserCompany(company);
+      const Hotel = await dbService.getHotelByEmail(email);
+      setUserHotel(Hotel);
       
-      if (company) {
+      if (Hotel) {
         await Promise.all([
-          loadguests(company.id),
-          loadVisitors(company.id),
-          loadparkingRequests(company.id)
+          loadguests(Hotel.id),
+          loadVisitors(Hotel.id),
+          loadparkingRequests(Hotel.id)
         ]);
       }
     } catch (error) {
@@ -62,27 +62,27 @@ const GuestVisitorManagement = () => {
     }
   };
 
-  const loadguests = async (companyId) => {
+  const loadguests = async (hotelId) => {
     try {
-      const guestsData = await dbService.getguestsByCompany(companyId);
+      const guestsData = await dbService.getguestsByHotel(hotelId);
       setguests(guestsData);
     } catch (error) {
       console.error('Error loading guests:', error);
     }
   };
 
-  const loadVisitors = async (companyId) => {
+  const loadVisitors = async (hotelId) => {
     try {
-      const visitorsData = await dbService.getVisitorsByCompany(companyId);
+      const visitorsData = await dbService.getVisitorsByHotel(hotelId);
       setVisitors(visitorsData);
     } catch (error) {
       console.error('Error loading visitors:', error);
     }
   };
 
-  const loadparkingRequests = async (companyId) => {
+  const loadparkingRequests = async (hotelId) => {
     try {
-      const parkingData = await dbService.getparkingRequestsByCompany(companyId);
+      const parkingData = await dbService.getparkingRequestsByHotel(hotelId);
       setparkingRequests(parkingData);
     } catch (error) {
       console.error('Error loading parking requests:', error);
@@ -276,7 +276,7 @@ const GuestVisitorManagement = () => {
       };
       
       await dbService.updateVisitor(visitor.id, updateData);
-      await loadVisitors(userCompany.id);
+      await loadVisitors(userHotel.id);
       
       // Send notification to guest
       // This would integrate with your messaging service
@@ -294,7 +294,7 @@ const GuestVisitorManagement = () => {
       };
       
       await dbService.updateVisitor(visitor.id, updateData);
-      await loadVisitors(userCompany.id);
+      await loadVisitors(userHotel.id);
     } catch (error) {
       console.error('Error checking out visitor:', error);
     }
@@ -311,7 +311,7 @@ const GuestVisitorManagement = () => {
       };
       
       await dbService.updateparkingRequest(request.id, updateData);
-      await loadparkingRequests(userCompany.id);
+      await loadparkingRequests(userHotel.id);
       
       // Send SMS notification
       await sendparkingApprovalNotification(request, updateData);
@@ -329,7 +329,7 @@ const GuestVisitorManagement = () => {
       };
       
       await dbService.updateparkingRequest(request.id, updateData);
-      await loadparkingRequests(userCompany.id);
+      await loadparkingRequests(userHotel.id);
       
       // Send SMS notification
       await sendparkingDenialNotification(request);
@@ -343,10 +343,10 @@ const GuestVisitorManagement = () => {
       if (selectedVisitor) {
         await dbService.updateVisitor(selectedVisitor.id, visitorData);
       } else {
-        await dbService.createVisitor(userCompany.id, visitorData);
+        await dbService.createGuestVisitorr(userHotel.id, visitorData);
       }
       
-      await loadVisitors(userCompany.id);
+      await loadVisitors(userHotel.id);
       setShowVisitorForm(false);
       setSelectedVisitor(null);
     } catch (error) {
@@ -360,10 +360,10 @@ const GuestVisitorManagement = () => {
       if (selectedRequest) {
         await dbService.updateparkingRequest(selectedRequest.id, requestData);
       } else {
-        await dbService.createparkingRequest(userCompany.id, requestData);
+        await dbService.createparkingRequest(userHotel.id, requestData);
       }
       
-      await loadparkingRequests(userCompany.id);
+      await loadparkingRequests(userHotel.id);
       setShowparkingForm(false);
       setSelectedRequest(null);
     } catch (error) {
@@ -388,7 +388,7 @@ const GuestVisitorManagement = () => {
           notificationSent: true,
           lastNotificationAt: new Date()
         });
-        await loadVisitors(userCompany.id);
+        await loadVisitors(userHotel.id);
       }
       
       setShowNotificationForm(false);

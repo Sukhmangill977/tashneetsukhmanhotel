@@ -8,7 +8,7 @@ import BookingForm from './BookingForm';
 import MessageComposer from './MessageComposer';
 import './header.css';
 
-const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
+const Header = ({ currentPageName, onMenuToggle, userHotel }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
@@ -55,7 +55,7 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
     loadNotifications();
     loadguests();
     loadAmenities();
-  }, [userCompany]);
+  }, [userHotel]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -75,14 +75,14 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
   }, []);
 
   const loadNotifications = async () => {
-    if (!userCompany) return;
+    if (!userHotel) return;
     
     try {
-      // Load recent maintenanceRequests and bookings for notifications
-      const maintenanceRequests = await dbService.getmaintenanceRequestsByCompany(userCompany.id);
+      // Load recent maintenanceRequests and serviceBookings for notifications
+      const maintenanceRequests = await dbService.getmaintenanceRequestsByHotel(userHotel.id);
       const today = new Date();
-      const todayBookings = await dbService.getBookingsByCompany(
-        userCompany.id, 
+      const todayBookings = await dbService.getBookingsByHotel(
+        userHotel.id, 
         new Date(today.getFullYear(), today.getMonth(), today.getDate()),
         new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
       );
@@ -102,7 +102,7 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
         });
       });
 
-      // Add today's bookings
+      // Add today's serviceBookings
       todayBookings.slice(0, 2).forEach(booking => {
         notificationList.push({
           id: booking.id,
@@ -121,9 +121,9 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
   };
 
   const loadguests = async () => {
-    if (!userCompany) return;
+    if (!userHotel) return;
     try {
-      const guestsData = await dbService.getguestsByCompany(userCompany.id);
+      const guestsData = await dbService.getguestsByHotel(userHotel.id);
       setguests(guestsData);
     } catch (error) {
       console.error('Error loading guests:', error);
@@ -131,10 +131,10 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
   };
 
   const loadAmenities = async () => {
-    if (!userCompany) return;
+    if (!userHotel) return;
     try {
-      // Assuming amenities are stored in company data
-      setAmenities(userCompany.amenities || []);
+      // Assuming amenities are stored in Hotel data
+      setAmenities(userHotel.amenities || []);
     } catch (error) {
       console.error('Error loading amenities:', error);
     }
@@ -203,7 +203,7 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
 
   const handleBookingSubmit = async (bookingData) => {
     try {
-      await dbService.createBooking(userCompany.id, bookingData);
+      await dbService.serviceBookings(userHotel.id, bookingData);
       setShowBookingModal(false);
       // Optionally show success message or reload data
     } catch (error) {
@@ -261,8 +261,8 @@ const Header = ({ currentPageName, onMenuToggle, userCompany }) => {
           
           <div className="page-info">
             <h1 className="page-title">{currentPageName}</h1>
-            {userCompany && (
-              <span className="company-name">{userCompany.name}</span>
+            {userHotel && (
+              <span className="Hotel-name">{userHotel.name}</span>
             )}
           </div>
         </div>

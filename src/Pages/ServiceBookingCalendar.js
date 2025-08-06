@@ -6,8 +6,8 @@ import BookingForm from '../components/BookingForm';
 import './ServiceBookingCalendar.css';
 
 const ServiceBookingCalendar = () => {
-  const [userCompany, setUserCompany] = useState(null);
-  const [bookings, setBookings] = useState([]);
+  const [userHotel, setUserHotel] = useState(null);
+  const [serviceBookings, setBookings] = useState([]);
   const [guests, setguests] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -29,13 +29,13 @@ const ServiceBookingCalendar = () => {
 
   const loadUserData = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
-      setUserCompany(company);
+      const Hotel = await dbService.getHotelByEmail(email);
+      setUserHotel(Hotel);
       
-      if (company) {
+      if (Hotel) {
         await Promise.all([
-          loadBookings(company.id),
-          loadguests(company.id)
+          loadBookings(Hotel.id),
+          loadguests(Hotel.id)
         ]);
       }
     } catch (error) {
@@ -43,18 +43,18 @@ const ServiceBookingCalendar = () => {
     }
   };
 
-  const loadBookings = async (companyId) => {
+  const loadBookings = async (hotelId) => {
     try {
-      const bookingsData = await dbService.getBookingsByCompany(companyId);
-      setBookings(bookingsData);
+      const serviceBookingsData = await dbService.getBookingsByHotel(hotelId);
+      setBookings(serviceBookingsData);
     } catch (error) {
-      console.error('Error loading bookings:', error);
+      console.error('Error loading serviceBookings:', error);
     }
   };
 
-  const loadguests = async (companyId) => {
+  const loadguests = async (hotelId) => {
     try {
-      const guestsData = await dbService.getguestsByCompany(companyId);
+      const guestsData = await dbService.getguestsByHotel(hotelId);
       setguests(guestsData);
     } catch (error) {
       console.error('Error loading guests:', error);
@@ -74,28 +74,28 @@ const ServiceBookingCalendar = () => {
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < startingDayOfWeek; i++) {
       const prevDate = new Date(year, month, -startingDayOfWeek + i + 1);
-      days.push({ date: prevDate, isCurrentMonth: false, bookings: [] });
+      days.push({ date: prevDate, isCurrentMonth: false, serviceBookings: [] });
     }
     
     // Add days of the current month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const dayBookings = getBookingsForDate(date);
-      days.push({ date, isCurrentMonth: true, bookings: dayBookings });
+      days.push({ date, isCurrentMonth: true, serviceBookings: dayBookings });
     }
     
     // Add days from next month to complete the grid
     const remainingCells = 42 - days.length;
     for (let day = 1; day <= remainingCells; day++) {
       const nextDate = new Date(year, month + 1, day);
-      days.push({ date: nextDate, isCurrentMonth: false, bookings: [] });
+      days.push({ date: nextDate, isCurrentMonth: false, serviceBookings: [] });
     }
     
     return days;
   };
 
   const getBookingsForDate = (date) => {
-    return bookings.filter(booking => {
+    return serviceBookings.filter(booking => {
       const bookingDate = booking.startDate.toDate ? booking.startDate.toDate() : new Date(booking.startDate);
       return bookingDate.toDateString() === date.toDateString();
     });
@@ -136,9 +136,9 @@ const ServiceBookingCalendar = () => {
 
   const handleDateClick = (day) => {
     setSelectedDate(day.date);
-    if (day.bookings.length > 0) {
+    if (day.serviceBookings.length > 0) {
       // Show booking details
-      setSelectedBooking(day.bookings[0]);
+      setSelectedBooking(day.serviceBookings[0]);
     }
   };
 
@@ -159,11 +159,11 @@ const ServiceBookingCalendar = () => {
         await dbService.updateBooking(selectedBooking.id, bookingData);
       } else {
         // Create new booking
-        await dbService.createBooking(userCompany.id, bookingData);
+        await dbService.serviceBookings(userHotel.id, bookingData);
       }
       
-      // Reload bookings
-      await loadBookings(userCompany.id);
+      // Reload serviceBookings
+      await loadBookings(userHotel.id);
       setShowBookingForm(false);
       setSelectedBooking(null);
     } catch (error) {
@@ -180,7 +180,7 @@ const ServiceBookingCalendar = () => {
     const today = new Date();
     const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
     
-    return bookings.filter(booking => {
+    return serviceBookings.filter(booking => {
       const bookingDate = booking.startDate.toDate ? booking.startDate.toDate() : new Date(booking.startDate);
       return bookingDate >= today && bookingDate <= nextWeek;
     }).sort((a, b) => {
@@ -214,7 +214,7 @@ const ServiceBookingCalendar = () => {
             <div className="header-left">
               <h1 className="page-title">Booking Calendar</h1>
               <p className="page-description">
-                Manage amenity reservations and facility bookings
+                Manage amenity reservations and facility serviceBookings
               </p>
             </div>
             <div className="header-actions">
@@ -256,7 +256,7 @@ const ServiceBookingCalendar = () => {
             {/* Today's Bookings */}
             <div className="sidebar-section">
               <h3 className="section-title">Today's Bookings</h3>
-              <div className="bookings-list">
+              <div className="serviceBookings-list">
                 {todaysBookings.length > 0 ? (
                   todaysBookings.map((booking) => (
                     <div key={booking.id} className="booking-item today">
@@ -274,12 +274,12 @@ const ServiceBookingCalendar = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="no-bookings">
+                  <div className="no-serviceBookings">
                     <svg viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                       <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <p>No bookings today</p>
+                    <p>No serviceBookings today</p>
                   </div>
                 )}
               </div>
@@ -288,7 +288,7 @@ const ServiceBookingCalendar = () => {
             {/* Upcoming Bookings */}
             <div className="sidebar-section">
               <h3 className="section-title">Upcoming This Week</h3>
-              <div className="bookings-list">
+              <div className="serviceBookings-list">
                 {upcomingBookings.slice(0, 5).map((booking) => (
                   <div key={booking.id} className="booking-item upcoming">
                     <div 
@@ -307,14 +307,14 @@ const ServiceBookingCalendar = () => {
                   </div>
                 ))}
                 {upcomingBookings.length === 0 && (
-                  <div className="no-bookings">
+                  <div className="no-serviceBookings">
                     <svg viewBox="0 0 24 24" fill="none">
                       <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
                       <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                       <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                       <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2"/>
                     </svg>
-                    <p>No upcoming bookings</p>
+                    <p>No upcoming serviceBookings</p>
                   </div>
                 )}
               </div>
@@ -333,7 +333,7 @@ const ServiceBookingCalendar = () => {
                   <div className="stat-label">This Week</div>
                 </div>
                 <div className="stat-item">
-                  <div className="stat-value">{bookings.length}</div>
+                  <div className="stat-value">{serviceBookings.length}</div>
                   <div className="stat-label">Total</div>
                 </div>
               </div>
@@ -396,8 +396,8 @@ const ServiceBookingCalendar = () => {
                     onClick={() => handleDateClick(day)}
                   >
                     <div className="day-number">{day.date.getDate()}</div>
-                    <div className="day-bookings">
-                      {day.bookings.slice(0, 3).map((booking) => (
+                    <div className="day-serviceBookings">
+                      {day.serviceBookings.slice(0, 3).map((booking) => (
                         <div
                           key={booking.id}
                           className="booking-event"
@@ -411,9 +411,9 @@ const ServiceBookingCalendar = () => {
                           <span className="booking-title">{booking.title}</span>
                         </div>
                       ))}
-                      {day.bookings.length > 3 && (
-                        <div className="more-bookings">
-                          +{day.bookings.length - 3} more
+                      {day.serviceBookings.length > 3 && (
+                        <div className="more-serviceBookings">
+                          +{day.serviceBookings.length - 3} more
                         </div>
                       )}
                     </div>
@@ -429,7 +429,7 @@ const ServiceBookingCalendar = () => {
           <BookingForm
             booking={selectedBooking}
             guests={guests}
-            amenities={userCompany?.amenities || []}
+            amenities={userHotel?.amenities || []}
             onSubmit={handleBookingSubmit}
             onClose={() => {
               setShowBookingForm(false);

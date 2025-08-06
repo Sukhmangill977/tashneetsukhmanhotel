@@ -127,7 +127,7 @@
     margin: 0 0 16px 0;
   }
   
-  .bookings-list {
+  .serviceBookings-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -179,7 +179,7 @@
     font-weight: 500;
   }
   
-  .no-bookings {
+  .no-serviceBookings {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -187,14 +187,14 @@
     text-align: center;
   }
   
-  .no-bookings svg {
+  .no-serviceBookings svg {
     width: 32px;
     height: 32px;
     color: #cbd5e1;
     margin-bottom: 8px;
   }
   
-  .no-bookings p {
+  .no-serviceBookings p {
     font-size: 13px;
     color: #94a3b8;
     margin: 0;
@@ -391,7 +391,7 @@
     line-height: 1;
   }
   
-  .day-bookings {
+  .day-serviceBookings {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -423,7 +423,7 @@
     text-overflow: ellipsis;
   }
   
-  .more-bookings {
+  .more-serviceBookings {
     font-size: 10px;
     color: #64748b;
     font-weight: 600;
@@ -568,7 +568,7 @@
       padding: 1px 3px;
     }
     
-    .more-bookings {
+    .more-serviceBookings {
       font-size: 9px;
     }
     

@@ -8,7 +8,7 @@ import NotificationForm from '../components/NotificationForm';
 import './ParcelManagement.css';
 
 const ParcelManagement = () => {
-  const [userCompany, setUserCompany] = useState(null);
+  const [userHotel, setUserHotel] = useState(null);
   const [guests, setguests] = useState([]);
   const [packages, setPackages] = useState([]);
   const [filteredPackages, setFilteredPackages] = useState([]);
@@ -48,13 +48,13 @@ const ParcelManagement = () => {
 
   const loadUserData = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
-      setUserCompany(company);
+      const Hotel = await dbService.getHotelByEmail(email);
+      setUserHotel(Hotel);
       
-      if (company) {
+      if (Hotel) {
         await Promise.all([
-          loadguests(company.id),
-          loadPackages(company.id)
+          loadguests(Hotel.id),
+          loadPackages(Hotel.id)
         ]);
       }
     } catch (error) {
@@ -62,18 +62,18 @@ const ParcelManagement = () => {
     }
   };
 
-  const loadguests = async (companyId) => {
+  const loadguests = async (hotelId) => {
     try {
-      const guestsData = await dbService.getguestsByCompany(companyId);
+      const guestsData = await dbService.getguestsByHotel(hotelId);
       setguests(guestsData);
     } catch (error) {
       console.error('Error loading guests:', error);
     }
   };
 
-  const loadPackages = async (companyId) => {
+  const loadPackages = async (hotelId) => {
     try {
-      const packagesData = await dbService.getPackagesByCompany(companyId);
+      const packagesData = await dbService.getPackagesByHotel(hotelId);
       setPackages(packagesData);
     } catch (error) {
       console.error('Error loading packages:', error);
@@ -165,10 +165,10 @@ const ParcelManagement = () => {
       });
       
       // Reload packages
-      await loadPackages(userCompany.id);
+      await loadPackages(userHotel.id);
       
       // Log activity
-      await dbService.logActivity(userCompany.id, {
+      await dbService.logActivity(userHotel.id, {
         type: 'package_pickup',
         description: `Package picked up by ${pkg.guestName} for Unit ${pkg.roomNumber}`,
         packageId: pkg.id,
@@ -185,10 +185,10 @@ const ParcelManagement = () => {
     if (window.confirm('Are you sure you want to delete this package record?')) {
       try {
         await dbService.deletePackage(pkg.id);
-        await loadPackages(userCompany.id);
+        await loadPackages(userHotel.id);
         
         // Log activity
-        await dbService.logActivity(userCompany.id, {
+        await dbService.logActivity(userHotel.id, {
           type: 'package_deleted',
           description: `Package record deleted for Unit ${pkg.roomNumber}`,
           packageId: pkg.id
@@ -208,14 +208,14 @@ const ParcelManagement = () => {
         await dbService.updatePackage(selectedPackage.id, packageData);
         
         // Log activity
-        await dbService.logActivity(userCompany.id, {
+        await dbService.logActivity(userHotel.id, {
           type: 'package_updated',
           description: `Package updated for Unit ${packageData.roomNumber}`,
           packageId: selectedPackage.id
         });
       } else {
         // Create new package
-        const packageId = await dbService.createPackage(userCompany.id, packageData);
+        const packageId = await dbService.createParcel(userHotel.id, packageData);
         
         // Auto-send notification if guest is found and notification is enabled
         if (packageData.guestId && packageData.autoNotify) {
@@ -228,7 +228,7 @@ const ParcelManagement = () => {
         }
         
         // Log activity
-        await dbService.logActivity(userCompany.id, {
+        await dbService.logActivity(userHotel.id, {
           type: 'package_created',
           description: `New package logged for Unit ${packageData.roomNumber} from ${packageData.courier}`,
           packageId
@@ -236,7 +236,7 @@ const ParcelManagement = () => {
       }
       
       // Reload packages and close form
-      await loadPackages(userCompany.id);
+      await loadPackages(userHotel.id);
       setShowPackageForm(false);
       setSelectedPackage(null);
       
@@ -258,7 +258,7 @@ const ParcelManagement = () => {
       }
       
       // Reload packages
-      await loadPackages(userCompany.id);
+      await loadPackages(userHotel.id);
       setShowNotificationForm(false);
       setSelectedPackage(null);
       
@@ -285,7 +285,7 @@ const ParcelManagement = () => {
           console.warn('Unknown bulk action:', action);
       }
       
-      await loadPackages(userCompany.id);
+      await loadPackages(userHotel.id);
     } catch (error) {
       console.error('Error performing bulk action:', error);
       alert('Failed to perform bulk action. Please try again.');

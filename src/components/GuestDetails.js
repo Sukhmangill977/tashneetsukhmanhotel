@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { dbService } from '../database-service';
 import './GuestDetails.css';
 
-const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
+const GuestDetails = ({ guest, userHotel, onEdit, onClose }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [guestData, setguestData] = useState({
-    bookings: [],
+    serviceBookings: [],
     maintenanceRequests: [],
     messages: [],
     visitors: []
@@ -18,18 +18,18 @@ const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
   }, [guest]);
 
   const loadguestData = async () => {
-    if (!guest || !userCompany) return;
+    if (!guest || !userHotel) return;
     
     setLoading(true);
     try {
       // Load all related data for this guest
-      const [bookings, maintenanceRequests] = await Promise.all([
-        dbService.getBookingsByCompany(userCompany.id),
-        dbService.getmaintenanceRequestsByCompany(userCompany.id)
+      const [serviceBookings, maintenanceRequests] = await Promise.all([
+        dbService.getBookingsByHotel(userHotel.id),
+        dbService.getmaintenanceRequestsByHotel(userHotel.id)
       ]);
 
       // Filter data for this specific guest
-      const guestBookings = bookings.filter(booking => 
+      const guestBookings = serviceBookings.filter(booking => 
         booking.guestId === guest.id ||
         booking.contactInfo?.email === guest.email
       );
@@ -40,7 +40,7 @@ const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
       );
 
       setguestData({
-        bookings: guestBookings,
+        serviceBookings: guestBookings,
         maintenanceRequests: guestmaintenanceRequests,
         messages: [], // TODO: Implement when message system is ready
         visitors: []  // TODO: Implement when visitor system is ready
@@ -106,12 +106,12 @@ const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
   };
 
   const getAmenityName = (amenityId) => {
-    return userCompany?.amenities?.find(a => a.id === amenityId)?.name || amenityId;
+    return userHotel?.amenities?.find(a => a.id === amenityId)?.name || amenityId;
   };
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: '👤' },
-    { id: 'bookings', label: 'Bookings', icon: '📅', count: guestData.bookings.length },
+    { id: 'serviceBookings', label: 'Bookings', icon: '📅', count: guestData.serviceBookings.length },
     { id: 'maintenanceRequests', label: 'maintenanceRequests', icon: '⚠️', count: guestData.maintenanceRequests.length },
     { id: 'messages', label: 'Messages', icon: '💬', count: guestData.messages.length },
     { id: 'visitors', label: 'Visitors', icon: '👥', count: guestData.visitors.length }
@@ -166,7 +166,7 @@ const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
           <h3>Activity Summary</h3>
           <div className="activity-stats">
             <div className="stat-item">
-              <div className="stat-number">{guestData.bookings.length}</div>
+              <div className="stat-number">{guestData.serviceBookings.length}</div>
               <div className="stat-label">Total Bookings</div>
             </div>
             <div className="stat-item">
@@ -196,9 +196,9 @@ const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
 
   const renderBookingsTab = () => (
     <div className="tab-content">
-      {guestData.bookings.length > 0 ? (
+      {guestData.serviceBookings.length > 0 ? (
         <div className="data-list">
-          {guestData.bookings
+          {guestData.serviceBookings
             .sort((a, b) => {
               const dateA = a.startDate.toDate ? a.startDate.toDate() : new Date(a.startDate);
               const dateB = b.startDate.toDate ? b.startDate.toDate() : new Date(b.startDate);
@@ -252,7 +252,7 @@ const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
         <div className="empty-tab">
           <div className="empty-icon">📅</div>
           <h3>No Bookings</h3>
-          <p>This guest hasn't made any bookings yet.</p>
+          <p>This guest hasn't made any serviceBookings yet.</p>
         </div>
       )}
     </div>
@@ -371,7 +371,7 @@ const GuestDetails = ({ guest, userCompany, onEdit, onClose }) => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'overview': return renderOverviewTab();
-      case 'bookings': return renderBookingsTab();
+      case 'serviceBookings': return renderBookingsTab();
       case 'maintenanceRequests': return rendermaintenanceRequestsTab();
       case 'messages': return renderMessagesTab();
       case 'visitors': return renderVisitorsTab();

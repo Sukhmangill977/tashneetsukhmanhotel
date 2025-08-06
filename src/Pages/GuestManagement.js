@@ -8,7 +8,7 @@ import GuestDetails from '../components/GuestDetails';
 import './GuestManagement.css';
 
 const GuestManagement = () => {
-  const [userCompany, setUserCompany] = useState(null);
+  const [userHotel, setUserHotel] = useState(null);
   const [guests, setguests] = useState([]);
   const [filteredguests, setFilteredguests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,20 +36,20 @@ const GuestManagement = () => {
 
   const loadUserData = async (email) => {
     try {
-      const company = await dbService.getCompanyByEmail(email);
-      setUserCompany(company);
+      const Hotel = await dbService.getHotelByEmail(email);
+      setUserHotel(Hotel);
       
-      if (company) {
-        await loadguests(company.id);
+      if (Hotel) {
+        await loadguests(Hotel.id);
       }
     } catch (error) {
       console.error('Error loading user data:', error);
     }
   };
 
-  const loadguests = async (companyId) => {
+  const loadguests = async (hotelId) => {
     try {
-      const guestsData = await dbService.getguestsByCompany(companyId);
+      const guestsData = await dbService.getguestsByHotel(hotelId);
       setguests(guestsData);
     } catch (error) {
       console.error('Error loading guests:', error);
@@ -122,7 +122,7 @@ const GuestManagement = () => {
     if (window.confirm(`Are you sure you want to delete ${guest.name}?`)) {
       try {
         await dbService.deleteguest(guest.id);
-        await loadguests(userCompany.id);
+        await loadguests(userHotel.id);
       } catch (error) {
         console.error('Error deleting guest:', error);
         alert('Error deleting guest. Please try again.');
@@ -131,21 +131,26 @@ const GuestManagement = () => {
   };
 
   const handleguestSubmit = async (guestData) => {
-    try {
-      if (selectedguest) {
-        await dbService.updateguest(selectedguest.id, guestData);
-      } else {
-        await dbService.addguest(userCompany.id, guestData);
-      }
-      
-      await loadguests(userCompany.id);
-      setShowGuestForm(false);
-      setSelectedguest(null);
-    } catch (error) {
-      console.error('Error saving guest:', error);
-      throw error;
+  try {
+    if (!userHotel || !userHotel.id) {
+      alert("Hotel information not loaded. Please try again.");
+      return;
     }
-  };
+
+    if (selectedguest) {
+      await dbService.updateguest(selectedguest.id, guestData);
+    } else {
+      await dbService.addguest(userHotel.id, guestData);
+    }
+
+    await loadguests(userHotel.id);
+    setShowGuestForm(false);
+    setSelectedguest(null);
+  } catch (error) {
+    console.error('Error saving guest:', error);
+    throw error;
+  }
+};
 
   const handleSortChange = (newSortBy) => {
     if (sortBy === newSortBy) {
@@ -374,7 +379,7 @@ const GuestManagement = () => {
         {showGuestDetails && selectedguest && (
           <GuestDetails
             guest={selectedguest}
-            userCompany={userCompany}
+            userHotel={userHotel}
             onEdit={() => {
               setShowGuestDetails(false);
               setShowGuestForm(true);
